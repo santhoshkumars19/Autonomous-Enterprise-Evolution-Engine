@@ -15,12 +15,14 @@ router.get("/setup", async (req, res) => {
             res.json({
                 success: true,
                 setupCompleted: true,
+                business_setup_completed: true,
                 role: "admin",
+                user_id: userId,
                 message: "Business Setup is not applicable for Admin users.",
             });
             return;
         }
-        const [user] = await (0, db_1.query)("SELECT company_id, company, setup_completed FROM users WHERE id = $1", [userId]);
+        const [user] = await (0, db_1.query)("SELECT id, company_id, company, role, setup_completed FROM users WHERE id = $1", [userId]);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -33,9 +35,14 @@ router.get("/setup", async (req, res) => {
             companyData = comp;
         }
         const [metrics] = await (0, db_1.query)("SELECT revenue, expenses, currency FROM business_metrics WHERE user_id = $1 ORDER BY recorded_at DESC LIMIT 1", [userId]);
+        const isSetupCompleted = Boolean(user.setup_completed || companyData?.setup_completed);
         res.json({
             success: true,
-            setupCompleted: user.setup_completed || companyData?.setup_completed || false,
+            setupCompleted: isSetupCompleted,
+            business_setup_completed: isSetupCompleted,
+            role: user.role,
+            company_id: user.company_id,
+            user_id: user.id,
             userCompany: user.company,
             company: companyData,
             metrics,

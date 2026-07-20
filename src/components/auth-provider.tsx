@@ -3,22 +3,26 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface User {
+  id?: string;
   name: string;
   email: string;
   company: string;
+  company_id?: string;
   role: string;
   avatar?: string;
   businessType: string;
+  business_setup_completed?: boolean;
+  setup_completed?: boolean;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password?: string) => Promise<void>;
-  socialLogin: (data: { provider: "google" | "microsoft"; email: string; name?: string }) => Promise<{ success: boolean; token: string | null; user: User }>;
+  login: (email: string, password?: string) => Promise<{ success: boolean; token: string; user: User; setupCompleted: boolean; role: string }>;
+  socialLogin: (data: { provider: "google" | "microsoft"; email: string; name?: string }) => Promise<{ success: boolean; token: string | null; user: User; setupCompleted: boolean; role: string }>;
   adminLogin: (data: { email: string; password: string }) => Promise<{ success: boolean; token: string; refreshToken?: string; user: User }>;
-  signup: (userData: Partial<User> & { password?: string }) => Promise<void>;
+  signup: (userData: Partial<User> & { password?: string }) => Promise<{ success: boolean; token: string; user: User; setupCompleted: boolean; role: string }>;
   logout: () => void;
   updateProfile: (updatedData: Partial<User>) => void;
 }
@@ -27,8 +31,10 @@ export const defaultUser: User = {
   name: "User",
   email: "",
   company: "Enterprise Account",
-  role: "Executive",
+  role: "user",
   businessType: "Enterprise AI System",
+  business_setup_completed: false,
+  setup_completed: false,
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,12 +61,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authApi.me(savedToken).then((res) => {
           if (res.success && res.user) {
             const u = res.user as any;
+            const userRole = u.role || "user";
+            const isSetupDone = Boolean(
+              userRole === "admin" ||
+              u.business_setup_completed === true ||
+              u.setup_completed === true
+            );
             const updatedUser: User = {
+              id: u.id || u.user_id,
               name: u.name || "User",
               email: u.email || "",
               company: u.company || "Enterprise Account",
-              role: u.role || "Executive",
+              company_id: u.company_id,
+              role: userRole,
               businessType: "Enterprise AI System",
+              business_setup_completed: isSetupDone,
+              setup_completed: isSetupDone,
             };
             setUser(updatedUser);
             localStorage.setItem("evoai-user", JSON.stringify(updatedUser));
@@ -71,51 +87,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password?: string) => {
-    try {
-      const { authApi } = await import("@/lib/api");
-      const res = await authApi.login({ email, password: password || "password123" });
-      if (res.success && res.token) {
-        setToken(res.token);
-        localStorage.setItem("evoai-token", res.token);
+    const { authApi } = await import("@/lib/api");
+    const res = await authApi.login({ email: email.trim(), password: password || "password123" });
 
-        let profileName = res.user.name;
-        let profileCompany = (res.user as Record<string, string>).company;
-
-        if (!profileName || !profileCompany) {
-          const meRes = await authApi.me(res.token).catch(() => null);
-          if (meRes?.success && meRes.user) {
-            const u = meRes.user as any;
-            profileName = u.name || profileName;
-            profileCompany = u.company || profileCompany;
-          }
-        }
-
-        const fallbackName = email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-        const newUser: User = {
-          name: profileName || fallbackName || "User",
-          email: res.user.email || email,
-          company: profileCompany || "Enterprise Account",
-          role: res.user.role || "Executive",
-          businessType: "Enterprise AI Infrastructure",
-        };
-        setUser(newUser);
-        localStorage.setItem("evoai-user", JSON.stringify(newUser));
-        return;
+    if (res.success && res.token) {
+      setToken(res.token);
+      localStorage.setItem("evoai-token", res.token);
+      if (res.refreshToken) {
+        localStorage.setItem("evoai-refresh-token", res.refreshToken);
       }
-    } catch {
-      // Backend unavailable or offline fallback
+
+      const userRole = res.role || res.user?.role || "user";
+      const isSetupDone = Boolean(
+        userRole === "admin" ||
+        res.business_setup_completed === true ||
+        res.setup_completed === true ||
+        res.user?.business_setup_completed === true ||
+        res.user?.setup_completed === true
+      );
+
+      const newUser: User = {
+        id: res.user_id || res.user?.id,
+        name: res.user?.name || email.split("@")[0],
+        email: res.user?.email || email,
+        company: res.user?.company || "Enterprise Account",
+        company_id: res.company_id || res.user?.company_id,
+        role: userRole,
+        businessType: "Enterprise AI Infrastructure",
+        business_setup_completed: isSetupDone,
+        setup_completed: isSetupDone,
+      };
+
+      setUser(newUser);
+      localStorage.setItem("evoai-user", JSON.stringify(newUser));
+      return { success: true, token: res.token, user: newUser, setupCompleted: isSetupDone, role: userRole };
     }
 
-    const fallbackName = email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-    const newUser: User = {
-      name: fallbackName || "User",
-      email,
-      company: "Enterprise Account",
-      role: "Strategic Executive Officer",
-      businessType: "Enterprise AI Infrastructure",
-    };
-    setUser(newUser);
-    localStorage.setItem("evoai-user", JSON.stringify(newUser));
+    throw new Error(res.message || "Invalid credentials");
   };
 
   const adminLogin = async (data: { email: string; password: string }) => {
@@ -129,11 +137,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem("evoai-refresh-token", res.refreshToken);
       }
       const adminUser: User = {
+        id: res.user_id || res.user.id,
         name: res.user.name || "EvoAI System Admin",
         email: res.user.email || data.email,
         company: res.user.company || "EvoAI Corporation",
-        role: res.user.role || "Admin",
+        company_id: res.company_id || res.user.company_id,
+        role: res.user.role || "admin",
         businessType: "Autonomous AI Enterprise System",
+        business_setup_completed: true,
+        setup_completed: true,
       };
       setUser(adminUser);
       localStorage.setItem("evoai-user", JSON.stringify(adminUser));
@@ -143,41 +155,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signup = async (userData: Partial<User> & { password?: string }) => {
-    try {
-      const { authApi } = await import("@/lib/api");
-      const res = await authApi.register({
-        name: userData.name || "Enterprise Leader",
-        email: userData.email || "leader@vanguard.ai",
-        password: userData.password || "password123",
-        company: userData.company,
-      });
-      if (res.success && res.token) {
-        setToken(res.token);
-        localStorage.setItem("evoai-token", res.token);
-        const newUser: User = {
-          name: res.user.name || "Enterprise Leader",
-          email: res.user.email || "leader@vanguard.ai",
-          company: (res.user as Record<string, string>).company || "Apex Global Dynamics",
-          role: res.user.role || "Strategic Executive Officer",
-          businessType: userData.businessType || "Enterprise AI Infrastructure",
-        };
-        setUser(newUser);
-        localStorage.setItem("evoai-user", JSON.stringify(newUser));
-        return;
-      }
-    } catch {
-      // Backend offline fallback
-    }
-
-    const newUser: User = {
+    const { authApi } = await import("@/lib/api");
+    const res = await authApi.register({
       name: userData.name || "Enterprise Leader",
       email: userData.email || "leader@vanguard.ai",
-      company: userData.company || "Apex Global Dynamics",
-      role: "Strategic Executive Officer",
-      businessType: userData.businessType || "Enterprise AI Infrastructure",
-    };
-    setUser(newUser);
-    localStorage.setItem("evoai-user", JSON.stringify(newUser));
+      password: userData.password || "password123",
+      company: userData.company,
+    });
+
+    if (res.success && res.token) {
+      setToken(res.token);
+      localStorage.setItem("evoai-token", res.token);
+      if (res.refreshToken) {
+        localStorage.setItem("evoai-refresh-token", res.refreshToken);
+      }
+
+      const userRole = res.role || res.user?.role || "user";
+      const isSetupDone = Boolean(
+        userRole === "admin" ||
+        res.business_setup_completed === true ||
+        res.setup_completed === true ||
+        res.user?.business_setup_completed === true ||
+        res.user?.setup_completed === true
+      );
+
+      const newUser: User = {
+        id: res.user_id || res.user?.id,
+        name: res.user?.name || userData.name || "Enterprise Leader",
+        email: res.user?.email || userData.email || "leader@vanguard.ai",
+        company: res.user?.company || userData.company || "Apex Global Dynamics",
+        company_id: res.company_id || res.user?.company_id,
+        role: userRole,
+        businessType: userData.businessType || "Enterprise AI Infrastructure",
+        business_setup_completed: isSetupDone,
+        setup_completed: isSetupDone,
+      };
+
+      setUser(newUser);
+      localStorage.setItem("evoai-user", JSON.stringify(newUser));
+      return { success: true, token: res.token, user: newUser, setupCompleted: isSetupDone, role: userRole };
+    }
+
+    throw new Error(res.message || "Registration failed");
   };
 
   const logout = () => {
@@ -208,36 +227,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const socialLogin = async (data: { provider: "google" | "microsoft"; email: string; name?: string }) => {
-    try {
-      const { authApi } = await import("@/lib/api");
-      const res = await authApi.socialLogin(data);
-      if (res.success && res.token) {
-        setToken(res.token);
-        localStorage.setItem("evoai-token", res.token);
-        const newUser: User = {
-          name: res.user.name || data.name || data.email.split("@")[0],
-          email: res.user.email || data.email,
-          company: res.user.company || `${data.email.split("@")[0]}'s Enterprise`,
-          role: res.user.role || "user",
-          businessType: "Enterprise AI Solutions",
-        };
-        setUser(newUser);
-        localStorage.setItem("evoai-user", JSON.stringify(newUser));
-        return { success: true, token: res.token, user: newUser };
+    const { authApi } = await import("@/lib/api");
+    const res = await authApi.socialLogin(data);
+    if (res.success && res.token) {
+      setToken(res.token);
+      localStorage.setItem("evoai-token", res.token);
+      if (res.refreshToken) {
+        localStorage.setItem("evoai-refresh-token", res.refreshToken);
       }
-    } catch {}
-
-    const fallbackName = data.name || data.email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-    const newUser: User = {
-      name: fallbackName,
-      email: data.email,
-      company: `${fallbackName}'s Enterprise`,
-      role: "user",
-      businessType: "Enterprise AI Solutions",
-    };
-    setUser(newUser);
-    localStorage.setItem("evoai-user", JSON.stringify(newUser));
-    return { success: true, token: null, user: newUser };
+      const userRole = res.role || res.user?.role || "user";
+      const isSetupDone = Boolean(
+        userRole === "admin" ||
+        res.business_setup_completed === true ||
+        res.setup_completed === true ||
+        res.user?.business_setup_completed === true ||
+        res.user?.setup_completed === true
+      );
+      const newUser: User = {
+        id: res.user_id || res.user.id,
+        name: res.user.name || data.name || data.email.split("@")[0],
+        email: res.user.email || data.email,
+        company: res.user.company || `${data.email.split("@")[0]}'s Enterprise`,
+        company_id: res.company_id || res.user.company_id,
+        role: userRole,
+        businessType: "Enterprise AI Solutions",
+        business_setup_completed: isSetupDone,
+        setup_completed: isSetupDone,
+      };
+      setUser(newUser);
+      localStorage.setItem("evoai-user", JSON.stringify(newUser));
+      return { success: true, token: res.token, user: newUser, setupCompleted: isSetupDone, role: userRole };
+    }
+    throw new Error(res.message || "Social login failed");
   };
 
   return (

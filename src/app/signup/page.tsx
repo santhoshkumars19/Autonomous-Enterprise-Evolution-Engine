@@ -56,15 +56,30 @@ export default function SignupPage() {
     setErrorMessage("");
     setIsLoading(true);
 
-    await signup({
-      name: fullName || "New Enterprise Leader",
-      company: companyName || "Apex Innovations",
-      email: email || "leader@apex.io",
-      password: password,
-      businessType: businessType,
-    });
-    setIsLoading(false);
-    router.push("/business-setup");
+    try {
+      const res = await signup({
+        name: fullName || "New Enterprise Leader",
+        company: companyName || "Apex Innovations",
+        email: email,
+        password: password,
+        businessType: businessType,
+      });
+      setIsLoading(false);
+
+      const role = res?.role || res?.user?.role;
+      const isSetupCompleted = Boolean(res?.setupCompleted || res?.user?.business_setup_completed || res?.user?.setup_completed);
+
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (!isSetupCompleted) {
+        router.push("/business-setup");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err: unknown) {
+      setIsLoading(false);
+      setErrorMessage(err instanceof Error ? err.message : "Failed to create account. Please try again.");
+    }
   };
 
   return (

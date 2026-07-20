@@ -18,6 +18,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Social OAuth Modal State
   const [socialProvider, setSocialProvider] = useState<"google" | "microsoft" | null>(null);
@@ -37,21 +38,19 @@ export default function LoginPage() {
       });
       setIsSocialSubmitting(false);
 
-      const token = localStorage.getItem("evoai-token");
-      if (token) {
-        try {
-          const { businessApi } = await import("@/lib/api");
-          const res = await businessApi.getSetup(token);
-          if ((res as any).role === "admin" || (authRes as any)?.user?.role === "admin") {
-            router.push("/admin/dashboard");
-            return;
-          }
-          if (res.success && res.setupCompleted === false) {
-            router.push("/business-setup");
-            return;
-          }
-        } catch {}
+      const role = authRes?.role || authRes?.user?.role;
+      const isSetupCompleted = Boolean(authRes?.setupCompleted || authRes?.user?.business_setup_completed || authRes?.user?.setup_completed);
+
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+        return;
       }
+
+      if (!isSetupCompleted) {
+        router.push("/business-setup");
+        return;
+      }
+
       router.push("/dashboard");
     } catch (err: unknown) {
       setIsSocialSubmitting(false);
@@ -61,26 +60,31 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
     setIsLoading(true);
-    const authRes = await login(email, password);
-    setIsLoading(false);
 
-    const token = localStorage.getItem("evoai-token");
-    if (token) {
-      try {
-        const { businessApi } = await import("@/lib/api");
-        const res = await businessApi.getSetup(token);
-        if ((res as any).role === "admin" || (authRes as any)?.user?.role === "admin") {
-          router.push("/admin/dashboard");
-          return;
-        }
-        if (res.success && res.setupCompleted === false) {
-          router.push("/business-setup");
-          return;
-        }
-      } catch {}
+    try {
+      const authRes = await login(email, password);
+      setIsLoading(false);
+
+      const role = authRes?.role || authRes?.user?.role;
+      const isSetupCompleted = Boolean(authRes?.setupCompleted || authRes?.user?.business_setup_completed || authRes?.user?.setup_completed);
+
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+        return;
+      }
+
+      if (!isSetupCompleted) {
+        router.push("/business-setup");
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      setIsLoading(false);
+      setErrorMessage(err instanceof Error ? err.message : "Invalid email or password");
     }
-    router.push("/dashboard");
   };
 
   return (
@@ -142,6 +146,10 @@ export default function LoginPage() {
                     Forgot Password?
                   </Link>
                 </div>
+
+                {errorMessage && (
+                  <p className="text-xs text-rose-500 font-medium text-center">{errorMessage}</p>
+                )}
 
                 <Button
                   type="submit"

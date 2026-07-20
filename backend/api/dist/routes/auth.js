@@ -31,22 +31,45 @@ router.post("/register", async (req, res) => {
     try {
         const body = registerSchema.parse(req.body);
         // Check if user exists
-        const existing = await (0, db_1.query)("SELECT id FROM users WHERE email = $1", [body.email]);
+        const existing = await (0, db_1.query)("SELECT id FROM users WHERE LOWER(email) = LOWER($1)", [body.email]);
         if (existing.length > 0) {
             res.status(409).json({ success: false, message: "Email already registered" });
             return;
         }
         const passwordHash = await bcryptjs_1.default.hash(body.password, 12);
-        const [user] = await (0, db_1.query)(`INSERT INTO users (name, email, password_hash, company, role)
-       VALUES ($1, $2, $3, $4, 'user')
-       RETURNING id, email, name, role`, [body.name, body.email, passwordHash, body.company ?? null]);
+        const companyName = body.company || `${body.name}'s Enterprise`;
+        // 1. Create company record
+        const [company] = await (0, db_1.query)(`INSERT INTO companies (name, setup_completed)
+       VALUES ($1, FALSE)
+       RETURNING id`, [companyName]);
+        // 2. Create user record linked to company
+        const [user] = await (0, db_1.query)(`INSERT INTO users (name, email, password_hash, company, company_id, role, setup_completed)
+       VALUES ($1, $2, $3, $4, $5, 'user', FALSE)
+       RETURNING id, email, name, role, company, company_id, setup_completed`, [body.name, body.email, passwordHash, companyName, company.id]);
         const signOptions = { expiresIn: env_1.env.JWT_EXPIRES_IN };
         const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, env_1.env.JWT_SECRET, signOptions);
+        const refreshToken = jsonwebtoken_1.default.sign({ id: user.id, type: "refresh" }, env_1.env.JWT_SECRET, { expiresIn: "7d" });
         res.status(201).json({
             success: true,
             message: "Account created successfully",
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            refreshToken,
+            role: user.role,
+            company_id: user.company_id,
+            user_id: user.id,
+            business_setup_completed: false,
+            setup_completed: false,
+            user: {
+                id: user.id,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                company: user.company,
+                company_id: user.company_id,
+                business_setup_completed: false,
+                setup_completed: false,
+            },
         });
     }
     catch (error) {
@@ -62,7 +85,13 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const body = loginSchema.parse(req.body);
-        const [user] = await (0, db_1.query)("SELECT id, email, name, role, password_hash FROM users WHERE email = $1", [body.email]);
+        const [user] = await (0, db_1.query)(`SELECT u.id, u.email, u.name, u.role, u.company, u.company_id,
+              COALESCE(u.setup_completed, FALSE) as setup_completed,
+              COALESCE(c.setup_completed, FALSE) as company_setup_completed,
+              u.password_hash
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE LOWER(u.email) = LOWER($1)`, [body.email]);
         if (!user) {
             res.status(401).json({ success: false, message: "Invalid credentials" });
             return;
@@ -72,15 +101,42 @@ router.post("/login", async (req, res) => {
             res.status(401).json({ success: false, message: "Invalid credentials" });
             return;
         }
+        // Ensure company_id exists if missing
+        let companyId = user.company_id;
+        if (!companyId) {
+            const companyName = user.company || `${user.name}'s Enterprise`;
+            const [newComp] = await (0, db_1.query)("INSERT INTO companies (name, setup_completed) VALUES ($1, FALSE) RETURNING id", [companyName]);
+            companyId = newComp.id;
+            await (0, db_1.query)("UPDATE users SET company_id = $1 WHERE id = $2", [companyId, user.id]);
+        }
         // Update last login
         await (0, db_1.query)("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
         const signOptions = { expiresIn: env_1.env.JWT_EXPIRES_IN };
         const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, env_1.env.JWT_SECRET, signOptions);
+        const refreshToken = jsonwebtoken_1.default.sign({ id: user.id, type: "refresh" }, env_1.env.JWT_SECRET, { expiresIn: "7d" });
+        const isSetupCompleted = Boolean(user.role === "admin" ||
+            (Boolean(user.setup_completed) && Boolean(user.company_setup_completed)));
         res.json({
             success: true,
             message: "Login successful",
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            refreshToken,
+            role: user.role,
+            company_id: companyId,
+            user_id: user.id,
+            business_setup_completed: isSetupCompleted,
+            setup_completed: isSetupCompleted,
+            user: {
+                id: user.id,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                company: user.company,
+                company_id: companyId,
+                business_setup_completed: isSetupCompleted,
+                setup_completed: isSetupCompleted,
+            },
         });
     }
     catch (error) {
@@ -96,7 +152,7 @@ router.post("/login", async (req, res) => {
 router.post("/admin/login", async (req, res) => {
     try {
         const body = loginSchema.parse(req.body);
-        const [user] = await (0, db_1.query)("SELECT id, email, name, role, company, password_hash FROM users WHERE LOWER(email) = LOWER($1)", [body.email]);
+        const [user] = await (0, db_1.query)("SELECT id, email, name, role, company, company_id, setup_completed, password_hash FROM users WHERE LOWER(email) = LOWER($1)", [body.email]);
         if (!user) {
             res.status(401).json({ success: false, message: "Invalid admin credentials" });
             return;
@@ -120,7 +176,22 @@ router.post("/admin/login", async (req, res) => {
             message: "Admin authentication successful",
             token,
             refreshToken,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role, company: user.company },
+            role: user.role,
+            company_id: user.company_id || null,
+            user_id: user.id,
+            business_setup_completed: true,
+            setup_completed: true,
+            user: {
+                id: user.id,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                company: user.company,
+                company_id: user.company_id || null,
+                business_setup_completed: true,
+                setup_completed: true,
+            },
         });
     }
     catch (error) {
@@ -136,23 +207,49 @@ router.post("/admin/login", async (req, res) => {
 router.post("/social-login", async (req, res) => {
     try {
         const body = socialLoginSchema.parse(req.body);
-        let [user] = await (0, db_1.query)("SELECT id, email, name, role, company FROM users WHERE LOWER(email) = LOWER($1)", [body.email]);
+        let [user] = await (0, db_1.query)(`SELECT u.id, u.email, u.name, u.role, u.company, u.company_id,
+              COALESCE(u.setup_completed, FALSE) as setup_completed,
+              COALESCE(c.setup_completed, FALSE) as company_setup_completed
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE LOWER(u.email) = LOWER($1)`, [body.email]);
         if (!user) {
             const defaultName = body.name || body.email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            const companyName = `${defaultName}'s Enterprise`;
             const passwordHash = await bcryptjs_1.default.hash(`SocialOAuth_${Date.now()}_SecretKey!`, 12);
-            const [newUser] = await (0, db_1.query)(`INSERT INTO users (name, email, password_hash, company, role)
-         VALUES ($1, $2, $3, $4, 'user')
-         RETURNING id, email, name, role, company`, [defaultName, body.email, passwordHash, `${defaultName}'s Enterprise`]);
+            const [newComp] = await (0, db_1.query)("INSERT INTO companies (name, setup_completed) VALUES ($1, FALSE) RETURNING id", [companyName]);
+            const [newUser] = await (0, db_1.query)(`INSERT INTO users (name, email, password_hash, company, company_id, role, setup_completed)
+         VALUES ($1, $2, $3, $4, $5, 'user', FALSE)
+         RETURNING id, email, name, role, company, company_id, setup_completed, FALSE as company_setup_completed`, [defaultName, body.email, passwordHash, companyName, newComp.id]);
             user = newUser;
         }
         await (0, db_1.query)("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
         const signOptions = { expiresIn: env_1.env.JWT_EXPIRES_IN };
         const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, env_1.env.JWT_SECRET, signOptions);
+        const refreshToken = jsonwebtoken_1.default.sign({ id: user.id, type: "refresh" }, env_1.env.JWT_SECRET, { expiresIn: "7d" });
+        const isSetupCompleted = Boolean(user.role === "admin" ||
+            (Boolean(user.setup_completed) && Boolean(user.company_setup_completed)));
         res.json({
             success: true,
             message: `Successfully authenticated via ${body.provider === 'google' ? 'Google' : 'Microsoft'}`,
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role, company: user.company },
+            refreshToken,
+            role: user.role,
+            company_id: user.company_id,
+            user_id: user.id,
+            business_setup_completed: isSetupCompleted,
+            setup_completed: isSetupCompleted,
+            user: {
+                id: user.id,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                company: user.company,
+                company_id: user.company_id,
+                business_setup_completed: isSetupCompleted,
+                setup_completed: isSetupCompleted,
+            },
         });
     }
     catch (error) {
@@ -167,12 +264,28 @@ router.post("/social-login", async (req, res) => {
 // GET /api/auth/me
 router.get("/me", auth_1.authenticate, async (req, res) => {
     try {
-        const [user] = await (0, db_1.query)("SELECT id, name, email, role, company, created_at FROM users WHERE id = $1", [req.user.id]);
+        const [user] = await (0, db_1.query)(`SELECT u.id, u.name, u.email, u.role, u.company, u.company_id,
+              COALESCE(u.setup_completed, FALSE) as setup_completed,
+              COALESCE(c.setup_completed, FALSE) as company_setup_completed,
+              u.created_at
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE u.id = $1`, [req.user.id]);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
-        res.json({ success: true, user });
+        const isSetupCompleted = Boolean(user.role === "admin" ||
+            (Boolean(user.setup_completed) && Boolean(user.company_setup_completed)));
+        res.json({
+            success: true,
+            user: {
+                ...user,
+                user_id: user.id,
+                business_setup_completed: isSetupCompleted,
+                setup_completed: isSetupCompleted,
+            },
+        });
     }
     catch (error) {
         console.error("Get me error:", error);

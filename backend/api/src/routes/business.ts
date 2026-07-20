@@ -15,17 +15,21 @@ router.get("/setup", async (req: AuthRequest, res: Response): Promise<void> => {
       res.json({
         success: true,
         setupCompleted: true,
+        business_setup_completed: true,
         role: "admin",
+        user_id: userId,
         message: "Business Setup is not applicable for Admin users.",
       });
       return;
     }
 
     const [user] = await query<{
+      id: string;
       company_id: string;
       company: string;
+      role: string;
       setup_completed: boolean;
-    }>("SELECT company_id, company, setup_completed FROM users WHERE id = $1", [userId]);
+    }>("SELECT id, company_id, company, role, setup_completed FROM users WHERE id = $1", [userId]);
 
     if (!user) {
       res.status(404).json({ success: false, message: "User not found" });
@@ -48,9 +52,15 @@ router.get("/setup", async (req: AuthRequest, res: Response): Promise<void> => {
       [userId]
     );
 
+    const isSetupCompleted = Boolean(user.setup_completed || companyData?.setup_completed);
+
     res.json({
       success: true,
-      setupCompleted: user.setup_completed || companyData?.setup_completed || false,
+      setupCompleted: isSetupCompleted,
+      business_setup_completed: isSetupCompleted,
+      role: user.role,
+      company_id: user.company_id,
+      user_id: user.id,
       userCompany: user.company,
       company: companyData,
       metrics,

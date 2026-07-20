@@ -2,7 +2,18 @@
  * EvoAI API Client — connects Next.js frontend to Node.js Express API (port 4000)
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const getApiBase = (): string => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL;
+  if (envUrl) {
+    return envUrl.replace(/\/+$/, "");
+  }
+  if (typeof window !== "undefined") {
+    return "";
+  }
+  return "http://localhost:4000";
+};
+
+const API_BASE = getApiBase();
 
 type FetchOptions = RequestInit & { token?: string };
 
@@ -34,19 +45,52 @@ async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export const authApi = {
   register: (data: { name: string; email: string; password: string; company?: string }) =>
-    apiFetch<{ success: boolean; token: string; user: Record<string, string> }>("/api/auth/register", {
+    apiFetch<{
+      success: boolean;
+      token: string;
+      refreshToken?: string;
+      role?: string;
+      company_id?: string;
+      user_id?: string;
+      business_setup_completed?: boolean;
+      setup_completed?: boolean;
+      user: Record<string, any>;
+      message?: string;
+    }>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(data),
     }),
 
   login: (data: { email: string; password: string }) =>
-    apiFetch<{ success: boolean; token: string; user: Record<string, string> }>("/api/auth/login", {
+    apiFetch<{
+      success: boolean;
+      token: string;
+      refreshToken?: string;
+      role?: string;
+      company_id?: string;
+      user_id?: string;
+      business_setup_completed?: boolean;
+      setup_completed?: boolean;
+      user: Record<string, any>;
+      message?: string;
+    }>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify(data),
     }),
 
   socialLogin: (data: { provider: "google" | "microsoft"; email: string; name?: string }) =>
-    apiFetch<{ success: boolean; token: string; user: { id: string; name: string; email: string; role: string; company?: string } }>("/api/auth/social-login", {
+    apiFetch<{
+      success: boolean;
+      token: string;
+      refreshToken?: string;
+      role?: string;
+      company_id?: string;
+      user_id?: string;
+      business_setup_completed?: boolean;
+      setup_completed?: boolean;
+      user: { id: string; name: string; email: string; role: string; company?: string; company_id?: string; business_setup_completed?: boolean; setup_completed?: boolean };
+      message?: string;
+    }>("/api/auth/social-login", {
       method: "POST",
       body: JSON.stringify(data),
     }),
@@ -56,7 +100,12 @@ export const authApi = {
       success: boolean;
       token: string;
       refreshToken: string;
-      user: { id: string; name: string; email: string; role: string; company: string };
+      role?: string;
+      company_id?: string;
+      user_id?: string;
+      business_setup_completed?: boolean;
+      setup_completed?: boolean;
+      user: { id: string; name: string; email: string; role: string; company: string; company_id?: string; business_setup_completed?: boolean; setup_completed?: boolean };
       message?: string;
     }>("/api/auth/admin/login", {
       method: "POST",
@@ -252,4 +301,3 @@ export const chatApi = {
   history: (token: string, limit = 50) =>
     apiFetch<{ success: boolean; messages: unknown[] }>(`/api/chat/history?limit=${limit}`, { token }),
 };
-
