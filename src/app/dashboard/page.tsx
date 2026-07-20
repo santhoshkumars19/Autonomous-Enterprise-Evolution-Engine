@@ -1850,89 +1850,94 @@ export default function DashboardPage() {
             };
 
             return (
-              <Card className="p-6 text-center space-y-4">
+              <Card className="p-4 sm:p-6 text-center space-y-4">
                 {/* Calendar Header with Navigation */}
-                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div className="flex items-center gap-2">
-                    <CalendarIcon className="w-5 h-5 text-indigo-400" />
-                    <h3 className="font-bold text-base text-slate-900 dark:text-white">
+                    <CalendarIcon className="w-5 h-5 text-indigo-400 shrink-0" />
+                    <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
                       {monthName} {year} Task Deadlines Calendar
                     </h3>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 self-stretch sm:self-auto justify-between sm:justify-end">
                     <button
                       onClick={() => setCalendarDate(new Date(year, monthIndex - 1, 1))}
-                      className="p-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer"
                     >
-                      <ChevronLeft className="w-4 h-4" /> Previous
+                      <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span className="text-[11px] sm:text-xs">Previous</span>
                     </button>
                     <button
                       onClick={() => setCalendarDate(new Date())}
-                      className="px-2.5 py-1.5 rounded-lg bg-indigo-600/30 border border-indigo-500/50 hover:bg-indigo-600/50 text-indigo-200 text-xs font-semibold transition-all cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg bg-indigo-600/30 border border-indigo-500/50 hover:bg-indigo-600/50 text-indigo-200 text-[11px] sm:text-xs font-semibold transition-all cursor-pointer"
                     >
                       Current Month
                     </button>
                     <button
                       onClick={() => setCalendarDate(new Date(year, monthIndex + 1, 1))}
-                      className="p-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer"
                     >
-                      Next <ChevronRight className="w-4 h-4" />
+                      <span className="text-[11px] sm:text-xs">Next</span> <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
                 </div>
 
-                {/* Day Header Grid */}
-                <div className="grid grid-cols-7 gap-2 text-xs font-semibold text-slate-400 py-1">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                </div>
+                {/* Day Header & Grid Wrapper for Mobile Responsiveness */}
+                <div className="overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-700">
+                  <div className="min-w-[620px] space-y-2">
+                    {/* Day Header Grid */}
+                    <div className="grid grid-cols-7 gap-2 text-xs font-semibold text-slate-400 py-1">
+                      <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
 
-                {/* Days Grid */}
-                <div className="grid grid-cols-7 gap-2 text-xs min-h-[300px]">
-                  {Array.from({ length: totalDaysInMonth }).map((_, i) => {
-                    const dayNum = i + 1;
-                    const dayTasks = getTasksForDay(dayNum);
-                    return (
-                      <div
-                        key={i}
-                        onClick={() => {
-                          if (dayTasks.length > 0) {
-                            setEditingTask({ ...dayTasks[0] });
-                          } else {
-                            setIsAddTaskOpen(true);
-                            setNewTaskForm(prev => ({ ...prev, dueDate: `${monthName} ${dayNum}, ${year}` }));
-                          }
-                        }}
-                        className="p-2 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/50 hover:border-indigo-500/50 transition-all flex flex-col justify-start text-left cursor-pointer group space-y-1.5 min-h-[70px]"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] text-slate-400 font-mono font-bold group-hover:text-indigo-400">{dayNum}</span>
-                          {dayTasks.length > 0 && (
-                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">
-                              {dayTasks.length} task{dayTasks.length > 1 ? "s" : ""}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Task badges */}
-                        <div className="space-y-1 overflow-hidden">
-                          {dayTasks.map((t, tidx) => (
-                            <div
-                              key={tidx}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingTask({ ...t });
-                              }}
-                              className="px-1.5 py-1 rounded bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-[10px] text-indigo-100 font-medium truncate flex items-center justify-between gap-1 shadow-sm cursor-pointer"
-                            >
-                              <span className="truncate">{t.title}</span>
-                              <Edit className="w-2.5 h-2.5 opacity-70 hover:opacity-100 shrink-0 text-cyan-400" />
+                    {/* Days Grid */}
+                    <div className="grid grid-cols-7 gap-2 text-xs min-h-[300px]">
+                      {Array.from({ length: totalDaysInMonth }).map((_, i) => {
+                        const dayNum = i + 1;
+                        const dayTasks = getTasksForDay(dayNum);
+                        return (
+                          <div
+                            key={i}
+                            onClick={() => {
+                              if (dayTasks.length > 0) {
+                                setEditingTask({ ...dayTasks[0] });
+                              } else {
+                                setIsAddTaskOpen(true);
+                                setNewTaskForm(prev => ({ ...prev, dueDate: `${monthName} ${dayNum}, ${year}` }));
+                              }
+                            }}
+                            className="p-2 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/50 hover:border-indigo-500/50 transition-all flex flex-col justify-start text-left cursor-pointer group space-y-1.5 min-h-[70px]"
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] text-slate-400 font-mono font-bold group-hover:text-indigo-400">{dayNum}</span>
+                              {dayTasks.length > 0 && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">
+                                  {dayTasks.length} task{dayTasks.length > 1 ? "s" : ""}
+                                </span>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
+
+                            {/* Task badges */}
+                            <div className="space-y-1 overflow-hidden">
+                              {dayTasks.map((t, tidx) => (
+                                <div
+                                  key={tidx}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingTask({ ...t });
+                                  }}
+                                  className="px-1.5 py-1 rounded bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-[10px] text-indigo-100 font-medium truncate flex items-center justify-between gap-1 shadow-sm cursor-pointer"
+                                >
+                                  <span className="truncate">{t.title}</span>
+                                  <Edit className="w-2.5 h-2.5 opacity-70 hover:opacity-100 shrink-0 text-cyan-400" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </Card>
             );

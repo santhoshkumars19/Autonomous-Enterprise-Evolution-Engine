@@ -408,28 +408,30 @@ export default function BusinessSetupStandalonePage() {
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
       {/* Top Navbar */}
       <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-2xl sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-              <Cpu className="w-5 h-5" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
+            <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 shrink-0">
+              <Cpu className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+            <span className="font-bold text-sm sm:text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent truncate">
               EvoAI Platform Setup
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {setupCompleted && (
               <Link
                 href="/dashboard"
-                className="text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1 transition-colors px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-800"
+                className="text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1 transition-colors px-2.5 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-800 shrink-0"
               >
                 <span>Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
-            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center gap-1 text-xs">
-              <ShieldCheck className="w-3.5 h-3.5" /> Encrypted Workspace
+            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center gap-1 text-[11px] sm:text-xs px-2 sm:px-2.5 py-1 shrink-0">
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline">Encrypted Workspace</span>
+              <span className="sm:hidden">Secured</span>
             </Badge>
           </div>
         </div>
@@ -583,16 +585,16 @@ export default function BusinessSetupStandalonePage() {
                     />
                   </div>
 
-                  <div className="flex justify-end pt-4">
+                  <div className="flex flex-col sm:flex-row sm:justify-end gap-3 pt-4">
                     <Button
                       type="button"
                       variant="gradient"
                       onClick={() => setStep(2)}
                       disabled={!companyName.trim() || !industry.trim()}
-                      className="flex items-center gap-2 px-6 py-2.5 text-xs font-bold"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-bold"
                     >
                       <span>Continue to Location & Products</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </Button>
                   </div>
                 </div>
@@ -656,14 +658,14 @@ export default function BusinessSetupStandalonePage() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between pt-4">
+                  <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setStep(1)}
-                      className="flex items-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold py-2.5"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="w-4 h-4 shrink-0" />
                       <span>Back</span>
                     </Button>
 
@@ -672,10 +674,10 @@ export default function BusinessSetupStandalonePage() {
                       variant="gradient"
                       onClick={() => setStep(3)}
                       disabled={!country.trim() || !state.trim() || !city.trim() || !productsServices.trim()}
-                      className="flex items-center gap-2 px-6 py-2.5 text-xs font-bold"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-bold"
                     >
                       <span>Continue to Financial Baseline</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </Button>
                   </div>
                 </div>
@@ -750,14 +752,14 @@ export default function BusinessSetupStandalonePage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4">
+                  <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => setStep(2)}
-                      className="flex items-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold py-2.5"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="w-4 h-4 shrink-0" />
                       <span>Back</span>
                     </Button>
 
@@ -765,7 +767,7 @@ export default function BusinessSetupStandalonePage() {
                       type="submit"
                       variant="gradient"
                       disabled={submitting}
-                      className="flex items-center gap-2 px-8 py-2.5 text-xs font-bold"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 text-xs font-bold"
                     >
                       {submitting ? (
                         <>
