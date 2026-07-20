@@ -95,13 +95,13 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
         setup_completed: false,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
       return;
     }
     console.error("Register error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: error?.message || "Internal server error" });
   }
 });
 
@@ -197,13 +197,13 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
         setup_completed: isSetupCompleted,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
       return;
     }
     console.error("Login error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: error?.message || "Internal server error" });
   }
 });
 
@@ -280,13 +280,13 @@ router.post("/admin/login", async (req: Request, res: Response): Promise<void> =
         setup_completed: true,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
       return;
     }
     console.error("Admin login error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: error?.message || "Internal server error" });
   }
 });
 
@@ -375,13 +375,13 @@ router.post("/social-login", async (req: Request, res: Response): Promise<void> 
         setup_completed: isSetupCompleted,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
       return;
     }
     console.error("Social login error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: error?.message || "Internal server error" });
   }
 });
 

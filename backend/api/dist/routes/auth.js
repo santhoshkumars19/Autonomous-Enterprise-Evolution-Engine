@@ -78,7 +78,7 @@ router.post("/register", async (req, res) => {
             return;
         }
         console.error("Register error:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error?.message || "Internal server error" });
     }
 });
 // POST /api/auth/login
@@ -145,7 +145,7 @@ router.post("/login", async (req, res) => {
             return;
         }
         console.error("Login error:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error?.message || "Internal server error" });
     }
 });
 // POST /api/auth/admin/login
@@ -200,7 +200,7 @@ router.post("/admin/login", async (req, res) => {
             return;
         }
         console.error("Admin login error:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error?.message || "Internal server error" });
     }
 });
 // POST /api/auth/social-login
@@ -258,7 +258,7 @@ router.post("/social-login", async (req, res) => {
             return;
         }
         console.error("Social login error:", error);
-        res.status(500).json({ success: false, message: "Internal server error" });
+        res.status(500).json({ success: false, message: error?.message || "Internal server error" });
     }
 });
 // GET /api/auth/me
