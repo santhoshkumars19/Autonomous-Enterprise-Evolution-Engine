@@ -1,13 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectDB = exports.query = exports.pool = void 0;
 const pg_1 = require("pg");
 const env_1 = require("./env");
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
+const schemaDDL_1 = require("../db/schemaDDL");
 const isProduction = env_1.env.NODE_ENV === "production" || env_1.env.DATABASE_URL.includes("sslmode=require");
 const disableSsl = env_1.env.DATABASE_URL.includes("sslmode=disable");
 exports.pool = new pg_1.Pool({
@@ -37,12 +33,8 @@ const connectDB = async () => {
         const result = await client.query("SELECT NOW()");
         console.log(`✅ PostgreSQL connected at ${result.rows[0].now}`);
         try {
-            const schemaPath = path_1.default.join(__dirname, "../db/schema.sql");
-            if (fs_1.default.existsSync(schemaPath)) {
-                const sql = fs_1.default.readFileSync(schemaPath, "utf-8");
-                await client.query(sql);
-                console.log("✅ Database schema verified/initialized successfully.");
-            }
+            await client.query(schemaDDL_1.SCHEMA_DDL);
+            console.log("✅ Database schema auto-verified/initialized successfully.");
         }
         catch (schemaErr) {
             console.warn("⚠️ Database auto-schema warning:", schemaErr);

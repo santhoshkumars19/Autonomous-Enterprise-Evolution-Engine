@@ -1,7 +1,6 @@
 import { Pool } from "pg";
 import { env } from "./env";
-import fs from "fs";
-import path from "path";
+import { SCHEMA_DDL } from "../db/schemaDDL";
 
 const isProduction = env.NODE_ENV === "production" || env.DATABASE_URL.includes("sslmode=require");
 const disableSsl = env.DATABASE_URL.includes("sslmode=disable");
@@ -38,12 +37,8 @@ export const connectDB = async (): Promise<void> => {
     console.log(`✅ PostgreSQL connected at ${result.rows[0].now}`);
 
     try {
-      const schemaPath = path.join(__dirname, "../db/schema.sql");
-      if (fs.existsSync(schemaPath)) {
-        const sql = fs.readFileSync(schemaPath, "utf-8");
-        await client.query(sql);
-        console.log("✅ Database schema verified/initialized successfully.");
-      }
+      await client.query(SCHEMA_DDL);
+      console.log("✅ Database schema auto-verified/initialized successfully.");
     } catch (schemaErr) {
       console.warn("⚠️ Database auto-schema warning:", schemaErr);
     } finally {
