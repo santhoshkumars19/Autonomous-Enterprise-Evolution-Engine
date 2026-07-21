@@ -157,7 +157,7 @@ export default function FeedbackPage() {
       {/* Top Banner Navigation */}
       <header className="sticky top-0 z-30 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <Link href="/" className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div className="flex items-center gap-2">
@@ -171,10 +171,10 @@ export default function FeedbackPage() {
           </div>
         </div>
 
-        <Link href="/dashboard">
+        <Link href="/">
           <Button variant="gradient" size="sm" className="text-xs font-bold flex items-center gap-1.5 py-2 px-3.5 rounded-xl cursor-pointer">
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Dashboard</span>
+            <span>Back to Home</span>
           </Button>
         </Link>
       </header>
