@@ -311,52 +311,52 @@ export default function EnterpriseAdminDashboard() {
         <main className="flex-1 p-4 sm:p-8 space-y-8 overflow-y-auto">
           {/* ── 8 STATS METRIC CARDS ──────────────────────────────────────────────── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Total Companies</span>
-              <span className="text-lg font-extrabold text-white font-mono">{stats.totalCompanies}</span>
-              <span className="text-[9px] text-emerald-400 font-bold block">+3 new this month</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Companies</span>
+              <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">{stats.totalCompanies}</span>
+              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">+3 new this month</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Total Users</span>
-              <span className="text-lg font-extrabold text-purple-400 font-mono">{usersList.length || stats.totalUsers}</span>
-              <span className="text-[9px] text-indigo-400 font-bold block">Live DB Users</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Users</span>
+              <span className="text-lg font-extrabold text-purple-600 dark:text-purple-400 font-mono">{usersList.length || stats.totalUsers}</span>
+              <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live DB Users</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Total Revenue</span>
-              <span className="text-lg font-extrabold text-emerald-400 font-mono">{stats.totalRevenue}</span>
-              <span className="text-[9px] text-emerald-400 font-bold block">+38% YoY ARR</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Revenue</span>
+              <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">{stats.totalRevenue}</span>
+              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">+38% YoY ARR</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Health Score</span>
-              <span className="text-lg font-extrabold text-cyan-400 font-mono">{stats.healthScore}/100</span>
-              <span className="text-[9px] text-cyan-400 font-bold block">Executive Index</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Health Score</span>
+              <span className="text-lg font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">{stats.healthScore}/100</span>
+              <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-bold block">Executive Index</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Active Agents</span>
-              <span className="text-lg font-extrabold text-purple-300 font-mono">{stats.activeAgents}</span>
-              <span className="text-[9px] text-purple-400 font-bold block">Autonomous C-Suite</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Agents</span>
+              <span className="text-lg font-extrabold text-purple-600 dark:text-purple-300 font-mono">{stats.activeAgents}</span>
+              <span className="text-[9px] text-purple-600 dark:text-purple-400 font-bold block">Autonomous C-Suite</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Pending Reports</span>
-              <span className="text-lg font-extrabold text-amber-400 font-mono">{stats.pendingReports}</span>
-              <span className="text-[9px] text-amber-400 font-bold block">In Synthesis</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Pending Reports</span>
+              <span className="text-lg font-extrabold text-amber-600 dark:text-amber-400 font-mono">{stats.pendingReports}</span>
+              <span className="text-[9px] text-amber-600 dark:text-amber-400 font-bold block">In Synthesis</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Today Analysis</span>
-              <span className="text-lg font-extrabold text-indigo-400 font-mono">{stats.todayAnalysis}</span>
-              <span className="text-[9px] text-indigo-300 font-bold block">Telemetry Scans</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Today Analysis</span>
+              <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">{stats.todayAnalysis}</span>
+              <span className="text-[9px] text-indigo-600 dark:text-indigo-300 font-bold block">Telemetry Scans</span>
             </Card>
 
-            <Card className="p-3.5 space-y-1 bg-slate-900/80 border-slate-800">
-              <span className="text-[10px] text-slate-400 font-semibold uppercase block">Audit Logs</span>
-              <span className="text-lg font-extrabold text-white font-mono">{recentLogs.length || stats.recentActivitiesCount}</span>
-              <span className="text-[9px] text-slate-400 font-bold block">Passed Clean</span>
+            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Audit Logs</span>
+              <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">{recentLogs.length || stats.recentActivitiesCount}</span>
+              <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold block">Passed Clean</span>
             </Card>
           </div>
 
@@ -366,13 +366,13 @@ export default function EnterpriseAdminDashboard() {
               {/* CHARTS ROW 1: REVENUE TREND & PROFIT ANALYSIS */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Revenue Trend Chart */}
-                <Card className="p-5 space-y-4 bg-slate-900/80 border-slate-800">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-emerald-400" /> Revenue Growth Trend ($)
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Revenue Growth Trend ($)
                       </h3>
-                      <p className="text-[10px] text-slate-400">Monthly actual revenue vs baseline targets</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Monthly actual revenue vs baseline targets</p>
                     </div>
                     <Badge variant="active">Live Telemetry</Badge>
                   </div>
@@ -385,10 +385,10 @@ export default function EnterpriseAdminDashboard() {
                             <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
-                        <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
-                        <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `$${v / 1000000}M`} />
-                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px" }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                        <XAxis dataKey="month" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} tickFormatter={(v) => `$${v / 1000000}M`} />
+                        <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", borderRadius: "8px", color: "#0f172a" }} />
                         <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#revGrad)" name="Revenue ($)" />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -396,23 +396,23 @@ export default function EnterpriseAdminDashboard() {
                 </Card>
 
                 {/* Profit Analysis Chart */}
-                <Card className="p-5 space-y-4 bg-slate-900/80 border-slate-800">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-indigo-400" /> Quarterly Profit & Margin Breakdown
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Quarterly Profit & Margin Breakdown
                       </h3>
-                      <p className="text-[10px] text-slate-400">Gross profit vs net retained margin</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Gross profit vs net retained margin</p>
                     </div>
                     <Badge variant="gradient">Enterprise Q4</Badge>
                   </div>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={analyticsData.profitAnalysis}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
-                        <XAxis dataKey="quarter" stroke="#94a3b8" fontSize={11} />
-                        <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `$${v / 1000}K`} />
-                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px" }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                        <XAxis dataKey="quarter" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} tickFormatter={(v) => `$${v / 1000}K`} />
+                        <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", borderRadius: "8px", color: "#0f172a" }} />
                         <Bar dataKey="grossProfit" fill="#6366f1" radius={[4, 4, 0, 0]} name="Gross Profit ($)" />
                         <Bar dataKey="netMargin" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Net Margin ($)" />
                       </BarChart>
@@ -424,13 +424,13 @@ export default function EnterpriseAdminDashboard() {
               {/* CHARTS ROW 2: USER GROWTH & RECENT ACTIVITY LOGS */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* User Growth Chart */}
-                <Card className="p-5 space-y-4 bg-slate-900/80 border-slate-800">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <Users className="w-4 h-4 text-cyan-400" /> Platform User Adoption Growth
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <Users className="w-4 h-4 text-cyan-600 dark:text-cyan-400" /> Platform User Adoption Growth
                       </h3>
-                      <p className="text-[10px] text-slate-400">Total registered enterprise seats vs daily active leaders</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Total registered enterprise seats vs daily active leaders</p>
                     </div>
                     <Badge variant="active">+14% MoM</Badge>
                   </div>
@@ -443,10 +443,10 @@ export default function EnterpriseAdminDashboard() {
                             <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
-                        <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
-                        <YAxis stroke="#94a3b8" fontSize={11} />
-                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px" }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                        <XAxis dataKey="month" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", borderRadius: "8px", color: "#0f172a" }} />
                         <Area type="monotone" dataKey="totalUsers" stroke="#06b6d4" strokeWidth={2} fillOpacity={1} fill="url(#userGrad)" name="Total Users" />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -454,25 +454,25 @@ export default function EnterpriseAdminDashboard() {
                 </Card>
 
                 {/* Audit Logs */}
-                <Card className="p-5 space-y-4 bg-slate-900/80 border-slate-800">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-sm text-white flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-purple-400" /> System Activity Audit Log
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" /> System Activity Audit Log
                       </h3>
-                      <p className="text-[10px] text-slate-400">Immutable governance ledger</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Immutable governance ledger</p>
                     </div>
                     <Badge variant="neutral">Verified</Badge>
                   </div>
                   <div className="space-y-2 text-xs font-mono max-h-60 overflow-y-auto">
                     {recentLogs.map((log) => (
-                      <div key={log.id} className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+                      <div key={log.id} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
                         <div className="truncate pr-2">
                           <span className="text-slate-500">[{log.timestamp}]</span>{" "}
-                          <span className="text-purple-400 font-bold">{log.user}:</span>{" "}
-                          <span className="text-slate-200">{log.action}</span>
+                          <span className="text-purple-600 dark:text-purple-400 font-bold">{log.user}:</span>{" "}
+                          <span className="text-slate-800 dark:text-slate-200">{log.action}</span>
                         </div>
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                        <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                           {log.status}
                         </span>
                       </div>
@@ -485,13 +485,13 @@ export default function EnterpriseAdminDashboard() {
 
           {/* ── TAB VIEW 2: USER MANAGEMENT & RBAC ──────────────────────────────── */}
           {activeTab === "users" && (
-            <Card className="p-6 space-y-5 bg-slate-900/80 border-slate-800">
+            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Users className="w-5 h-5 text-indigo-400" /> User Management & Role-Based Access Control (RBAC)
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> User Management & Role-Based Access Control (RBAC)
                   </h3>
-                  <p className="text-xs text-slate-400">Manage real database users, assign system roles, and revoke access.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Manage real database users, assign system roles, and revoke access.</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -501,7 +501,7 @@ export default function EnterpriseAdminDashboard() {
                       placeholder="Search users by name/email..."
                       value={userSearchTerm}
                       onChange={(e) => setUserSearchTerm(e.target.value)}
-                      className="bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                      className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                     />
                   </div>
                   <Button
@@ -514,9 +514,9 @@ export default function EnterpriseAdminDashboard() {
               </div>
 
               {/* Users Table */}
-              <div className="overflow-x-auto border border-slate-800 rounded-2xl bg-slate-950/60">
+              <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-950/60">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-800">
+                  <thead className="bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
                     <tr>
                       <th className="p-3.5">User</th>
                       <th className="p-3.5">Email</th>
@@ -526,22 +526,22 @@ export default function EnterpriseAdminDashboard() {
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200">
                     {filteredUsers.map((u) => (
-                      <tr key={u.id} className="hover:bg-slate-900/50 transition-colors">
-                        <td className="p-3.5 font-bold text-white flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-300 font-extrabold flex items-center justify-center text-xs">
+                      <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="p-3.5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-300 font-extrabold flex items-center justify-center text-xs">
                             {u.name.charAt(0)}
                           </div>
                           <span>{u.name}</span>
                         </td>
-                        <td className="p-3.5 font-mono text-slate-300">{u.email}</td>
-                        <td className="p-3.5 text-slate-400">{u.company || "EvoAI Enterprise"}</td>
+                        <td className="p-3.5 font-mono text-slate-700 dark:text-slate-300">{u.email}</td>
+                        <td className="p-3.5 text-slate-600 dark:text-slate-400">{u.company || "EvoAI Enterprise"}</td>
                         <td className="p-3.5">
                           <select
                             value={u.role.toLowerCase()}
                             onChange={(e) => handleChangeUserRole(u.id, e.target.value)}
-                            className="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-purple-500 font-bold"
+                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500 font-bold cursor-pointer"
                           >
                             <option value="admin">admin</option>
                             <option value="user">user</option>
@@ -554,7 +554,7 @@ export default function EnterpriseAdminDashboard() {
                         <td className="p-3.5 text-right">
                           <button
                             onClick={() => handleDeleteUser(u.id)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                             title="Delete User"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -570,35 +570,35 @@ export default function EnterpriseAdminDashboard() {
 
           {/* ── TAB VIEW 3: COMPANY MANAGEMENT ───────────────────────────────────── */}
           {activeTab === "companies" && (
-            <Card className="p-6 space-y-5 bg-slate-900/80 border-slate-800">
+            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-cyan-400" /> Managed Enterprise Companies ({companiesList.length})
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-cyan-600 dark:text-cyan-400" /> Managed Enterprise Companies ({companiesList.length})
                   </h3>
-                  <p className="text-xs text-slate-400">Enterprise subscriptions, ARR allocations, and seat governance.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Enterprise subscriptions, ARR allocations, and seat governance.</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {companiesList.map((comp) => (
-                  <Card key={comp.id} className="p-4 space-y-3 bg-slate-950 border-slate-800">
+                  <Card key={comp.id} className="p-4 space-y-3 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm text-white">{comp.name}</span>
+                      <span className="font-bold text-sm text-slate-900 dark:text-white">{comp.name}</span>
                       <Badge variant="active" className="text-[10px]">{comp.tier}</Badge>
                     </div>
                     <div className="space-y-1.5 text-xs">
-                      <div className="flex justify-between text-slate-400">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>Allocated Seats:</span>
-                        <span className="font-bold text-white font-mono">{comp.seats} seats</span>
+                        <span className="font-bold text-slate-900 dark:text-white font-mono">{comp.seats} seats</span>
                       </div>
-                      <div className="flex justify-between text-slate-400">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>Contract ARR:</span>
-                        <span className="font-bold text-emerald-400 font-mono">{comp.arr}</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">{comp.arr}</span>
                       </div>
-                      <div className="flex justify-between text-slate-400">
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>Health Index:</span>
-                        <span className="font-bold text-cyan-400 font-mono">{comp.health}%</span>
+                        <span className="font-bold text-cyan-600 dark:text-cyan-400 font-mono">{comp.health}%</span>
                       </div>
                     </div>
                   </Card>
@@ -609,13 +609,13 @@ export default function EnterpriseAdminDashboard() {
 
           {/* ── OTHER ADMIN TABS: ANALYTICS, COMPETITORS, STRATEGY, MARKETING, FORECAST, REPORTS, TASKS, AGENTS, NOTIFICATIONS, SETTINGS ── */}
           {["analytics", "competitors", "strategy", "marketing", "forecast", "reports", "tasks", "agents", "notifications", "settings"].includes(activeTab) && (
-            <Card className="p-6 space-y-5 bg-slate-900/80 border-slate-800">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2 uppercase tracking-wide">
-                    <Shield className="w-5 h-5 text-purple-400" /> System Module: {activeTab}
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-wide">
+                    <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" /> System Module: {activeTab}
                   </h3>
-                  <p className="text-xs text-slate-400">Admin management interface and PostgreSQL system diagnostic parameters.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Admin management interface and PostgreSQL system diagnostic parameters.</p>
                 </div>
                 <Badge variant="active" className="text-xs">
                   Active DB Telemetry ({usersList.length} Accounts)
@@ -623,20 +623,20 @@ export default function EnterpriseAdminDashboard() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase">Live DB Users</span>
-                  <p className="text-2xl font-extrabold text-white font-mono">{usersList.length}</p>
-                  <p className="text-[10px] text-emerald-400 font-medium">PostgreSQL Auth Table</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Live DB Users</span>
+                  <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">{usersList.length}</p>
+                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">PostgreSQL Auth Table</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase">Managed Companies</span>
-                  <p className="text-2xl font-extrabold text-purple-400 font-mono">{companiesList.length || stats.totalCompanies}</p>
-                  <p className="text-[10px] text-indigo-400 font-medium">Active Tenants</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Managed Companies</span>
+                  <p className="text-2xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">{companiesList.length || stats.totalCompanies}</p>
+                  <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">Active Tenants</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase">Platform Telemetry</span>
-                  <p className="text-2xl font-extrabold text-cyan-400 font-mono">{stats.totalRevenue}</p>
-                  <p className="text-[10px] text-cyan-400 font-medium">Verified System Volume</p>
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Platform Telemetry</span>
+                  <p className="text-2xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">{stats.totalRevenue}</p>
+                  <p className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium">Verified System Volume</p>
                 </div>
               </div>
             </Card>
@@ -646,69 +646,69 @@ export default function EnterpriseAdminDashboard() {
 
       {/* ── ADD USER MODAL ─────────────────────────────────────────────────────── */}
       {isAddUserOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-base text-white flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-purple-400" /> Create Database User
+        <div className="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-purple-600 dark:text-purple-400" /> Create Database User
               </h3>
-              <button onClick={() => setIsAddUserOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setIsAddUserOpen(false)} className="text-slate-400 hover:text-slate-900 dark:hover:text-white">✕</button>
             </div>
 
             <form onSubmit={handleCreateUser} className="space-y-3 text-xs">
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Full Name *</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={newUserForm.name}
                   onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
                   placeholder="e.g. Marcus Vance"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Email Address *</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={newUserForm.email}
                   onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
                   placeholder="marcus@vanguard.ai"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Initial Password *</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">Initial Password *</label>
                 <input
                   type="password"
                   required
                   value={newUserForm.password}
                   onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Company</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">Company</label>
                 <input
                   type="text"
                   value={newUserForm.company}
                   onChange={(e) => setNewUserForm({ ...newUserForm, company: e.target.value })}
                   placeholder="Apex Global"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">RBAC Role</label>
+                <label className="font-semibold text-slate-700 dark:text-slate-300">RBAC Role</label>
                 <select
                   value={newUserForm.role}
                   onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-purple-500"
+                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                 >
                   <option value="user">user</option>
                   <option value="admin">admin</option>
@@ -716,8 +716,8 @@ export default function EnterpriseAdminDashboard() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                <button type="button" onClick={() => setIsAddUserOpen(false)} className="text-slate-400 hover:text-white">Cancel</button>
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <button type="button" onClick={() => setIsAddUserOpen(false)} className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
                 <Button type="submit" disabled={isSubmittingUser} className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-xl">
                   {isSubmittingUser ? "Creating..." : "Save User"}
                 </Button>
