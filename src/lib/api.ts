@@ -88,11 +88,34 @@ export const authApi = {
       user_id?: string;
       business_setup_completed?: boolean;
       setup_completed?: boolean;
+      is_new_user?: boolean;
       user: { id: string; name: string; email: string; role: string; company?: string; company_id?: string; business_setup_completed?: boolean; setup_completed?: boolean };
       message?: string;
     }>("/api/auth/social-login", {
       method: "POST",
       body: JSON.stringify(data),
+    }),
+
+  googleLogin: (credentialOrToken: string | { credential?: string; access_token?: string }) =>
+    apiFetch<{
+      success: boolean;
+      token: string;
+      refreshToken?: string;
+      role?: string;
+      company_id?: string;
+      user_id?: string;
+      business_setup_completed?: boolean;
+      setup_completed?: boolean;
+      is_new_user?: boolean;
+      user: { id: string; name: string; email: string; role: string; company?: string; company_id?: string; business_setup_completed?: boolean; setup_completed?: boolean };
+      message?: string;
+    }>("/api/auth/google", {
+      method: "POST",
+      body: JSON.stringify(
+        typeof credentialOrToken === "string"
+          ? { token: credentialOrToken, idToken: credentialOrToken }
+          : credentialOrToken
+      ),
     }),
 
   adminLogin: (data: { email: string; password: string }) =>

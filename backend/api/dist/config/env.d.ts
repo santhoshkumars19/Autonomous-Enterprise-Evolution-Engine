@@ -10,5 +10,6 @@ export declare const env: {
     FRONTEND_URL?: string | undefined;
     OPENAI_API_KEY?: string | undefined;
     GEMINI_API_KEY?: string | undefined;
+    GOOGLE_CLIENT_ID?: string | undefined;
 };
 //# sourceMappingURL=env.d.ts.map

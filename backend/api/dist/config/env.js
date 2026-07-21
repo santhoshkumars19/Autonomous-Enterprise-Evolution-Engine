@@ -18,6 +18,7 @@ const envSchema = zod_1.z.object({
     FRONTEND_URL: zod_1.z.string().optional(),
     OPENAI_API_KEY: zod_1.z.string().optional(),
     GEMINI_API_KEY: zod_1.z.string().optional(),
+    GOOGLE_CLIENT_ID: zod_1.z.string().optional(),
     DEFAULT_PROVIDER: zod_1.z.string().default("openai"),
 });
 const parsed = envSchema.safeParse(process.env);

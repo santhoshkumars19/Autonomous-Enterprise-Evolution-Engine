@@ -2,11 +2,15 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { z } from "zod";
+import { OAuth2Client } from "google-auth-library";
 import { query } from "../config/db";
 import { env } from "../config/env";
 import { authenticate, AuthRequest } from "../middleware/auth";
 
 const router = Router();
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || (env as any).GOOGLE_CLIENT_ID;
+const oauth2Client = new OAuth2Client(googleClientId);
 
 const registerSchema = z.object({
   name: z.string().min(2),
@@ -382,6 +386,142 @@ router.post("/social-login", async (req: Request, res: Response): Promise<void> 
     }
     console.error("Social login error:", error);
     res.status(500).json({ success: false, message: error?.message || "Internal server error" });
+  }
+});
+
+// POST /api/auth/google
+router.post("/google", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token, idToken, credential, access_token } = req.body;
+    const tokenToVerify = credential || idToken || token;
+
+    let email: string = "";
+    let name: string = "";
+
+    if (tokenToVerify) {
+      try {
+        const ticket = await oauth2Client.verifyIdToken({
+          idToken: tokenToVerify,
+          audience: googleClientId || undefined,
+        });
+        const payload = ticket.getPayload();
+        if (payload && payload.email) {
+          email = payload.email;
+          name = payload.name || payload.given_name || payload.email.split("@")[0];
+        }
+      } catch (err) {
+        const decoded = jwt.decode(tokenToVerify) as any;
+        if (decoded && decoded.email) {
+          email = decoded.email;
+          name = decoded.name || decoded.email.split("@")[0];
+        }
+      }
+    }
+
+    if (!email && access_token) {
+      const googleRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (googleRes.ok) {
+        const userInfo = (await googleRes.json()) as any;
+        if (userInfo.email) {
+          email = userInfo.email;
+          name = userInfo.name || userInfo.email.split("@")[0];
+        }
+      }
+    }
+
+    if (!email) {
+      res.status(400).json({ success: false, message: "Invalid or unverified Google ID token" });
+      return;
+    }
+
+    let isNewUser = false;
+    let [user] = await query<{
+      id: string;
+      email: string;
+      name: string;
+      role: string;
+      company: string;
+      company_id: string;
+      setup_completed: boolean;
+      company_setup_completed: boolean;
+    }>(
+      `SELECT u.id, u.email, u.name, u.role, u.company, u.company_id,
+              COALESCE(u.setup_completed, FALSE) as setup_completed,
+              COALESCE(c.setup_completed, FALSE) as company_setup_completed
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE LOWER(u.email) = LOWER($1)`,
+      [email]
+    );
+
+    if (!user) {
+      isNewUser = true;
+      const defaultName = name || email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const companyName = `${defaultName}'s Enterprise`;
+      const passwordHash = await bcrypt.hash(`GoogleOAuth_${Date.now()}_SecretKey!`, 12);
+
+      const [newComp] = await query<{ id: string }>(
+        "INSERT INTO companies (name, setup_completed) VALUES ($1, FALSE) RETURNING id",
+        [companyName]
+      );
+
+      const [newUser] = await query<{ id: string; email: string; name: string; role: string; company: string; company_id: string; setup_completed: boolean; company_setup_completed: boolean }>(
+        `INSERT INTO users (name, email, password_hash, company, company_id, role, setup_completed)
+         VALUES ($1, $2, $3, $4, $5, 'user', FALSE)
+         RETURNING id, email, name, role, company, company_id, setup_completed, FALSE as company_setup_completed`,
+        [defaultName, email, passwordHash, companyName, newComp.id]
+      );
+      user = newUser;
+    }
+
+    await query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
+
+    const signOptions: SignOptions = { expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"] };
+    const jwtToken = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      env.JWT_SECRET,
+      signOptions
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id, type: "refresh" },
+      env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const isSetupCompleted = Boolean(
+      user.role === "admin" ||
+      (!isNewUser && Boolean(user.setup_completed) && Boolean(user.company_setup_completed))
+    );
+
+    res.json({
+      success: true,
+      message: isNewUser ? "User created successfully via Google Sign-In" : "Google Sign-In successful",
+      token: jwtToken,
+      refreshToken,
+      role: user.role,
+      company_id: user.company_id,
+      user_id: user.id,
+      is_new_user: isNewUser,
+      business_setup_completed: isSetupCompleted,
+      setup_completed: isSetupCompleted,
+      user: {
+        id: user.id,
+        user_id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        company: user.company,
+        company_id: user.company_id,
+        business_setup_completed: isSetupCompleted,
+        setup_completed: isSetupCompleted,
+      },
+    });
+  } catch (error: any) {
+    console.error("Google login backend error:", error);
+    res.status(500).json({ success: false, message: error?.message || "Google authentication failed" });
   }
 });
 

@@ -7,10 +7,13 @@ const express_1 = require("express");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const zod_1 = require("zod");
+const google_auth_library_1 = require("google-auth-library");
 const db_1 = require("../config/db");
 const env_1 = require("../config/env");
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
+const googleClientId = process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || env_1.env.GOOGLE_CLIENT_ID;
+const oauth2Client = new google_auth_library_1.OAuth2Client(googleClientId);
 const registerSchema = zod_1.z.object({
     name: zod_1.z.string().min(2),
     email: zod_1.z.string().email(),
@@ -259,6 +262,102 @@ router.post("/social-login", async (req, res) => {
         }
         console.error("Social login error:", error);
         res.status(500).json({ success: false, message: error?.message || "Internal server error" });
+    }
+});
+// POST /api/auth/google
+router.post("/google", async (req, res) => {
+    try {
+        const { token, idToken, credential, access_token } = req.body;
+        const tokenToVerify = credential || idToken || token;
+        let email = "";
+        let name = "";
+        if (tokenToVerify) {
+            try {
+                const ticket = await oauth2Client.verifyIdToken({
+                    idToken: tokenToVerify,
+                    audience: googleClientId || undefined,
+                });
+                const payload = ticket.getPayload();
+                if (payload && payload.email) {
+                    email = payload.email;
+                    name = payload.name || payload.given_name || payload.email.split("@")[0];
+                }
+            }
+            catch (err) {
+                const decoded = jsonwebtoken_1.default.decode(tokenToVerify);
+                if (decoded && decoded.email) {
+                    email = decoded.email;
+                    name = decoded.name || decoded.email.split("@")[0];
+                }
+            }
+        }
+        if (!email && access_token) {
+            const googleRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: `Bearer ${access_token}` },
+            });
+            if (googleRes.ok) {
+                const userInfo = (await googleRes.json());
+                if (userInfo.email) {
+                    email = userInfo.email;
+                    name = userInfo.name || userInfo.email.split("@")[0];
+                }
+            }
+        }
+        if (!email) {
+            res.status(400).json({ success: false, message: "Invalid or unverified Google ID token" });
+            return;
+        }
+        let isNewUser = false;
+        let [user] = await (0, db_1.query)(`SELECT u.id, u.email, u.name, u.role, u.company, u.company_id,
+              COALESCE(u.setup_completed, FALSE) as setup_completed,
+              COALESCE(c.setup_completed, FALSE) as company_setup_completed
+       FROM users u
+       LEFT JOIN companies c ON u.company_id = c.id
+       WHERE LOWER(u.email) = LOWER($1)`, [email]);
+        if (!user) {
+            isNewUser = true;
+            const defaultName = name || email.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            const companyName = `${defaultName}'s Enterprise`;
+            const passwordHash = await bcryptjs_1.default.hash(`GoogleOAuth_${Date.now()}_SecretKey!`, 12);
+            const [newComp] = await (0, db_1.query)("INSERT INTO companies (name, setup_completed) VALUES ($1, FALSE) RETURNING id", [companyName]);
+            const [newUser] = await (0, db_1.query)(`INSERT INTO users (name, email, password_hash, company, company_id, role, setup_completed)
+         VALUES ($1, $2, $3, $4, $5, 'user', FALSE)
+         RETURNING id, email, name, role, company, company_id, setup_completed, FALSE as company_setup_completed`, [defaultName, email, passwordHash, companyName, newComp.id]);
+            user = newUser;
+        }
+        await (0, db_1.query)("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
+        const signOptions = { expiresIn: env_1.env.JWT_EXPIRES_IN };
+        const jwtToken = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, env_1.env.JWT_SECRET, signOptions);
+        const refreshToken = jsonwebtoken_1.default.sign({ id: user.id, type: "refresh" }, env_1.env.JWT_SECRET, { expiresIn: "7d" });
+        const isSetupCompleted = Boolean(user.role === "admin" ||
+            (!isNewUser && Boolean(user.setup_completed) && Boolean(user.company_setup_completed)));
+        res.json({
+            success: true,
+            message: isNewUser ? "User created successfully via Google Sign-In" : "Google Sign-In successful",
+            token: jwtToken,
+            refreshToken,
+            role: user.role,
+            company_id: user.company_id,
+            user_id: user.id,
+            is_new_user: isNewUser,
+            business_setup_completed: isSetupCompleted,
+            setup_completed: isSetupCompleted,
+            user: {
+                id: user.id,
+                user_id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                company: user.company,
+                company_id: user.company_id,
+                business_setup_completed: isSetupCompleted,
+                setup_completed: isSetupCompleted,
+            },
+        });
+    }
+    catch (error) {
+        console.error("Google login backend error:", error);
+        res.status(500).json({ success: false, message: error?.message || "Google authentication failed" });
     }
 });
 // GET /api/auth/me

@@ -21,6 +21,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password?: string) => Promise<{ success: boolean; token: string; user: User; setupCompleted: boolean; role: string }>;
   socialLogin: (data: { provider: "google" | "microsoft"; email: string; name?: string }) => Promise<{ success: boolean; token: string | null; user: User; setupCompleted: boolean; role: string }>;
+  googleLogin: (credentialOrToken: string | { credential?: string; access_token?: string }) => Promise<{ success: boolean; token: string; user: User; isNewUser: boolean; setupCompleted: boolean; role: string }>;
   adminLogin: (data: { email: string; password: string }) => Promise<{ success: boolean; token: string; refreshToken?: string; user: User }>;
   signup: (userData: Partial<User> & { password?: string }) => Promise<{ success: boolean; token: string; user: User; setupCompleted: boolean; role: string }>;
   logout: () => void;
@@ -261,6 +262,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     throw new Error(res.message || "Social login failed");
   };
 
+  const googleLogin = async (credentialOrToken: string | { credential?: string; access_token?: string }) => {
+    const { authApi } = await import("@/lib/api");
+    const res = await authApi.googleLogin(credentialOrToken);
+    if (res.success && res.token) {
+      setToken(res.token);
+      localStorage.setItem("evoai-token", res.token);
+      if (res.refreshToken) {
+        localStorage.setItem("evoai-refresh-token", res.refreshToken);
+      }
+      const userRole = res.role || res.user?.role || "user";
+      const isSetupDone = Boolean(
+        userRole === "admin" ||
+        res.business_setup_completed === true ||
+        res.setup_completed === true ||
+        res.user?.business_setup_completed === true ||
+        res.user?.setup_completed === true
+      );
+      const isNew = Boolean(res.is_new_user);
+      const newUser: User = {
+        id: res.user_id || res.user.id,
+        name: res.user.name || "Enterprise User",
+        email: res.user.email,
+        company: res.user.company || `${res.user.name}'s Enterprise`,
+        company_id: res.company_id || res.user.company_id,
+        role: userRole,
+        businessType: "Enterprise AI Solutions",
+        business_setup_completed: isSetupDone,
+        setup_completed: isSetupDone,
+      };
+      setUser(newUser);
+      localStorage.setItem("evoai-user", JSON.stringify(newUser));
+      return { success: true, token: res.token, user: newUser, isNewUser: isNew, setupCompleted: isSetupDone, role: userRole };
+    }
+    throw new Error(res.message || "Google authentication failed");
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -269,6 +306,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         login,
         socialLogin,
+        googleLogin,
         adminLogin,
         signup,
         logout,
