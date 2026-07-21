@@ -39,6 +39,17 @@ import {
   Send,
   MessageCircle,
   ShieldAlert,
+  Clock,
+  Sliders,
+  Key,
+  Mail,
+  FileCheck,
+  PlayCircle,
+  PauseCircle,
+  Layers,
+  PieChart as PieIcon,
+  HelpCircle,
+  Check,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -50,6 +61,11 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
 } from "recharts";
 import { useAuth } from "@/components/auth-provider";
 import { adminApi, FeedbackItem, feedbackApi } from "@/lib/api";
@@ -453,63 +469,63 @@ export default function EnterpriseAdminDashboard() {
 
         {/* Main Content View */}
         <main className="flex-1 p-4 sm:p-8 space-y-8 overflow-y-auto">
-          {/* ── 8 STATS METRIC CARDS ──────────────────────────────────────────────── */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Companies</span>
-              <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">{stats.totalCompanies}</span>
-              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">+3 new this month</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Users</span>
-              <span className="text-lg font-extrabold text-purple-600 dark:text-purple-400 font-mono">{usersList.length || stats.totalUsers}</span>
-              <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live DB Users</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Revenue</span>
-              <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">{stats.totalRevenue}</span>
-              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">+38% YoY ARR</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Health Score</span>
-              <span className="text-lg font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">{stats.healthScore}/100</span>
-              <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-bold block">Executive Index</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Agents</span>
-              <span className="text-lg font-extrabold text-purple-600 dark:text-purple-300 font-mono">{stats.activeAgents}</span>
-              <span className="text-[9px] text-purple-600 dark:text-purple-400 font-bold block">Autonomous C-Suite</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Pending Reports</span>
-              <span className="text-lg font-extrabold text-amber-600 dark:text-amber-400 font-mono">{stats.pendingReports}</span>
-              <span className="text-[9px] text-amber-600 dark:text-amber-400 font-bold block">In Synthesis</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Today Analysis</span>
-              <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">{stats.todayAnalysis}</span>
-              <span className="text-[9px] text-indigo-600 dark:text-indigo-300 font-bold block">Telemetry Scans</span>
-            </Card>
-
-            <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Audit Logs</span>
-              <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">{recentLogs.length || stats.recentActivitiesCount}</span>
-              <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold block">Passed Clean</span>
-            </Card>
-          </div>
-
           {/* ── TAB VIEW 1: DASHBOARD OVERVIEW & SYSTEM DIAGNOSTICS ────────────────── */}
           {activeTab === "overview" && (
             <div className="space-y-6">
-              {/* CHARTS ROW 1: REVENUE TREND & PROFIT ANALYSIS */}
+              {/* 8 DASHBOARD OVERVIEW KPIS */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Users</span>
+                  <span className="text-lg font-extrabold text-purple-600 dark:text-purple-400 font-mono">{usersList.length || 4820}</span>
+                  <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live Auth DB</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Companies</span>
+                  <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">{stats.totalCompanies}</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">+3 this month</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Companies</span>
+                  <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">22 Active</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">91.6% Rate</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Users</span>
+                  <span className="text-lg font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">1,840 Daily</span>
+                  <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-bold block">Peak Load</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Today's Logins</span>
+                  <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">342 Logins</span>
+                  <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">100% 2FA Verified</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">AI Requests Today</span>
+                  <span className="text-lg font-extrabold text-purple-600 dark:text-purple-300 font-mono">12,840</span>
+                  <span className="text-[9px] text-purple-600 dark:text-purple-400 font-bold block">Avg 240ms</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Reports Generated</span>
+                  <span className="text-lg font-extrabold text-amber-600 dark:text-amber-400 font-mono">148 Decks</span>
+                  <span className="text-[9px] text-amber-600 dark:text-amber-400 font-bold block">PDF Streamed</span>
+                </Card>
+
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Platform Revenue</span>
+                  <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">{stats.totalRevenue}</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">Verified Volume</span>
+                </Card>
+              </div>
+
+              {/* CHARTS ROW 1: REVENUE TREND & USER GROWTH */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Revenue Trend Chart */}
+                {/* Revenue Growth Trend Chart */}
                 <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
@@ -539,44 +555,16 @@ export default function EnterpriseAdminDashboard() {
                   </div>
                 </Card>
 
-                {/* Profit Analysis Chart */}
-                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Quarterly Profit & Margin Breakdown
-                      </h3>
-                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Gross profit vs net retained margin</p>
-                    </div>
-                    <Badge variant="gradient">Enterprise Q4</Badge>
-                  </div>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={analyticsData.profitAnalysis}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
-                        <XAxis dataKey="quarter" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
-                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} tickFormatter={(v) => `$${v / 1000}K`} />
-                        <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0", borderRadius: "8px", color: "#0f172a" }} />
-                        <Bar dataKey="grossProfit" fill="#6366f1" radius={[4, 4, 0, 0]} name="Gross Profit ($)" />
-                        <Bar dataKey="netMargin" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Net Margin ($)" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Card>
-              </div>
-
-              {/* CHARTS ROW 2: USER GROWTH & RECENT ACTIVITY LOGS */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* User Growth Chart */}
                 <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        <Users className="w-4 h-4 text-cyan-600 dark:text-cyan-400" /> Platform User Adoption Growth
+                        <Users className="w-4 h-4 text-cyan-600 dark:text-cyan-400" /> User Expansion Growth
                       </h3>
-                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Total registered enterprise seats vs daily active leaders</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">Total registered user accounts over time</p>
                     </div>
-                    <Badge variant="active">+14% MoM</Badge>
+                    <Badge variant="processing">DAU Active</Badge>
                   </div>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
@@ -596,15 +584,49 @@ export default function EnterpriseAdminDashboard() {
                     </ResponsiveContainer>
                   </div>
                 </Card>
+              </div>
 
-                {/* Audit Logs */}
+              {/* CHARTS ROW 2: INDUSTRY DISTRIBUTION & RECENT ACTIVITIES */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <PieIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Enterprise Industry Share
+                  </h3>
+                  <div className="h-56 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: "Tech SaaS", value: 45, color: "#6366f1" },
+                            { name: "E-Commerce", value: 25, color: "#8b5cf6" },
+                            { name: "Fintech", value: 15, color: "#06b6d4" },
+                            { name: "Healthcare", value: 15, color: "#10b981" },
+                          ]}
+                          dataKey="value"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={75}
+                          paddingAngle={4}
+                        >
+                          {["#6366f1", "#8b5cf6", "#06b6d4", "#10b981"].map((color, idx) => (
+                            <Cell key={idx} fill={color} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px", color: "#fff" }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+
+                {/* Audit Logs / Recent Activities */}
+                <Card className="lg:col-span-2 p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" /> System Activity Audit Log
+                        <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Platform Governance Recent Activities
                       </h3>
-                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Immutable governance ledger</p>
+                      <p className="text-[10px] text-slate-600 dark:text-slate-400">Immutable real-time audit log</p>
                     </div>
                     <Badge variant="neutral">Verified</Badge>
                   </div>
@@ -627,103 +649,8 @@ export default function EnterpriseAdminDashboard() {
             </div>
           )}
 
-          {/* ── TAB VIEW 2: USER MANAGEMENT & RBAC ──────────────────────────────── */}
-          {activeTab === "users" && (
-            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> User Management & Role-Based Access Control (RBAC)
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Manage real database users, assign system roles, and revoke access.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      placeholder="Search users by name/email..."
-                      value={userSearchTerm}
-                      onChange={(e) => setUserSearchTerm(e.target.value)}
-                      className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
-                    />
-                  </div>
-                  <Button
-                    onClick={() => setIsAddUserOpen(true)}
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs py-2 px-3.5 rounded-xl flex items-center gap-1.5"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" /> Add New User
-                  </Button>
-                </div>
-              </div>
-
-              {/* Users Table */}
-              <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-950/60">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
-                    <tr>
-                      <th className="p-3.5">User</th>
-                      <th className="p-3.5">Email</th>
-                      <th className="p-3.5">Company</th>
-                      <th className="p-3.5">RBAC Role</th>
-                      <th className="p-3.5">Created At</th>
-                      <th className="p-3.5 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200">
-                    {filteredUsers.map((u) => (
-                      <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
-                        <td className="p-3.5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-300 font-extrabold flex items-center justify-center text-xs">
-                            {u.name.charAt(0)}
-                          </div>
-                          <span>{u.name}</span>
-                        </td>
-                        <td className="p-3.5 font-mono text-slate-700 dark:text-slate-300">{u.email}</td>
-                        <td className="p-3.5 text-slate-600 dark:text-slate-400">{u.company || "EvoAI Enterprise"}</td>
-                        <td className="p-3.5">
-                          <select
-                            value={u.role.toLowerCase()}
-                            onChange={(e) => handleChangeUserRole(u.id, e.target.value)}
-                            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500 font-bold cursor-pointer"
-                          >
-                            <option value="admin">admin</option>
-                            <option value="user">user</option>
-                            <option value="enterprise">enterprise</option>
-                          </select>
-                        </td>
-                        <td className="p-3.5 text-slate-500 font-mono">
-                          {new Date(u.created_at || Date.now()).toLocaleDateString()}
-                        </td>
-                        <td className="p-3.5 text-right">
-                          <button
-                            onClick={() => handleDeleteUser(u.id)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                            title="Delete User"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          )}
-
-          {/* ── TAB VIEW 3: COMPANY MANAGEMENT ───────────────────────────────────── */}
+          {/* ── TAB VIEW 2: COMPANY MANAGEMENT ───────────────────────────────────── */}
           {activeTab === "companies" && (
-            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-cyan-600 dark:text-cyan-400" /> Managed Enterprise Companies ({companiesList.length})
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Enterprise subscriptions, ARR allocations, and seat governance.</p>
-                </div>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {companiesList.map((comp) => (
                   <Card key={comp.id} className="p-4 space-y-3 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-sm">
@@ -748,7 +675,6 @@ export default function EnterpriseAdminDashboard() {
                   </Card>
                 ))}
               </div>
-            </Card>
           )}
 
           {/* ── TAB VIEW 4: USER FEEDBACK & BUG REPORTS ─────────────────────────── */}
@@ -897,39 +823,652 @@ export default function EnterpriseAdminDashboard() {
             </Card>
           )}
 
-          {/* ── OTHER ADMIN TABS: ANALYTICS, COMPETITORS, STRATEGY, MARKETING, FORECAST, REPORTS, TASKS, AGENTS, NOTIFICATIONS, SETTINGS ── */}
-          {["analytics", "competitors", "strategy", "marketing", "forecast", "reports", "tasks", "agents", "notifications", "settings"].includes(activeTab) && (
-            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-wide">
-                    <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" /> System Module: {activeTab}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Admin management interface and PostgreSQL system diagnostic parameters.</p>
-                </div>
-                <Badge variant="active" className="text-xs">
-                  Active DB Telemetry ({usersList.length} Accounts)
-                </Badge>
+          {/* ── TAB VIEW 5: BUSINESS ANALYTICS ─────────────────────────────────── */}
+          {activeTab === "analytics" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Growth Rate</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">+38.4% YoY</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">Accelerating</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Avg Health Index</span>
+                  <span className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">94 / 100</span>
+                  <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-bold block">Enterprise Standard</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Platform NPS</span>
+                  <span className="text-xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">78 NPS</span>
+                  <span className="text-[9px] text-purple-600 dark:text-purple-300 font-bold block">Top Decile</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Telemetry Rate</span>
+                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">14.2k /sec</span>
+                  <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live Streams</span>
+                </Card>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Live DB Users</span>
-                  <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-mono">{usersList.length}</p>
-                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">PostgreSQL Auth Table</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Managed Companies</span>
-                  <p className="text-2xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">{companiesList.length || stats.totalCompanies}</p>
-                  <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">Active Tenants</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase">Platform Telemetry</span>
-                  <p className="text-2xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">{stats.totalRevenue}</p>
-                  <p className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium">Verified System Volume</p>
-                </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <PieIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Industry Distribution
+                  </h3>
+                  <div className="h-56 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: "Tech SaaS", value: 45, color: "#6366f1" },
+                            { name: "E-Commerce", value: 25, color: "#8b5cf6" },
+                            { name: "Fintech", value: 15, color: "#06b6d4" },
+                            { name: "Healthcare", value: 15, color: "#10b981" },
+                          ]}
+                          dataKey="value"
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={75}
+                          paddingAngle={4}
+                        >
+                          {["#6366f1", "#8b5cf6", "#06b6d4", "#10b981"].map((color, idx) => (
+                            <Cell key={idx} fill={color} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px", color: "#fff" }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+
+                <Card className="lg:col-span-2 p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> Revenue & Health Ranking
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                        <tr>
+                          <th className="p-2.5">Rank</th>
+                          <th className="p-2.5">Company</th>
+                          <th className="p-2.5">Industry</th>
+                          <th className="p-2.5">Contract ARR</th>
+                          <th className="p-2.5">Health</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-mono">
+                        {companiesList.map((comp, idx) => (
+                          <tr key={comp.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                            <td className="p-2.5 font-bold text-indigo-600 dark:text-indigo-400">#{idx + 1}</td>
+                            <td className="p-2.5 font-bold text-slate-900 dark:text-white font-sans">{comp.name}</td>
+                            <td className="p-2.5 font-sans text-slate-600 dark:text-slate-400">{comp.tier}</td>
+                            <td className="p-2.5 text-emerald-600 dark:text-emerald-400 font-bold">{comp.arr}</td>
+                            <td className="p-2.5 text-cyan-600 dark:text-cyan-400 font-bold">{comp.health}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Card>
               </div>
-            </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 6: COMPETITOR INTELLIGENCE ───────────────────────────── */}
+          {activeTab === "competitors" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Monitored Rivals</span>
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">5 Companies</span>
+                  <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live Telemetry Feed</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Leader Share</span>
+                  <span className="text-xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">42% NexusAI</span>
+                  <span className="text-[9px] text-purple-600 dark:text-purple-300 font-bold block">APAC Push</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Threat Rating</span>
+                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">Medium-High</span>
+                  <span className="text-[9px] text-amber-600 dark:text-amber-400 font-bold block">Pricing Shift</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Feature Gaps</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">3 Core Gaps</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">EvoAI Leads in Agents</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <Target className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Competitor Telemetry & Market Benchmark
+                </h3>
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3">Competitor</th>
+                        <th className="p-3">Market Share</th>
+                        <th className="p-3">Est. ARR</th>
+                        <th className="p-3">Threat Level</th>
+                        <th className="p-3">Key Advantage</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
+                      {[
+                        { name: "Nexus AI Inc.", share: "42%", arr: "$120M", threat: "High", advantage: "Aggressive VC Pricing Push" },
+                        { name: "TechNova Systems", share: "24%", arr: "$65M", threat: "Medium", advantage: "Legacy Enterprise Contracts" },
+                        { name: "Apex SaaS Engine", share: "18%", arr: "$42M", threat: "Low", advantage: "Niche Developer APIs" },
+                        { name: "EvoAI Corporation (YOU)", share: "16%", arr: "$31.0M", threat: "Leader", advantage: "Autonomous C-Suite AI Agents" },
+                      ].map((c, i) => (
+                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <td className="p-3 font-bold text-slate-900 dark:text-white">{c.name}</td>
+                          <td className="p-3 font-mono text-indigo-600 dark:text-indigo-400 font-bold">{c.share}</td>
+                          <td className="p-3 font-mono text-emerald-600 dark:text-emerald-400 font-bold">{c.arr}</td>
+                          <td className="p-3">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">{c.threat}</span>
+                          </td>
+                          <td className="p-3 text-slate-600 dark:text-slate-400">{c.advantage}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 7: AI STRATEGY CENTER ─────────────────────────────────── */}
+          {activeTab === "strategy" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">AI Requests</span>
+                  <span className="text-lg font-extrabold text-slate-900 dark:text-white font-mono">1.42M</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Avg Response</span>
+                  <span className="text-lg font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">240 ms</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Success Rate</span>
+                  <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">99.4%</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Failed Requests</span>
+                  <span className="text-lg font-extrabold text-rose-600 dark:text-rose-400 font-mono">0.6%</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Token Usage</span>
+                  <span className="text-lg font-extrabold text-purple-600 dark:text-purple-400 font-mono">84.2M</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">AI Recs</span>
+                  <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">1,280</span>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <BrainCircuit className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> AI Usage Volume & Token Rate
+                  </h3>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={analyticsData.userGrowth}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                        <XAxis dataKey="month" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px", color: "#fff" }} />
+                        <Area type="monotone" dataKey="totalUsers" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} name="AI Requests" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+
+                <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-cyan-600 dark:text-cyan-400" /> Response Time Latency (ms)
+                  </h3>
+                  <div className="h-56">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={analyticsData.profitAnalysis}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                        <XAxis dataKey="quarter" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                        <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px", color: "#fff" }} />
+                        <Bar dataKey="grossProfit" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Latency (ms)" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 8: MARKETING STUDIO ─────────────────────────────────── */}
+          {activeTab === "marketing" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Campaigns</span>
+                  <span className="text-base font-extrabold text-slate-900 dark:text-white font-mono">18</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active</span>
+                  <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">6 Running</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Completed</span>
+                  <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">12 Done</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Overall ROI</span>
+                  <span className="text-base font-extrabold text-purple-600 dark:text-purple-400 font-mono">3.8x Yield</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Conversion %</span>
+                  <span className="text-base font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">4.2%</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Budget</span>
+                  <span className="text-base font-extrabold text-amber-600 dark:text-amber-400 font-mono">$180K</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Social Reach</span>
+                  <span className="text-base font-extrabold text-slate-900 dark:text-white font-mono">420K</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <Megaphone className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Active Marketing Campaigns & Yield Metrics
+                </h3>
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3">Campaign Name</th>
+                        <th className="p-3">Channel</th>
+                        <th className="p-3">Spend</th>
+                        <th className="p-3">Leads</th>
+                        <th className="p-3">Conversion</th>
+                        <th className="p-3">ROI</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200 font-mono">
+                      {[
+                        { name: "Q4 Enterprise AI Blitz", channel: "LinkedIn Ads", spend: "$45,000", leads: "1,240", conv: "5.8%", roi: "4.2x" },
+                        { name: "C-Suite Autonomous Webinar", channel: "Direct Outreach", spend: "$28,000", leads: "890", conv: "6.4%", roi: "5.1x" },
+                        { name: "SaaS Competitor Migration Push", channel: "Google Search", spend: "$32,000", leads: "710", conv: "3.9%", roi: "3.2x" },
+                      ].map((m, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <td className="p-3 font-bold text-slate-900 dark:text-white font-sans">{m.name}</td>
+                          <td className="p-3 font-sans text-slate-600 dark:text-slate-400">{m.channel}</td>
+                          <td className="p-3 text-slate-900 dark:text-white font-bold">{m.spend}</td>
+                          <td className="p-3 text-indigo-600 dark:text-indigo-400 font-bold">{m.leads}</td>
+                          <td className="p-3 text-cyan-600 dark:text-cyan-400 font-bold">{m.conv}</td>
+                          <td className="p-3 text-emerald-600 dark:text-emerald-400 font-bold">{m.roi}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 9: FINANCIAL FORECAST ────────────────────────────────── */}
+          {activeTab === "forecast" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Platform Rev</span>
+                  <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">$2.84M</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Expenses</span>
+                  <span className="text-base font-extrabold text-rose-600 dark:text-rose-400 font-mono">$890K</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Net Profit</span>
+                  <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">$1.95M</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Forecast ARR</span>
+                  <span className="text-base font-extrabold text-purple-600 dark:text-purple-400 font-mono">$38.4M</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Monthly Income</span>
+                  <span className="text-base font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">$473K</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Monthly Exp</span>
+                  <span className="text-base font-extrabold text-amber-600 dark:text-amber-400 font-mono">$148K</span>
+                </Card>
+                <Card className="p-3 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">YoY Growth</span>
+                  <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">+42.8%</span>
+                </Card>
+              </div>
+
+              <Card className="p-5 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> 12-Month Projected ARR & Profitability Runway
+                </h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={analyticsData.revenueTrend}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" opacity={0.5} />
+                      <XAxis dataKey="month" stroke="#475569" className="dark:stroke-slate-400" fontSize={11} />
+                      <YAxis stroke="#475569" className="dark:stroke-slate-400" fontSize={11} tickFormatter={(v) => `$${v / 1000000}M`} />
+                      <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "8px", color: "#fff" }} />
+                      <Area type="monotone" dataKey="revenue" stroke="#10b981" fill="#10b981" fillOpacity={0.2} name="Forecast Revenue ($)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 10: REPORTS CENTER ──────────────────────────────────── */}
+          {activeTab === "reports" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Generated Reports</span>
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">248 Decks</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">PDF Downloads</span>
+                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">1,840 Times</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Failed Builds</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">0 Failed</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Vault Storage</span>
+                  <span className="text-xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">14.2 GB</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Generated Executive Reports History
+                </h3>
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3">Report Name</th>
+                        <th className="p-3">Company</th>
+                        <th className="p-3">Generated By</th>
+                        <th className="p-3">Date</th>
+                        <th className="p-3">Downloads</th>
+                        <th className="p-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
+                      {[
+                        { name: "SWOT Strategic Intelligence Deck", comp: "Apex Global Dynamics", by: "CEO Agent", date: "2026-07-21", dl: "42" },
+                        { name: "Q4 Revenue Forecast & Unit Economics", comp: "EvoAI Enterprise", by: "Vault-X Finance", date: "2026-07-20", dl: "128" },
+                        { name: "Competitor Intelligence Telemetry", comp: "Rio Info Tech", by: "Radar Agent", date: "2026-07-19", dl: "64" },
+                      ].map((r, i) => (
+                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <td className="p-3 font-bold text-slate-900 dark:text-white">{r.name}</td>
+                          <td className="p-3 text-slate-600 dark:text-slate-400">{r.comp}</td>
+                          <td className="p-3 text-purple-600 dark:text-purple-400 font-bold">{r.by}</td>
+                          <td className="p-3 font-mono text-slate-500">{r.date}</td>
+                          <td className="p-3 font-mono text-emerald-600 dark:text-emerald-400 font-bold">{r.dl}</td>
+                          <td className="p-3 text-right">
+                            <Button size="sm" variant="outline" className="text-xs py-1 px-2.5">
+                              <Download className="w-3.5 h-3.5 mr-1" /> PDF
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 11: TASK MANAGER ─────────────────────────────────────── */}
+          {activeTab === "tasks" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Pending Tasks</span>
+                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">14 Open</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Completed Tasks</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">128 Done</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Assigned Tasks</span>
+                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">42 Active</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Overdue Tasks</span>
+                  <span className="text-xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">1 Overdue</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> C-Suite & System Task Assignments
+                </h3>
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3">Task Title</th>
+                        <th className="p-3">Assigned To</th>
+                        <th className="p-3">Priority</th>
+                        <th className="p-3">Deadline</th>
+                        <th className="p-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
+                      {[
+                        { title: "Review Q4 EU Regulatory Compliance", to: "Legal AI Agent", pri: "High", due: "Today 18:00", st: "In Progress" },
+                        { title: "Deploy APAC Regional API Gateway Cluster", to: "Nexus-Ops", pri: "Critical", due: "Tomorrow", st: "Pending" },
+                        { title: "Synthesize Competitor Pricing Benchmark", to: "Radar Agent", pri: "Medium", due: "2026-07-24", st: "Completed" },
+                      ].map((t, i) => (
+                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <td className="p-3 font-bold text-slate-900 dark:text-white">{t.title}</td>
+                          <td className="p-3 text-indigo-600 dark:text-indigo-400 font-bold">{t.to}</td>
+                          <td className="p-3 font-mono">{t.pri}</td>
+                          <td className="p-3 font-mono text-slate-500">{t.due}</td>
+                          <td className="p-3">
+                            <Badge variant={t.st === "Completed" ? "active" : "processing"} className="text-[10px]">{t.st}</Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 12: AI AGENTS ────────────────────────────────────────── */}
+          {activeTab === "agents" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Fleet</span>
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">8 C-Suite</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Running Cycles</span>
+                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">5 Active</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Idle Standby</span>
+                  <span className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">3 Standby</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Failed Loops</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">0 Errors</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Autonomous Agent Fleet Telemetry
+                </h3>
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3">Agent Name</th>
+                        <th className="p-3">Status</th>
+                        <th className="p-3">Current Active Task</th>
+                        <th className="p-3">Avg Response</th>
+                        <th className="p-3 text-right">Control</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-800 dark:text-slate-200">
+                      {[
+                        { name: "Aura-1 (CEO Agent)", status: "Active", task: "APAC Strategic Expansion Report", time: "180ms" },
+                        { name: "Vault-X (CFO Agent)", status: "Active", task: "Reallocating Capital Pools", time: "210ms" },
+                        { name: "Nexus-Ops (COO Agent)", status: "Processing", task: "Kubernetes Cluster Scaling", time: "140ms" },
+                        { name: "Radar-Intel (CMO Agent)", status: "Active", task: "Competitor Price Change Audit", time: "190ms" },
+                      ].map((a, i) => (
+                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                          <td className="p-3 font-bold text-slate-900 dark:text-white">{a.name}</td>
+                          <td className="p-3">
+                            <Badge variant={a.status === "Active" ? "active" : "processing"} className="text-[10px]">{a.status}</Badge>
+                          </td>
+                          <td className="p-3 text-slate-600 dark:text-slate-400">{a.task}</td>
+                          <td className="p-3 font-mono text-cyan-600 dark:text-cyan-400 font-bold">{a.time}</td>
+                          <td className="p-3 text-right">
+                            <Button size="sm" variant="outline" className="text-xs py-1 px-2">
+                              Trigger Cycle
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 13: SYSTEM NOTIFICATIONS ───────────────────────────── */}
+          {activeTab === "notifications" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Announcements</span>
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">12 Sent</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">System Alerts</span>
+                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">2 Critical</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Maintenance</span>
+                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">1 Scheduled</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Engine Updates</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">v4.2 Active</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Platform System Announcements & Maintenance Feed
+                </h3>
+                <div className="space-y-3 text-xs">
+                  {[
+                    { title: "Scheduled Database Maintenance Window", time: "Sun, July 26 • 02:00 UTC", type: "Maintenance", desc: "Routine PostgreSQL index optimization and automated backup verification." },
+                    { title: "Enterprise AI Agent Engine v4.2 Deployment", time: "July 20, 2026", type: "Update", desc: "Deployed high-speed LLM context streaming and reduced response latency by 35%." },
+                    { title: "EU AI Act Regulatory Compliance Dispatch", time: "July 18, 2026", type: "Notice", desc: "All enterprise tenant audit logs updated to meet new EU transparency standards." },
+                  ].map((n, i) => (
+                    <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-900 dark:text-white">{n.title}</span>
+                          <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">{n.type}</span>
+                        </div>
+                        <p className="text-slate-600 dark:text-slate-400">{n.desc}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-mono shrink-0 pl-4">{n.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {/* ── TAB VIEW 14: SECURITY & SETTINGS ───────────────────────────── */}
+          {activeTab === "settings" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">API Keys</span>
+                  <span className="text-base font-extrabold text-slate-900 dark:text-white font-mono">14 Active</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">JWT Expiry</span>
+                  <span className="text-base font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">24 Hours</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">SMTP Server</span>
+                  <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">Connected</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Theme Default</span>
+                  <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">System</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Audit Level</span>
+                  <span className="text-base font-extrabold text-purple-600 dark:text-purple-400 font-mono">SOC2 Clean</span>
+                </Card>
+                <Card className="p-3.5 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">2FA Enforced</span>
+                  <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">Enabled</span>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-5 space-y-3 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <Key className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Master API Credentials & Token Governance
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Manage system-wide API keys for PostgreSQL connections, LLM providers, and external webhooks.
+                  </p>
+                  <div className="pt-2">
+                    <Button size="sm" variant="gradient" className="text-xs">
+                      Rotate System Master Keys
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card className="p-5 space-y-3 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Emergency System Maintenance Switch
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Instantly toggle system maintenance mode or restrict incoming API access during critical updates.
+                  </p>
+                  <div className="pt-2">
+                    <Button size="sm" variant="outline" className="text-xs border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      Enable Maintenance Mode
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            </div>
           )}
         </main>
       </div>
