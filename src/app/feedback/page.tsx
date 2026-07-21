@@ -172,8 +172,9 @@ export default function FeedbackPage() {
         </div>
 
         <Link href="/dashboard">
-          <Button variant="outline" size="sm" className="text-xs">
-            Console Dashboard
+          <Button variant="gradient" size="sm" className="text-xs font-bold flex items-center gap-1.5 py-2 px-3.5 rounded-xl cursor-pointer">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Dashboard</span>
           </Button>
         </Link>
       </header>
