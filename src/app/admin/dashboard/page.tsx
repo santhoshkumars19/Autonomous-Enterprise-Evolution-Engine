@@ -155,37 +155,7 @@ export default function EnterpriseAdminDashboard() {
         return;
       } catch (e) {}
     }
-    const SEED_FEEDBACK: FeedbackItem[] = [
-      {
-        id: "FB-1002",
-        userName: "Alexandra Vance",
-        userEmail: "alexandra.vance@vanguard.ai",
-        companyName: "Apex Global Dynamics",
-        category: "bug",
-        priority: "high",
-        subject: "Recharts Tooltip alignment on mobile viewport",
-        description: "When viewing the Financial Forecast chart on a mobile browser, the tooltip text pops slightly off screen on narrow displays.",
-        status: "resolved",
-        createdAt: "2026-07-20T14:30:00.000Z",
-        adminReply: "Thank you for reporting this! Our UI team deployed a responsive tooltip positioning fix in v4.2. Charts now scale dynamically on mobile.",
-        repliedAt: "2026-07-20T16:15:00.000Z",
-      },
-      {
-        id: "FB-1001",
-        userName: "Marcus Vance",
-        userEmail: "marcus@vanguard.ai",
-        companyName: "EvoAI Enterprise",
-        category: "feature",
-        priority: "medium",
-        subject: "Export SWOT Analysis reports to PDF format",
-        description: "Would love the ability to generate a downloadable PDF executive deck for the SWOT analysis matrix.",
-        status: "under_review",
-        createdAt: "2026-07-21T08:10:00.000Z",
-        adminReply: "Great suggestion! The PDF generator engine has been updated and is currently in final verification for automated dispatch.",
-        repliedAt: "2026-07-21T09:00:00.000Z",
-      },
-    ];
-    setAdminFeedbackList(SEED_FEEDBACK);
+    setAdminFeedbackList([]);
   }, []);
 
   // Guard Route — Only users with "Admin" role allowed
