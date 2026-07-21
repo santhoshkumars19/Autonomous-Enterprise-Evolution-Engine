@@ -31,6 +31,8 @@ import {
   Loader2,
   DollarSign,
   BarChart3,
+  Menu,
+  X,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -55,6 +57,7 @@ export default function EnterpriseAdminDashboard() {
 
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Real DB Data states
   const [stats, setStats] = useState({
@@ -239,29 +242,41 @@ export default function EnterpriseAdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col selection:bg-purple-500 selection:text-white">
       {/* Top Admin Navigation Header */}
-      <header className="sticky top-0 z-30 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between shadow-sm">
+      <header className="sticky top-0 z-30 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-purple-500/20">
-            <Shield className="w-5 h-5" />
+          {/* Mobile Hamburger Drawer Toggle Button */}
+          <button
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            className="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Toggle Navigation Menu"
+          >
+            {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          <div className="p-2 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-md shadow-purple-500/20 shrink-0">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <h1 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              EvoAI Executive Admin Platform
-              <Badge variant="active" className="text-[10px] bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30">
+
+          <div className="min-w-0">
+            <h1 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2 truncate">
+              <span className="truncate">EvoAI Admin</span>
+              <Badge variant="active" className="hidden sm:inline-flex text-[10px] bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30">
                 PROD RBAC
               </Badge>
             </h1>
-            <p className="text-[10px] text-slate-600 dark:text-slate-400">Authenticated: {user.email} ({user.role})</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[160px] sm:max-w-none">
+              {user.email} ({user.role})
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Button
             size="sm"
             variant="ghost"
             onClick={fetchAdminData}
             disabled={isLoading}
-            className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2.5 sm:px-3"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">Refresh Data</span>
@@ -271,16 +286,89 @@ export default function EnterpriseAdminDashboard() {
             size="sm"
             variant="danger"
             onClick={handleAdminSignOut}
-            className="text-xs flex items-center gap-1.5"
+            className="text-xs flex items-center gap-1.5 px-2.5 sm:px-3"
           >
-            <LogOut className="w-3.5 h-3.5" /> Sign Out
+            <LogOut className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Sign Out</span>
           </Button>
         </div>
       </header>
 
+      {/* MOBILE SLIDE-OUT SIDEBAR DRAWER OVERLAY */}
+      {isMobileSidebarOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+          <aside className="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-4 space-y-4 overflow-y-auto shadow-2xl flex flex-col justify-between md:hidden transition-all duration-300">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-md">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="font-extrabold text-sm text-slate-900 dark:text-white">Admin Navigation</h2>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">13 Governance Modules</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-1">
+                {modulesList.map((m) => {
+                  const Icon = m.icon;
+                  const isActive = activeTab === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => {
+                        setActiveTab(m.id);
+                        setIsMobileSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                        isActive
+                          ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 dark:from-purple-600/30 dark:via-indigo-600/30 dark:to-cyan-500/20 text-indigo-700 dark:text-white border border-purple-500/40 shadow-sm"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon className={`w-4 h-4 ${isActive ? "text-cyan-600 dark:text-cyan-400" : "text-slate-400"}`} />
+                        <span>{m.name}</span>
+                      </div>
+                      {isActive && <ChevronRight className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="px-2 text-[10px] text-slate-500 truncate">
+                {user.email} ({user.role})
+              </div>
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={handleAdminSignOut}
+                className="w-full text-xs flex items-center justify-center gap-1.5 py-2"
+              >
+                <LogOut className="w-3.5 h-3.5" /> Sign Out
+              </Button>
+            </div>
+          </aside>
+        </>
+      )}
+
       <div className="flex-1 flex flex-col md:flex-row min-w-0">
-        {/* Admin Modules Sidebar */}
-        <aside className="w-full md:w-64 bg-white/80 dark:bg-slate-900/60 border-r border-slate-200 dark:border-slate-800 p-4 space-y-1 shrink-0 overflow-y-auto">
+        {/* DESKTOP ADMIN MODULES SIDEBAR */}
+        <aside className="hidden md:block w-64 bg-white/80 dark:bg-slate-900/60 border-r border-slate-200 dark:border-slate-800 p-4 space-y-1 shrink-0 overflow-y-auto">
           <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
             Admin Modules (13)
           </div>
