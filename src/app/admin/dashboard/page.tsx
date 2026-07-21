@@ -1488,44 +1488,64 @@ export default function EnterpriseAdminDashboard() {
           {/* ── TAB VIEW 13: SYSTEM NOTIFICATIONS ───────────────────────────── */}
           {activeTab === "notifications" && (
             <div className="space-y-6">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <Card className="p-3.5 sm:p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
                   <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Announcements</span>
-                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">12 Sent</span>
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">12</span>
+                    <span className="text-xs font-bold text-slate-500">Sent</span>
+                  </div>
                 </Card>
-                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                <Card className="p-3.5 sm:p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
                   <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">System Alerts</span>
-                  <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">2 Critical</span>
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">2</span>
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400">Critical</span>
+                  </div>
                 </Card>
-                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                <Card className="p-3.5 sm:p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
                   <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Maintenance</span>
-                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">1 Scheduled</span>
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">1</span>
+                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">Scheduled</span>
+                  </div>
                 </Card>
-                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                <Card className="p-3.5 sm:p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
                   <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Engine Updates</span>
-                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">v4.2 Active</span>
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">v4.2</span>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Active</span>
+                  </div>
                 </Card>
               </div>
 
-              <Card className="p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
-                <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Platform System Announcements & Maintenance Feed
-                </h3>
+              <Card className="p-4 sm:p-6 space-y-4 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <Bell className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Platform System Announcements & Maintenance Feed
+                  </h3>
+                  <Badge variant="active" className="w-fit text-[10px]">3 Active Notices</Badge>
+                </div>
                 <div className="space-y-3 text-xs">
                   {[
                     { title: "Scheduled Database Maintenance Window", time: "Sun, July 26 • 02:00 UTC", type: "Maintenance", desc: "Routine PostgreSQL index optimization and automated backup verification." },
                     { title: "Enterprise AI Agent Engine v4.2 Deployment", time: "July 20, 2026", type: "Update", desc: "Deployed high-speed LLM context streaming and reduced response latency by 35%." },
                     { title: "EU AI Act Regulatory Compliance Dispatch", time: "July 18, 2026", type: "Notice", desc: "All enterprise tenant audit logs updated to meet new EU transparency standards." },
                   ].map((n, i) => (
-                    <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900 dark:text-white">{n.title}</span>
-                          <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">{n.type}</span>
+                    <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">{n.title}</span>
+                          <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
+                            {n.type}
+                          </span>
                         </div>
-                        <p className="text-slate-600 dark:text-slate-400">{n.desc}</p>
+                        <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{n.desc}</p>
                       </div>
-                      <span className="text-[10px] text-slate-500 font-mono shrink-0 pl-4">{n.time}</span>
+                      <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 font-mono shrink-0 sm:pt-0.5 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800/60 pt-2 sm:pt-0">
+                        <Clock className="w-3 h-3 text-indigo-500 shrink-0" />
+                        <span>{n.time}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
