@@ -6,15 +6,39 @@
   :root {
     --bg-main: #f8fafc;
     --fg-main: #0f172a;
-    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-bg: #ffffff;
     --card-border: #e2e8f0;
+
+    --heading-primary: #0f172a;
+    --heading-section: #1e293b;
+    --card-title: #334155;
+    --text-primary: #111827;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+
+    --status-success: #16a34a;
+    --status-warning: #d97706;
+    --status-error: #dc2626;
+    --status-info: #2563eb;
   }
 
   .dark {
     --bg-main: #030712;
     --fg-main: #f9fafb;
-    --card-bg: rgba(15, 23, 42, 0.8);
+    --card-bg: rgba(15, 23, 42, 0.85);
     --card-border: #1e293b;
+
+    --heading-primary: #ffffff;
+    --heading-section: #f1f5f9;
+    --card-title: #e2e8f0;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --status-success: #10b981;
+    --status-warning: #f59e0b;
+    --status-error: #ef4444;
+    --status-info: #3b82f6;
   }
 }
 
@@ -28,6 +52,125 @@ body {
   color: var(--fg-main);
   transition: background-color 0.25s ease, color 0.25s ease;
   min-height: 100vh;
+}
+
+/* Light Mode Accessibility Overrides (WCAG AA High Contrast) */
+html:not(.dark) {
+  color: #111827;
+}
+
+/* Headings Contrast in Light Mode */
+html:not(.dark) h1 {
+  color: #0f172a !important;
+}
+
+html:not(.dark) h2 {
+  color: #0f172a !important;
+}
+
+html:not(.dark) h3 {
+  color: #1e293b !important;
+}
+
+html:not(.dark) h4,
+html:not(.dark) h5,
+html:not(.dark) h6 {
+  color: #334155 !important;
+}
+
+/* Contrast boosters for secondary and muted labels in Light Mode */
+html:not(.dark) .text-slate-400 {
+  color: #475569;
+}
+
+html:not(.dark) .text-slate-500 {
+  color: #475569;
+}
+
+html:not(.dark) .text-slate-300 {
+  color: #334155;
+}
+
+html:not(.dark) .text-slate-200 {
+  color: #111827;
+}
+
+/* Status Indicators in Light Mode */
+html:not(.dark) .text-emerald-500,
+html:not(.dark) .text-emerald-400 {
+  color: #16a34a;
+}
+
+html:not(.dark) .text-amber-500,
+html:not(.dark) .text-amber-400 {
+  color: #d97706;
+}
+
+html:not(.dark) .text-rose-500,
+html:not(.dark) .text-rose-400 {
+  color: #dc2626;
+}
+
+html:not(.dark) .text-cyan-500,
+html:not(.dark) .text-cyan-400,
+html:not(.dark) .text-indigo-400,
+html:not(.dark) .text-purple-400 {
+  color: #2563eb;
+}
+
+/* SWOT Analysis Container Overrides in Light Mode */
+html:not(.dark) .bg-emerald-950\/20 {
+  background-color: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+}
+
+html:not(.dark) .bg-rose-950\/20 {
+  background-color: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+html:not(.dark) .bg-purple-950\/20 {
+  background-color: #faf5ff !important;
+  border-color: #e9d5ff !important;
+}
+
+html:not(.dark) .bg-amber-950\/20 {
+  background-color: #fffbeb !important;
+  border-color: #fef3c7 !important;
+}
+
+/* Table Headers & Rows in Light Mode */
+html:not(.dark) table thead tr {
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+
+html:not(.dark) table tbody tr {
+  border-color: #f1f5f9 !important;
+}
+
+html:not(.dark) table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Recharts Tooltips, Axes & Grids in Light Mode */
+html:not(.dark) .recharts-default-tooltip {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+}
+
+html:not(.dark) .recharts-tooltip-item {
+  color: #0f172a !important;
+}
+
+html:not(.dark) .recharts-cartesian-grid-line {
+  stroke: #e2e8f0 !important;
+}
+
+html:not(.dark) .recharts-text {
+  fill: #475569 !important;
 }
 
 /* Custom Scrollbars */

@@ -679,9 +679,7 @@ export default function DashboardPage() {
             {activeTab === "reports" && "Executive Reports & Audit Center"}
             {activeTab === "strategy" && "AI Strategy & Simulation Center"}
             {activeTab === "forecast" && "12-Month Financial Forecast Engine"}
-
           </h1>
-
         </div>
       </div>
 
@@ -690,9 +688,9 @@ export default function DashboardPage() {
         <div className="space-y-8">
           {/* KPI METRICS & BUSINESS HEALTH SCORE BAR */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <Card className="lg:col-span-1 border-indigo-500/30 bg-gradient-to-br from-indigo-950/20 via-slate-900/60 to-purple-950/20 shadow-xl flex flex-col justify-between">
+            <Card className="lg:col-span-1 border-indigo-500/30 bg-white dark:bg-gradient-to-br dark:from-indigo-950/20 dark:via-slate-900/60 dark:to-purple-950/20 shadow-md flex flex-col justify-between">
               <div className="p-5">
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   Business Health Score
                 </span>
                 <div className="mt-4 flex items-center justify-center relative">
@@ -703,7 +701,7 @@ export default function DashboardPage() {
                       r="52"
                       stroke="currentColor"
                       strokeWidth="10"
-                      className="text-slate-800 dark:text-slate-800"
+                      className="text-slate-200 dark:text-slate-800"
                       fill="transparent"
                     />
                     <circle
@@ -728,13 +726,13 @@ export default function DashboardPage() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{liveData.healthScore}</span>
-                    <span className="text-[10px] font-semibold text-emerald-500">
+                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                       {liveData.healthScore >= 80 ? "EXCELLENT" : liveData.healthScore >= 60 ? "STABLE" : "ATTENTION"}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="bg-indigo-500/10 px-4 py-2 border-t border-indigo-500/20 text-[11px] text-indigo-400 text-center font-medium">
+              <div className="bg-indigo-50/80 dark:bg-indigo-500/10 px-4 py-2 border-t border-indigo-100 dark:border-indigo-500/20 text-[11px] text-indigo-600 dark:text-indigo-400 text-center font-medium">
                 Live AI Health Score
               </div>
             </Card>
@@ -886,15 +884,15 @@ export default function DashboardPage() {
 
           {/* CEO STRATEGIC RECOMMENDATIONS PANEL */}
           {ceoRecommendations.length > 0 && (
-            <Card className="p-5 border-purple-500/30 bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/30 shadow-lg space-y-3">
+            <Card className="p-5 border-purple-500/30 bg-purple-50/80 dark:bg-gradient-to-r dark:from-purple-950/40 dark:via-slate-900 dark:to-indigo-950/30 shadow-lg space-y-3">
               <div className="flex items-center gap-2">
-                <BrainCircuit className="w-5 h-5 text-purple-400" />
-                <h4 className="font-bold text-sm text-white">AI CEO Industry Recommendations for {liveData.companyName}</h4>
+                <BrainCircuit className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white">AI CEO Industry Recommendations for {liveData.companyName}</h4>
               </div>
               <div className="space-y-2 text-xs">
                 {ceoRecommendations.map((rec, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-200">
-                    <span className="text-purple-400 font-bold shrink-0">#{i + 1}</span>
+                  <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white/90 dark:bg-slate-900/60 border border-purple-100 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm">
+                    <span className="text-purple-600 dark:text-purple-400 font-bold shrink-0">#{i + 1}</span>
                     <p className="leading-relaxed">{rec}</p>
                   </div>
                 ))}
@@ -954,7 +952,7 @@ export default function DashboardPage() {
                 key={i}
                 className={`p-4 space-y-2 flex flex-col justify-between transition-all ${
                   item.isUser
-                    ? "border-purple-500/80 bg-gradient-to-b from-purple-950/40 to-slate-900/90 shadow-xl shadow-purple-500/20 ring-1 ring-purple-500/50"
+                    ? "border-purple-500/80 bg-purple-50/70 dark:bg-gradient-to-b dark:from-purple-950/40 dark:to-slate-900/90 shadow-xl shadow-purple-500/10 ring-1 ring-purple-500/50"
                     : "border-slate-200 dark:border-slate-800"
                 }`}
               >
@@ -962,7 +960,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900 dark:text-white">{item.name}</span>
                     {item.isUser && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/30 text-purple-300 font-mono">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-700 dark:text-purple-300 font-mono">
                         YOU
                       </span>
                     )}
@@ -970,13 +968,13 @@ export default function DashboardPage() {
                   <div className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
                     {item.share}
                   </div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Market Share</span>
+                  <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Market Share</span>
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-slate-800 dark:text-slate-200">{item.revenue}</span>
-                    <span className="font-semibold text-emerald-500">{item.growth}</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{item.growth}</span>
                   </div>
 
                   {!item.isUser && (
@@ -2112,12 +2110,12 @@ export default function DashboardPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* STRENGTHS */}
-                <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 space-y-2">
-                  <h4 className="font-extrabold text-xs text-emerald-400 tracking-wider uppercase">STRENGTHS</h4>
-                  <ul className="space-y-1.5 text-xs text-slate-300">
+                <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-50/80 dark:bg-emerald-950/20 space-y-2">
+                  <h4 className="font-extrabold text-xs text-emerald-600 dark:text-emerald-400 tracking-wider uppercase">STRENGTHS</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-800 dark:text-slate-300">
                     {(liveData.swot.strengths || []).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-emerald-400 font-bold">•</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -2125,12 +2123,12 @@ export default function DashboardPage() {
                 </div>
 
                 {/* WEAKNESSES */}
-                <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 space-y-2">
-                  <h4 className="font-extrabold text-xs text-rose-400 tracking-wider uppercase">WEAKNESSES</h4>
-                  <ul className="space-y-1.5 text-xs text-slate-300">
+                <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-50/80 dark:bg-rose-950/20 space-y-2">
+                  <h4 className="font-extrabold text-xs text-rose-600 dark:text-rose-400 tracking-wider uppercase">WEAKNESSES</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-800 dark:text-slate-300">
                     {(liveData.swot.weaknesses || []).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-rose-400 font-bold">•</span>
+                        <span className="text-rose-600 dark:text-rose-400 font-bold">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -2138,12 +2136,12 @@ export default function DashboardPage() {
                 </div>
 
                 {/* OPPORTUNITIES */}
-                <div className="p-4 rounded-xl border border-purple-500/30 bg-purple-950/20 space-y-2">
-                  <h4 className="font-extrabold text-xs text-purple-400 tracking-wider uppercase">OPPORTUNITIES</h4>
-                  <ul className="space-y-1.5 text-xs text-slate-300">
+                <div className="p-4 rounded-xl border border-purple-500/30 bg-purple-50/80 dark:bg-purple-950/20 space-y-2">
+                  <h4 className="font-extrabold text-xs text-purple-600 dark:text-purple-400 tracking-wider uppercase">OPPORTUNITIES</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-800 dark:text-slate-300">
                     {(liveData.swot.opportunities || []).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-purple-400 font-bold">•</span>
+                        <span className="text-purple-600 dark:text-purple-400 font-bold">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -2151,12 +2149,12 @@ export default function DashboardPage() {
                 </div>
 
                 {/* THREATS */}
-                <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-950/20 space-y-2">
-                  <h4 className="font-extrabold text-xs text-amber-400 tracking-wider uppercase">THREATS</h4>
-                  <ul className="space-y-1.5 text-xs text-slate-300">
+                <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-50/80 dark:bg-amber-950/20 space-y-2">
+                  <h4 className="font-extrabold text-xs text-amber-600 dark:text-amber-400 tracking-wider uppercase">THREATS</h4>
+                  <ul className="space-y-1.5 text-xs text-slate-800 dark:text-slate-300">
                     {(liveData.swot.threats || []).map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-amber-400 font-bold">•</span>
+                        <span className="text-amber-600 dark:text-amber-400 font-bold">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
