@@ -443,37 +443,37 @@ export default function BusinessSetupStandalonePage() {
         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-500/10 blur-[140px] pointer-events-none rounded-full" />
 
         {/* Hero Header */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-indigo-900/60 dark:via-purple-900/50 dark:to-slate-900 border border-slate-200 dark:border-indigo-500/20 backdrop-blur-xl shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-indigo-950 dark:via-purple-950/90 dark:to-slate-950 border border-slate-200 dark:border-indigo-500/30 backdrop-blur-xl shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
           <div className="space-y-2 z-10 max-w-2xl">
             <div className="flex items-center gap-2">
-              <Badge className="bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-500/30">
-                <Sparkles className="w-3 h-3 mr-1" /> Onboarding & Configuration
+              <Badge className="bg-indigo-500/10 dark:bg-indigo-500/30 text-indigo-600 dark:text-indigo-200 border-indigo-500/30 dark:border-indigo-400/40 font-bold">
+                <Sparkles className="w-3 h-3 mr-1 text-indigo-500 dark:text-indigo-300" /> Onboarding & Configuration
               </Badge>
-              <Badge className="bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 border-cyan-500/30">
+              <Badge className="bg-cyan-500/10 dark:bg-cyan-500/30 text-cyan-700 dark:text-cyan-200 border-cyan-500/30 dark:border-cyan-400/40 font-bold">
                 Step {step} of 3
               </Badge>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               {setupCompleted ? "Edit Business Setup Parameters" : "Mandatory Business Setup"}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-200 leading-relaxed">
               Configure your operational metrics, company identity, and financial targets to power your personalized AI C-Suite insights.
             </p>
           </div>
 
           {/* Stepper Buttons */}
-          <div className="flex items-center gap-2 z-10 shrink-0 self-stretch md:self-auto justify-between md:justify-end">
+          <div className="flex items-center gap-2.5 z-10 shrink-0 self-stretch md:self-auto justify-between md:justify-end">
             {[1, 2, 3].map((s) => (
               <button
                 key={s}
                 type="button"
                 onClick={() => setStep(s as 1 | 2 | 3)}
-                className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs transition-all ${
+                className={`w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xs transition-all ${
                   step === s
-                    ? "bg-gradient-to-tr from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25 scale-105"
+                    ? "bg-gradient-to-tr from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/30 scale-105 border border-indigo-400/40"
                     : step > s
-                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                    : "bg-slate-100 dark:bg-slate-900/80 text-slate-600 dark:text-slate-500 border border-slate-200 dark:border-slate-800"
+                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/40 font-bold"
+                    : "bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold hover:dark:bg-slate-800 hover:dark:text-white"
                 }`}
               >
                 {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
@@ -483,7 +483,7 @@ export default function BusinessSetupStandalonePage() {
         </div>
 
         {/* Form Container */}
-        <Card className="border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl">
+        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 backdrop-blur-xl shadow-2xl">
           <CardContent className="p-6 sm:p-8">
             {errorMsg && (
               <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-3">
@@ -505,7 +505,7 @@ export default function BusinessSetupStandalonePage() {
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Building2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Company & Industry Profile
                     </h2>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">
                       Primary organizational identity and industry alignment for AI model personalization.
                     </p>
                   </div>
@@ -542,19 +542,19 @@ export default function BusinessSetupStandalonePage() {
                             onClick={() => setBusinessType(bt.id)}
                             className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between space-y-2 ${
                               selected
-                                ? "bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-cyan-500/10 dark:from-indigo-600/20 dark:via-purple-600/20 dark:to-cyan-600/10 border-indigo-500 shadow-lg shadow-indigo-500/10"
-                                : "bg-white dark:bg-slate-950/60 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                                ? "bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-cyan-500/10 dark:from-indigo-900/50 dark:via-purple-900/50 dark:to-cyan-900/40 border-indigo-500 dark:border-indigo-400 shadow-lg shadow-indigo-500/10"
+                                : "bg-white dark:bg-slate-950/80 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900/70"
                             }`}
                           >
                             <div className="flex items-center justify-between">
-                              <div className={`p-2 rounded-xl ${selected ? "bg-indigo-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}>
+                              <div className={`p-2 rounded-xl ${selected ? "bg-indigo-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"}`}>
                                 <Icon className="w-4 h-4" />
                               </div>
                               {selected && <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />}
                             </div>
                             <div>
                               <h3 className="text-xs font-bold text-slate-900 dark:text-white">{bt.name}</h3>
-                              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-tight mt-1">{bt.desc}</p>
+                              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-tight mt-1">{bt.desc}</p>
                             </div>
                           </div>
                         );
@@ -607,7 +607,7 @@ export default function BusinessSetupStandalonePage() {
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Globe2 className="w-5 h-5 text-purple-600 dark:text-purple-400" /> Operating Location & Offerings
                     </h2>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">
                       Geographic footprint and offering breakdown for regional competitor benchmarking.
                     </p>
                   </div>
@@ -650,7 +650,7 @@ export default function BusinessSetupStandalonePage() {
                     <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Products & Services Overview</label>
                     <textarea
                       rows={3}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       placeholder="Describe primary products, platforms, or core services rendered..."
                       value={productsServices}
                       onChange={(e) => setProductsServices(e.target.value)}
@@ -663,7 +663,7 @@ export default function BusinessSetupStandalonePage() {
                       type="button"
                       variant="outline"
                       onClick={() => setStep(1)}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold py-2.5"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:dark:bg-slate-800 hover:dark:text-white text-xs font-semibold py-2.5 cursor-pointer"
                     >
                       <ArrowLeft className="w-4 h-4 shrink-0" />
                       <span>Back</span>
@@ -690,7 +690,7 @@ export default function BusinessSetupStandalonePage() {
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Financial Baseline & Operational Targets
                     </h2>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">
                       Annual run-rate data to baseline financial health scores, ROI forecasts, and profit analytics.
                     </p>
                   </div>
@@ -729,9 +729,9 @@ export default function BusinessSetupStandalonePage() {
                   </div>
 
                   {/* Summary Metric Preview Box */}
-                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-gradient-to-r dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/40 border border-slate-200 dark:border-indigo-500/20 space-y-3">
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-indigo-500/30 space-y-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-600 dark:text-slate-400 font-medium">Estimated Net Operating Margin:</span>
+                      <span className="text-slate-600 dark:text-slate-300 font-medium">Estimated Net Operating Margin:</span>
                       <span className={`font-mono font-bold ${annualRevenue >= annualExpenses ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
                         {annualRevenue > 0
                           ? (((annualRevenue - annualExpenses) / annualRevenue) * 100).toFixed(1) + "%"
@@ -757,7 +757,7 @@ export default function BusinessSetupStandalonePage() {
                       type="button"
                       variant="outline"
                       onClick={() => setStep(2)}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold py-2.5"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:dark:bg-slate-800 hover:dark:text-white text-xs font-semibold py-2.5 cursor-pointer"
                     >
                       <ArrowLeft className="w-4 h-4 shrink-0" />
                       <span>Back</span>
