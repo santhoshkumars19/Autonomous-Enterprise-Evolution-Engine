@@ -208,20 +208,20 @@ export default function BusinessOperationsPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in duration-300">
       {/* Header Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-900/60 via-indigo-900/50 to-slate-900 border border-purple-500/20 backdrop-blur-xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
+      <div className="p-6 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-purple-900/60 dark:via-indigo-900/50 dark:to-slate-900 border border-slate-200 dark:border-purple-500/20 backdrop-blur-xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
         <div className="space-y-1.5 z-10">
           <div className="flex items-center gap-2">
-            <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+            <Badge className="bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30">
               <Layers className="w-3 h-3 mr-1" /> Dynamic Industry Telemetry
             </Badge>
-            <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
+            <Badge className="bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 border-cyan-500/30">
               {spec.title}
             </Badge>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Daily Business Data Entry</h1>
-          <p className="text-xs text-slate-400 max-w-xl">
-            Record daily or periodic operational inputs. The AI engine automatically computes industry-specific KPI vectors: <strong className="text-cyan-400">{spec.focus}</strong>.
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Daily Business Data Entry</h1>
+          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl">
+            Record daily or periodic operational inputs. The AI engine automatically computes industry-specific KPI vectors: <strong className="text-cyan-600 dark:text-cyan-400">{spec.focus}</strong>.
           </p>
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function BusinessOperationsPage() {
               className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all border ${
                 active
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-indigo-400 shadow-lg shadow-indigo-500/20 scale-105"
-                  : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
+                  : "bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-900 dark:hover:text-slate-200"
               }`}
             >
               {tKey}
@@ -248,17 +248,17 @@ export default function BusinessOperationsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Dynamic Form Card */}
-        <Card className="lg:col-span-2 border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="border-b border-slate-800 pb-4">
-            <CardTitle className="text-lg font-bold text-white flex items-center justify-between">
+        <Card className="lg:col-span-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-4">
+            <CardTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-400" /> {spec.title} Entry Form
+                <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> {spec.title} Entry Form
               </span>
-              <Badge variant="neutral" className="text-[10px] text-cyan-400 border-cyan-500/30">
+              <Badge variant="neutral" className="text-[10px] text-cyan-700 dark:text-cyan-400 border-cyan-500/30">
                 AI Focused: {spec.focus}
               </Badge>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardDescription className="text-xs text-slate-600 dark:text-slate-400">
               Form updates dynamically based on selected industry parameters.
             </CardDescription>
           </CardHeader>
@@ -292,7 +292,7 @@ export default function BusinessOperationsPage() {
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-end">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end">
                 <Button
                   type="submit"
                   variant="gradient"
@@ -317,12 +317,12 @@ export default function BusinessOperationsPage() {
         </Card>
 
         {/* Telemetry Log History Sidebar */}
-        <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-2xl flex flex-col">
-          <CardHeader className="border-b border-slate-800 pb-4">
-            <CardTitle className="text-sm font-bold text-white flex items-center gap-2">
-              <History className="w-4 h-4 text-purple-400" /> Recent Operations Logs
+        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl flex flex-col">
+          <CardHeader className="border-b border-slate-200 dark:border-slate-800 pb-4">
+            <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <History className="w-4 h-4 text-purple-600 dark:text-purple-400" /> Recent Operations Logs
             </CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardDescription className="text-xs text-slate-600 dark:text-slate-400">
               Live database activity records
             </CardDescription>
           </CardHeader>
@@ -339,10 +339,10 @@ export default function BusinessOperationsPage() {
                 return (
                   <div
                     key={log.id || idx}
-                    className="p-3 rounded-2xl bg-slate-800/40 border border-slate-800/80 space-y-1.5 hover:border-slate-700 transition-colors"
+                    className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800/80 space-y-1.5 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                   >
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-indigo-400">{log.business_type}</span>
+                      <span className="font-bold text-indigo-600 dark:text-indigo-400">{log.business_type}</span>
                       <span className="text-[10px] text-slate-500">
                         {new Date(log.created_at || Date.now()).toLocaleDateString()}
                       </span>
@@ -351,8 +351,8 @@ export default function BusinessOperationsPage() {
                     <div className="grid grid-cols-2 gap-1 text-[10px]">
                       {keys.map((k) => (
                         <div key={k} className="truncate">
-                          <span className="text-slate-500 capitalize">{k}: </span>
-                          <span className="font-semibold text-slate-200">{dataObj[k]}</span>
+                          <span className="text-slate-600 dark:text-slate-400 capitalize">{k}: </span>
+                          <span className="font-semibold text-slate-900 dark:text-slate-200">{dataObj[k]}</span>
                         </div>
                       ))}
                     </div>

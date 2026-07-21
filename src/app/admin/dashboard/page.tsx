@@ -237,21 +237,21 @@ export default function EnterpriseAdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col selection:bg-purple-500 selection:text-white">
       {/* Top Admin Navigation Header */}
-      <header className="sticky top-0 z-30 h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between shadow-2xl">
+      <header className="sticky top-0 z-30 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-lg shadow-purple-500/20">
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-extrabold text-sm text-white flex items-center gap-2">
+            <h1 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
               EvoAI Executive Admin Platform
-              <Badge variant="active" className="text-[10px] bg-purple-500/20 text-purple-300 border-purple-500/30">
+              <Badge variant="active" className="text-[10px] bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30">
                 PROD RBAC
               </Badge>
             </h1>
-            <p className="text-[10px] text-slate-400">Authenticated: {user.email} ({user.role})</p>
+            <p className="text-[10px] text-slate-600 dark:text-slate-400">Authenticated: {user.email} ({user.role})</p>
           </div>
         </div>
 
@@ -261,7 +261,7 @@ export default function EnterpriseAdminDashboard() {
             variant="ghost"
             onClick={fetchAdminData}
             disabled={isLoading}
-            className="text-xs text-slate-400 hover:text-white"
+            className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">Refresh Data</span>
@@ -280,7 +280,7 @@ export default function EnterpriseAdminDashboard() {
 
       <div className="flex-1 flex flex-col md:flex-row min-w-0">
         {/* Admin Modules Sidebar */}
-        <aside className="w-full md:w-64 bg-slate-900/60 border-r border-slate-800 p-4 space-y-1 shrink-0 overflow-y-auto">
+        <aside className="w-full md:w-64 bg-white/80 dark:bg-slate-900/60 border-r border-slate-200 dark:border-slate-800 p-4 space-y-1 shrink-0 overflow-y-auto">
           <div className="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
             Admin Modules (13)
           </div>
@@ -293,8 +293,8 @@ export default function EnterpriseAdminDashboard() {
                 onClick={() => setActiveTab(m.id)}
                 className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? "bg-gradient-to-r from-purple-600/30 via-indigo-600/30 to-cyan-500/20 text-white border border-purple-500/40 shadow-lg shadow-purple-500/10"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent"
+                    ? "bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 dark:from-purple-600/30 dark:via-indigo-600/30 dark:to-cyan-500/20 text-indigo-700 dark:text-white border border-purple-500/40 shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/60 border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-2.5">

@@ -385,7 +385,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           {isSearchOpen && (
             <div
               onClick={() => setIsSearchOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-start justify-center pt-16 sm:pt-24 p-4"
+              className="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-md z-50 flex items-start justify-center pt-16 sm:pt-24 p-4"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -393,11 +393,11 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ duration: 0.15 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden space-y-0"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden space-y-0"
               >
                 {/* Search Input Header */}
-                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-800 bg-slate-950/60">
-                  <Search className="w-5 h-5 text-indigo-400 shrink-0" />
+                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60">
+                  <Search className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                   <input
                     type="text"
                     autoFocus
@@ -409,12 +409,12 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                         setIsSearchOpen(false);
                       }
                     }}
-                    className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
+                    className="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="p-1 text-slate-400 hover:text-white"
+                      className="p-1 text-slate-400 hover:text-slate-900 dark:hover:text-white"
                       title="Clear search"
                     >
                       <X className="w-4 h-4" />
@@ -424,10 +424,10 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                     type="button"
                     onClick={() => setIsSearchOpen(false)}
                     title="Close search (ESC)"
-                    className="text-[10px] font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 rounded px-2 py-1 font-mono shrink-0 transition-all cursor-pointer shadow-sm active:scale-95 flex items-center gap-1"
+                    className="text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-600 rounded px-2 py-1 font-mono shrink-0 transition-all cursor-pointer shadow-sm active:scale-95 flex items-center gap-1"
                   >
                     <span>ESC</span>
-                    <X className="w-3 h-3 text-slate-400" />
+                    <X className="w-3 h-3 text-slate-500 dark:text-slate-400" />
                   </button>
                 </div>
 
@@ -465,19 +465,19 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                   if (query && totalCount === 0) {
                     return (
                       <div className="p-12 text-center space-y-2">
-                        <Search className="w-8 h-8 text-slate-600 mx-auto" />
-                        <p className="text-sm font-bold text-slate-300">No results found for &quot;{searchQuery}&quot;</p>
+                        <Search className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto" />
+                        <p className="text-sm font-bold text-slate-800 dark:text-slate-300">No results found for &quot;{searchQuery}&quot;</p>
                         <p className="text-xs text-slate-500">Try searching for &quot;Revenue&quot;, &quot;Marketing&quot;, or &quot;CEO Agent&quot;</p>
                       </div>
                     );
                   }
 
                   return (
-                    <div className="max-h-[380px] overflow-y-auto p-3 space-y-4 divide-y divide-slate-800/60">
+                    <div className="max-h-[380px] overflow-y-auto p-3 space-y-4 divide-y divide-slate-200 dark:divide-slate-800/60">
                       {/* Navigation Modules */}
                       {filteredModules.length > 0 && (
                         <div className="space-y-1 pt-1">
-                          <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider px-2 block">
+                          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider px-2 block">
                             Platform Modules ({filteredModules.length})
                           </span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-1">
@@ -491,17 +491,17 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                                     setIsSearchOpen(false);
                                     setSearchQuery("");
                                   }}
-                                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-700/50"
+                                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-200 dark:hover:border-slate-700/50"
                                 >
                                   <div className="flex items-center gap-2.5">
-                                    <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                                    <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all">
                                       <IconComp className="w-4 h-4" />
                                     </div>
-                                    <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
+                                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white">
                                       {mod.name}
                                     </span>
                                   </div>
-                                  <ChevronRight className="w-3.5 h-3.5 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </button>
                               );
                             })}
@@ -512,7 +512,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                       {/* AI Tasks */}
                       {filteredTasks.length > 0 && (
                         <div className="space-y-1 pt-3">
-                          <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider px-2 block">
+                          <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider px-2 block">
                             AI Tasks ({filteredTasks.length})
                           </span>
                           <div className="space-y-1 mt-1">
@@ -524,12 +524,12 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                                   setIsSearchOpen(false);
                                   setSearchQuery("");
                                 }}
-                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-700/50"
+                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-200 dark:hover:border-slate-700/50"
                               >
                                 <div className="flex items-center gap-2.5">
-                                  <CheckSquare className="w-4 h-4 text-cyan-400 shrink-0" />
+                                  <CheckSquare className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
                                   <div>
-                                    <span className="text-xs font-bold text-slate-200 group-hover:text-white block">
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white block">
                                       {t.title}
                                     </span>
                                     <span className="text-[10px] text-slate-500">
@@ -537,7 +537,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                                     </span>
                                   </div>
                                 </div>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">
                                   {t.status}
                                 </span>
                               </button>
@@ -549,7 +549,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                       {/* AI Agents */}
                       {filteredAgents.length > 0 && (
                         <div className="space-y-1 pt-3">
-                          <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider px-2 block">
+                          <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider px-2 block">
                             AI Executive Agents ({filteredAgents.length})
                           </span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-1">
@@ -561,18 +561,18 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                                   setIsSearchOpen(false);
                                   setSearchQuery("");
                                 }}
-                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-700/50"
+                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-200 dark:hover:border-slate-700/50"
                               >
                                 <div className="flex items-center gap-2.5">
-                                  <BrainCircuit className="w-4 h-4 text-purple-400 shrink-0" />
+                                  <BrainCircuit className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
                                   <div>
-                                    <span className="text-xs font-bold text-slate-200 group-hover:text-white block">
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white block">
                                       {agent.name}
                                     </span>
                                     <span className="text-[10px] text-slate-500">{agent.role}</span>
                                   </div>
                                 </div>
-                                <span className="text-[10px] font-bold text-emerald-400">
+                                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                                   {agent.efficiencyScore}%
                                 </span>
                               </button>
@@ -584,7 +584,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                       {/* Telemetry Metrics */}
                       {telemetryItems.length > 0 && (
                         <div className="space-y-1 pt-3">
-                          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider px-2 block">
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider px-2 block">
                             Financial Telemetry ({telemetryItems.length})
                           </span>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-1">
@@ -596,18 +596,18 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                                   setIsSearchOpen(false);
                                   setSearchQuery("");
                                 }}
-                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-700/50"
+                                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all text-left group border border-transparent hover:border-slate-200 dark:hover:border-slate-700/50"
                               >
                                 <div className="flex items-center gap-2.5">
-                                  <Activity className="w-4 h-4 text-emerald-400 shrink-0" />
+                                  <Activity className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                                   <div>
-                                    <span className="text-xs font-bold text-slate-200 group-hover:text-white block">
+                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white block">
                                       {m.name}
                                     </span>
                                     <span className="text-[10px] text-slate-500">{m.desc}</span>
                                   </div>
                                 </div>
-                                <ChevronRight className="w-3.5 h-3.5 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                               </button>
                             ))}
                           </div>
@@ -618,12 +618,12 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
                 })()}
 
                 {/* Modal Footer */}
-                <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800 text-[10px] text-slate-500 flex items-center justify-between">
+                <div className="px-4 py-2.5 bg-slate-50/80 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 flex items-center justify-between">
                   <button
                     onClick={() => setIsSearchOpen(false)}
-                    className="hover:text-slate-300 transition-colors cursor-pointer flex items-center gap-1"
+                    className="hover:text-slate-900 dark:hover:text-slate-300 transition-colors cursor-pointer flex items-center gap-1"
                   >
-                    Press <kbd className="font-mono text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 font-bold">ESC</kbd> or click to exit search
+                    Press <kbd className="font-mono text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-700 font-bold">ESC</kbd> or click to exit search
                   </button>
                   <span>Autonomous Enterprise Search Engine</span>
                 </div>

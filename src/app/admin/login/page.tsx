@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4 relative overflow-hidden selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex items-center justify-center p-4 relative overflow-hidden selection:bg-purple-500 selection:text-white">
       {/* Background Gradients & Ambient Glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-600/20 via-indigo-600/20 to-cyan-500/20 blur-[120px] pointer-events-none rounded-full" />
       <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] bg-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
@@ -53,27 +53,27 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Header Branding */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 text-xs font-semibold backdrop-blur-md shadow-lg shadow-purple-500/10">
-            <Shield className="w-4 h-4 text-purple-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold backdrop-blur-md shadow-lg shadow-purple-500/10">
+            <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             <span>Enterprise Admin Gateway</span>
           </div>
 
-          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
-            EvoAI <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">Admin Console</span>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2">
+            EvoAI <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 dark:from-purple-400 dark:via-indigo-400 dark:to-cyan-400 bg-clip-text text-transparent">Admin Console</span>
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-600 dark:text-slate-400">
             Secure RBAC JWT Authentication endpoint for system administrators.
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-slate-900/80 border border-slate-800 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-              <Lock className="w-4 h-4 text-indigo-400" />
+        <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 pb-4">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+              <Lock className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
               <span>System Authentication</span>
             </div>
-            <Badge variant="active" className="text-[10px] bg-indigo-500/20 text-indigo-300 border-indigo-500/30">
+            <Badge variant="active" className="text-[10px] bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border-indigo-500/30">
               SOC2 Compliant
             </Badge>
           </div>

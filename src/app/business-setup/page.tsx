@@ -405,15 +405,15 @@ export default function BusinessSetupStandalonePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500 selection:text-white">
       {/* Top Navbar */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-2xl sticky top-0 z-50">
+      <header className="border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/60 backdrop-blur-2xl sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
             <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 shrink-0">
               <Cpu className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="font-bold text-sm sm:text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent truncate">
+            <span className="font-bold text-sm sm:text-lg tracking-tight bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 dark:from-white dark:via-slate-200 dark:to-slate-400 bg-clip-text text-transparent truncate">
               EvoAI Platform Setup
             </span>
           </div>
@@ -422,13 +422,13 @@ export default function BusinessSetupStandalonePage() {
             {setupCompleted && (
               <Link
                 href="/dashboard"
-                className="text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-1 transition-colors px-2.5 py-1.5 rounded-lg border border-slate-800 bg-slate-900/50 hover:bg-slate-800 shrink-0"
+                className="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 transition-colors px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
               >
                 <span>Dashboard</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
-            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center gap-1 text-[11px] sm:text-xs px-2 sm:px-2.5 py-1 shrink-0">
+            <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 flex items-center gap-1 text-[11px] sm:text-xs px-2 sm:px-2.5 py-1 shrink-0">
               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">Encrypted Workspace</span>
               <span className="sm:hidden">Secured</span>
@@ -443,20 +443,20 @@ export default function BusinessSetupStandalonePage() {
         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-500/10 blur-[140px] pointer-events-none rounded-full" />
 
         {/* Hero Header */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-indigo-900/60 via-purple-900/50 to-slate-900 border border-indigo-500/20 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-indigo-900/60 dark:via-purple-900/50 dark:to-slate-900 border border-slate-200 dark:border-indigo-500/20 backdrop-blur-xl shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
           <div className="space-y-2 z-10 max-w-2xl">
             <div className="flex items-center gap-2">
-              <Badge className="bg-indigo-500/20 text-indigo-400 border-indigo-500/30">
+              <Badge className="bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-500/30">
                 <Sparkles className="w-3 h-3 mr-1" /> Onboarding & Configuration
               </Badge>
-              <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
+              <Badge className="bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-400 border-cyan-500/30">
                 Step {step} of 3
               </Badge>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               {setupCompleted ? "Edit Business Setup Parameters" : "Mandatory Business Setup"}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
               Configure your operational metrics, company identity, and financial targets to power your personalized AI C-Suite insights.
             </p>
           </div>
@@ -472,8 +472,8 @@ export default function BusinessSetupStandalonePage() {
                   step === s
                     ? "bg-gradient-to-tr from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25 scale-105"
                     : step > s
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                    : "bg-slate-900/80 text-slate-500 border border-slate-800"
+                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                    : "bg-slate-100 dark:bg-slate-900/80 text-slate-600 dark:text-slate-500 border border-slate-200 dark:border-slate-800"
                 }`}
               >
                 {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
@@ -483,16 +483,16 @@ export default function BusinessSetupStandalonePage() {
         </div>
 
         {/* Form Container */}
-        <Card className="border-slate-800/80 bg-slate-900/80 backdrop-blur-xl shadow-2xl">
+        <Card className="border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl">
           <CardContent className="p-6 sm:p-8">
             {errorMsg && (
-              <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold flex items-center gap-3">
+              <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-3">
                 <span className="font-bold">Error:</span> {errorMsg}
               </div>
             )}
 
             {successMsg && (
-              <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold flex items-center gap-3">
+              <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-3">
                 <CheckCircle2 className="w-5 h-5 shrink-0" /> {successMsg}
               </div>
             )}
@@ -501,11 +501,11 @@ export default function BusinessSetupStandalonePage() {
               {/* STEP 1: Company Profile */}
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-2">
-                  <div className="border-b border-slate-800 pb-4">
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                      <Building2 className="w-5 h-5 text-indigo-400" /> Company & Industry Profile
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Company & Industry Profile
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                       Primary organizational identity and industry alignment for AI model personalization.
                     </p>
                   </div>
@@ -529,7 +529,7 @@ export default function BusinessSetupStandalonePage() {
 
                   {/* Business Type Selector Grid */}
                   <div className="space-y-3">
-                    <label className="text-xs font-semibold text-slate-300">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Select Business Model (Powers Industry Telemetry & AI Prompts)
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -542,19 +542,19 @@ export default function BusinessSetupStandalonePage() {
                             onClick={() => setBusinessType(bt.id)}
                             className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between space-y-2 ${
                               selected
-                                ? "bg-gradient-to-br from-indigo-600/20 via-purple-600/20 to-cyan-600/10 border-indigo-500 shadow-lg shadow-indigo-500/10"
-                                : "bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/40"
+                                ? "bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-cyan-500/10 dark:from-indigo-600/20 dark:via-purple-600/20 dark:to-cyan-600/10 border-indigo-500 shadow-lg shadow-indigo-500/10"
+                                : "bg-white dark:bg-slate-950/60 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/40"
                             }`}
                           >
                             <div className="flex items-center justify-between">
-                              <div className={`p-2 rounded-xl ${selected ? "bg-indigo-500 text-white" : "bg-slate-800 text-slate-400"}`}>
+                              <div className={`p-2 rounded-xl ${selected ? "bg-indigo-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}>
                                 <Icon className="w-4 h-4" />
                               </div>
-                              {selected && <CheckCircle2 className="w-4 h-4 text-cyan-400" />}
+                              {selected && <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />}
                             </div>
                             <div>
-                              <h3 className="text-xs font-bold text-white">{bt.name}</h3>
-                              <p className="text-[11px] text-slate-400 leading-tight mt-1">{bt.desc}</p>
+                              <h3 className="text-xs font-bold text-slate-900 dark:text-white">{bt.name}</h3>
+                              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-tight mt-1">{bt.desc}</p>
                             </div>
                           </div>
                         );
@@ -603,11 +603,11 @@ export default function BusinessSetupStandalonePage() {
               {/* STEP 2: Location & Products */}
               {step === 2 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-2">
-                  <div className="border-b border-slate-800 pb-4">
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                      <Globe2 className="w-5 h-5 text-purple-400" /> Operating Location & Offerings
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Globe2 className="w-5 h-5 text-purple-600 dark:text-purple-400" /> Operating Location & Offerings
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                       Geographic footprint and offering breakdown for regional competitor benchmarking.
                     </p>
                   </div>
@@ -647,10 +647,10 @@ export default function BusinessSetupStandalonePage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-300">Products & Services Overview</label>
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Products & Services Overview</label>
                     <textarea
                       rows={3}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-600"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600"
                       placeholder="Describe primary products, platforms, or core services rendered..."
                       value={productsServices}
                       onChange={(e) => setProductsServices(e.target.value)}
@@ -663,7 +663,7 @@ export default function BusinessSetupStandalonePage() {
                       type="button"
                       variant="outline"
                       onClick={() => setStep(1)}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-800 text-slate-300 text-xs font-semibold py-2.5"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold py-2.5"
                     >
                       <ArrowLeft className="w-4 h-4 shrink-0" />
                       <span>Back</span>
@@ -686,11 +686,11 @@ export default function BusinessSetupStandalonePage() {
               {/* STEP 3: Financial Baseline */}
               {step === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-2">
-                  <div className="border-b border-slate-800 pb-4">
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-emerald-400" /> Financial Baseline & Operational Targets
+                  <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Financial Baseline & Operational Targets
                     </h2>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                       Annual run-rate data to baseline financial health scores, ROI forecasts, and profit analytics.
                     </p>
                   </div>
@@ -729,17 +729,17 @@ export default function BusinessSetupStandalonePage() {
                   </div>
 
                   {/* Summary Metric Preview Box */}
-                  <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/40 border border-indigo-500/20 space-y-3">
+                  <div className="p-5 rounded-2xl bg-slate-50 dark:bg-gradient-to-r dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/40 border border-slate-200 dark:border-indigo-500/20 space-y-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-400 font-medium">Estimated Net Operating Margin:</span>
-                      <span className={`font-mono font-bold ${annualRevenue >= annualExpenses ? "text-emerald-400" : "text-rose-400"}`}>
+                      <span className="text-slate-600 dark:text-slate-400 font-medium">Estimated Net Operating Margin:</span>
+                      <span className={`font-mono font-bold ${annualRevenue >= annualExpenses ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
                         {annualRevenue > 0
                           ? (((annualRevenue - annualExpenses) / annualRevenue) * 100).toFixed(1) + "%"
                           : "0.0%"}
                       </span>
                     </div>
 
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                       <div
                         className="bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 h-full transition-all duration-500"
                         style={{
