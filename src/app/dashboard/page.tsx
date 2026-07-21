@@ -341,6 +341,18 @@ const healthRadarData = [
   { subject: "Customer", value: 85 },
 ];
 
+function formatCleanDate(rawDate: any): string {
+  if (!rawDate) return "Today";
+  const s = String(rawDate).trim();
+  if (s.includes("T")) {
+    const datePart = s.split("T")[0];
+    if (datePart && /^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+      return datePart;
+    }
+  }
+  return s;
+}
+
 export default function DashboardPage() {
   const {
     modules,
@@ -500,8 +512,8 @@ export default function DashboardPage() {
               assigneeName: t.assignee || "Executive AI",
               assigneeInitials: (t.assignee || "AI").slice(0, 2).toUpperCase(),
               aiScore: t.ai_score || 90,
-              dueDate: t.due_date || "Today",
-              fullDueDate: t.due_date || "Today",
+              dueDate: formatCleanDate(t.due_date),
+              fullDueDate: formatCleanDate(t.due_date),
             }))
           );
         }
@@ -594,6 +606,8 @@ export default function DashboardPage() {
       }
     }
 
+    const cleanDate = formatCleanDate(createdTaskObj?.due_date || newTaskForm.dueDate);
+
     const newFormatted = {
       id: String(createdTaskObj?.id || `task-${Date.now()}`),
       title: createdTaskObj?.title || payload.title,
@@ -605,8 +619,8 @@ export default function DashboardPage() {
       assigneeName: createdTaskObj?.assignee || newTaskForm.assigneeAgent,
       assigneeInitials: (createdTaskObj?.assignee || newTaskForm.assigneeAgent || "AI").slice(0, 2).toUpperCase(),
       aiScore: Number(createdTaskObj?.ai_score || 92),
-      dueDate: createdTaskObj?.due_date || newTaskForm.dueDate || "Today",
-      fullDueDate: createdTaskObj?.due_date || newTaskForm.dueDate || "Today",
+      dueDate: cleanDate,
+      fullDueDate: cleanDate,
     };
 
     setDynamicTasksList((prev) => [newFormatted, ...prev]);
@@ -630,6 +644,14 @@ export default function DashboardPage() {
   const [isUpdatingTask, setIsUpdatingTask] = useState(false);
   const [isDeletingTask, setIsDeletingTask] = useState(false);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date()); // Current month & year
+
+  const openEditTaskModal = (task: any) => {
+    if (!task) return;
+    setEditingTask({
+      ...task,
+      dueDate: formatCleanDate(task.dueDate || task.due_date || task.fullDueDate),
+    });
+  };
 
   const handleUpdateTaskSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -659,6 +681,8 @@ export default function DashboardPage() {
       }
     }
 
+    const cleanDate = formatCleanDate(updatedTaskObj?.due_date || editingTask.dueDate);
+
     const updatedFormatted = {
       id: String(updatedTaskObj?.id || taskId),
       title: editingTask.title,
@@ -669,8 +693,8 @@ export default function DashboardPage() {
       assigneeName: editingTask.assigneeAgent || editingTask.assigneeName || "Executive AI",
       assigneeInitials: (editingTask.assigneeAgent || editingTask.assigneeName || "AI").slice(0, 2).toUpperCase(),
       aiScore: editingTask.aiScore || 90,
-      dueDate: editingTask.dueDate || "Today",
-      fullDueDate: editingTask.dueDate || "Today",
+      dueDate: cleanDate,
+      fullDueDate: cleanDate,
     };
 
     setDynamicTasksList((prev) =>
@@ -1740,7 +1764,7 @@ export default function DashboardPage() {
                     .map((task) => (
                       <Card
                         key={task.id}
-                        onClick={() => setEditingTask({ ...task })}
+                        onClick={() => openEditTaskModal(task)}
                         className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -1783,7 +1807,7 @@ export default function DashboardPage() {
                     .map((task) => (
                       <Card
                         key={task.id}
-                        onClick={() => setEditingTask({ ...task })}
+                        onClick={() => openEditTaskModal(task)}
                         className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -1828,7 +1852,7 @@ export default function DashboardPage() {
                     .map((task) => (
                       <Card
                         key={task.id}
-                        onClick={() => setEditingTask({ ...task })}
+                        onClick={() => openEditTaskModal(task)}
                         className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all opacity-90 cursor-pointer group"
                       >
                         <div className="flex items-start justify-between gap-2">
@@ -1861,7 +1885,7 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {dynamicTasksList.map((task) => (
                   <div key={task.id} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-between text-xs gap-4 hover:border-indigo-500/50 transition-all">
-                    <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => setEditingTask({ ...task })}>
+                    <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => openEditTaskModal(task)}>
                       <span className="h-2 w-2 rounded-full bg-indigo-500 shrink-0" />
                       <div>
                         <h4 className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-400 transition-colors">{task.title}</h4>
@@ -1878,7 +1902,7 @@ export default function DashboardPage() {
                       </Badge>
                       <span className="text-cyan-400 font-bold text-xs">⚡ {task.aiScore}</span>
                       <button
-                        onClick={() => setEditingTask({ ...task })}
+                        onClick={() => openEditTaskModal(task)}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors cursor-pointer"
                         title="Edit Task"
                       >
@@ -1987,7 +2011,7 @@ export default function DashboardPage() {
                             key={i}
                             onClick={() => {
                               if (dayTasks.length > 0) {
-                                setEditingTask({ ...dayTasks[0] });
+                                openEditTaskModal(dayTasks[0]);
                               } else {
                                 setIsAddTaskOpen(true);
                                 setNewTaskForm(prev => ({ ...prev, dueDate: `${monthName} ${dayNum}, ${year}` }));
@@ -2011,7 +2035,7 @@ export default function DashboardPage() {
                                   key={tidx}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setEditingTask({ ...t });
+                                    openEditTaskModal(t);
                                   }}
                                   className="px-1.5 py-1 rounded bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-[10px] text-indigo-100 font-medium truncate flex items-center justify-between gap-1 shadow-sm cursor-pointer"
                                 >

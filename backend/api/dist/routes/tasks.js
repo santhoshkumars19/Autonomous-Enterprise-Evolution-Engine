@@ -26,6 +26,26 @@ function normalizePriority(priorityRaw) {
         return "low";
     return "medium";
 }
+function formatDueDate(val) {
+    if (!val)
+        return "Today";
+    if (val instanceof Date) {
+        return val.toISOString().split("T")[0];
+    }
+    const s = String(val).trim();
+    if (s.includes("T")) {
+        return s.split("T")[0];
+    }
+    return s;
+}
+function mapTaskRow(row) {
+    if (!row)
+        return row;
+    return {
+        ...row,
+        due_date: formatDueDate(row.due_date),
+    };
+}
 const isUuid = (id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 // GET /api/tasks
 router.get("/", async (req, res) => {
@@ -68,7 +88,7 @@ router.get("/", async (req, res) => {
             }
             tasks = await (0, db_1.query)(sql, params);
         }
-        res.json({ success: true, tasks, industry: ctx.industry, businessType: ctx.businessType });
+        res.json({ success: true, tasks: tasks.map(mapTaskRow), industry: ctx.industry, businessType: ctx.businessType });
     }
     catch (error) {
         console.error("Get tasks error:", error);
@@ -86,14 +106,15 @@ router.post("/", async (req, res) => {
         const normStatus = normalizeStatus(status);
         const normPriority = normalizePriority(priority);
         const finalAssignee = String(assignee ?? assigneeAgent ?? "Executive AI").trim();
-        const finalDueDate = String(due_date ?? dueDate ?? "Today").trim();
+        const rawDueDate = String(due_date ?? dueDate ?? "Today").trim();
+        const finalDueDate = formatDueDate(rawDueDate);
         const finalScore = Number(ai_score ?? aiScore ?? 92);
         const finalDesc = String(description ?? desc ?? "Manual AI task dispatch").trim();
         const finalTags = JSON.stringify(Array.isArray(tags) ? tags : [category || "Strategy"]);
         const [task] = await (0, db_1.query)(`INSERT INTO tasks (user_id, title, description, status, priority, assignee, due_date, ai_score, tags)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`, [req.user.id, String(title).trim(), finalDesc, normStatus, normPriority, finalAssignee, finalDueDate, finalScore, finalTags]);
-        res.status(201).json({ success: true, task });
+        res.status(201).json({ success: true, task: mapTaskRow(task) });
     }
     catch (error) {
         console.error("Create task error:", error);
@@ -121,7 +142,7 @@ router.put("/:id", async (req, res) => {
         if (assignee !== undefined || assigneeAgent !== undefined)
             updates.push({ col: "assignee", val: String(assignee ?? assigneeAgent).trim() });
         if (due_date !== undefined || dueDate !== undefined)
-            updates.push({ col: "due_date", val: String(due_date ?? dueDate).trim() });
+            updates.push({ col: "due_date", val: formatDueDate(due_date ?? dueDate) });
         if (ai_score !== undefined || aiScore !== undefined)
             updates.push({ col: "ai_score", val: Number(ai_score ?? aiScore) });
         if (tags !== undefined || category !== undefined) {
@@ -140,7 +161,7 @@ router.put("/:id", async (req, res) => {
             res.status(404).json({ success: false, message: "Task not found" });
             return;
         }
-        res.json({ success: true, task: updatedTask });
+        res.json({ success: true, task: mapTaskRow(updatedTask) });
     }
     catch (error) {
         console.error("Update task error:", error);
