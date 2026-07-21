@@ -22,6 +22,9 @@ function normalizePriority(priorityRaw: any): string {
   return "medium";
 }
 
+const isUuid = (id: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
 // GET /api/tasks
 router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -101,37 +104,27 @@ router.post("/", async (req: AuthRequest, res: Response): Promise<void> => {
   }
 });
 
-// PUT /api/tasks/:id
+// PUT /api/tasks/:id - STRICT UPDATE (Never insert)
 router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const taskId = req.params.id;
+
+    if (!isUuid(taskId)) {
+      res.status(404).json({ success: false, message: "Task not found" });
+      return;
+    }
+
     const { title, description, desc, status, priority, assignee, assigneeAgent, due_date, dueDate, ai_score, aiScore, tags, category } = req.body;
 
     const updates: { col: string; val: any }[] = [];
 
     if (title !== undefined) updates.push({ col: "title", val: String(title).trim() });
     if (description !== undefined || desc !== undefined) updates.push({ col: "description", val: String(description ?? desc).trim() });
-
-    if (status !== undefined) {
-      updates.push({ col: "status", val: normalizeStatus(status) });
-    }
-
-    if (priority !== undefined) {
-      updates.push({ col: "priority", val: normalizePriority(priority) });
-    }
-
-    if (assignee !== undefined || assigneeAgent !== undefined) {
-      updates.push({ col: "assignee", val: String(assignee ?? assigneeAgent).trim() });
-    }
-
-    if (due_date !== undefined || dueDate !== undefined) {
-      updates.push({ col: "due_date", val: String(due_date ?? dueDate).trim() });
-    }
-
-    if (ai_score !== undefined || aiScore !== undefined) {
-      updates.push({ col: "ai_score", val: Number(ai_score ?? aiScore) });
-    }
-
+    if (status !== undefined) updates.push({ col: "status", val: normalizeStatus(status) });
+    if (priority !== undefined) updates.push({ col: "priority", val: normalizePriority(priority) });
+    if (assignee !== undefined || assigneeAgent !== undefined) updates.push({ col: "assignee", val: String(assignee ?? assigneeAgent).trim() });
+    if (due_date !== undefined || dueDate !== undefined) updates.push({ col: "due_date", val: String(due_date ?? dueDate).trim() });
+    if (ai_score !== undefined || aiScore !== undefined) updates.push({ col: "ai_score", val: Number(ai_score ?? aiScore) });
     if (tags !== undefined || category !== undefined) {
       const tagArr = Array.isArray(tags) ? tags : [category || "Strategy"];
       updates.push({ col: "tags", val: JSON.stringify(tagArr) });
@@ -145,43 +138,40 @@ router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
     const setClauses = updates.map((u, i) => `${u.col} = $${i + 3}`).join(", ");
     const vals = updates.map((u) => u.val);
 
-    let [task] = await query(
+    const [updatedTask] = await query(
       `UPDATE tasks SET ${setClauses}, updated_at = NOW()
        WHERE id = $1 AND user_id = $2 RETURNING *`,
       [taskId, req.user!.id, ...vals]
     );
 
-    // Handle legacy non-UUID IDs (e.g. t-1) by inserting as a fresh task if not found
-    if (!task) {
-      const normStatus = status !== undefined ? normalizeStatus(status) : "todo";
-      const normPriority = priority !== undefined ? normalizePriority(priority) : "medium";
-      const finalAssignee = String(assignee ?? assigneeAgent ?? "Executive AI").trim();
-      const finalDueDate = String(due_date ?? dueDate ?? "Today").trim();
-      const finalScore = Number(ai_score ?? aiScore ?? 90);
-      const finalDesc = String(description ?? desc ?? "Task generated from AI telemetry").trim();
-      const finalTags = JSON.stringify(Array.isArray(tags) ? tags : [category || "Strategy"]);
-
-      const [inserted] = await query(
-        `INSERT INTO tasks (user_id, title, description, status, priority, assignee, due_date, ai_score, tags)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-         RETURNING *`,
-        [req.user!.id, String(title || "Updated AI Task").trim(), finalDesc, normStatus, normPriority, finalAssignee, finalDueDate, finalScore, finalTags]
-      );
-      task = inserted;
+    if (!updatedTask) {
+      res.status(404).json({ success: false, message: "Task not found" });
+      return;
     }
 
-    res.json({ success: true, task });
+    res.json({ success: true, task: updatedTask });
   } catch (error) {
     console.error("Update task error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 
-// DELETE /api/tasks/:id
+// DELETE /api/tasks/:id - STRICT DELETE
 router.delete("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const taskId = req.params.id;
-    await query("DELETE FROM tasks WHERE id = $1 AND user_id = $2", [taskId, req.user!.id]);
+
+    if (!isUuid(taskId)) {
+      res.status(404).json({ success: false, message: "Task not found" });
+      return;
+    }
+
+    const result = await query("DELETE FROM tasks WHERE id = $1 AND user_id = $2 RETURNING id", [taskId, req.user!.id]);
+    if (result.length === 0) {
+      res.status(404).json({ success: false, message: "Task not found" });
+      return;
+    }
+
     res.json({ success: true, message: "Task deleted", id: taskId });
   } catch (error) {
     console.error("Delete task error:", error);
