@@ -251,7 +251,7 @@ export const adminApi = {
 export const tasksApi = {
   list: (token: string, filters?: Record<string, string>) => {
     const params = filters ? `?${new URLSearchParams(filters)}` : "";
-    return apiFetch<{ success: boolean; tasks: unknown[] }>(`/api/tasks${params}`, { token });
+    return apiFetch<{ success: boolean; tasks: unknown[]; industry?: string; businessType?: string }>(`/api/tasks${params}`, { token });
   },
 
   create: (token: string, data: Record<string, unknown>) =>

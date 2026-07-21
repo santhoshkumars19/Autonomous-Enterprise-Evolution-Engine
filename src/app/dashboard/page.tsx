@@ -353,6 +353,48 @@ function formatCleanDate(rawDate: any): string {
   return s;
 }
 
+function getAISuggestedTasks(industry: string, businessType: string) {
+  const ind = (industry || "").toLowerCase();
+  const btype = (businessType || "").toLowerCase();
+
+  if (ind.includes("retail") || btype.includes("retail") || btype.includes("e-commerce")) {
+    return [
+      { title: "Optimize Inventory Reorder Thresholds", category: "Operations", priority: "High", agent: "Operations Agent (Nexus-Ops)", dueDate: "Today" },
+      { title: "Launch Seasonal Clearance Campaign", category: "Marketing", priority: "Critical", agent: "Marketing Agent (GrowthAI)", dueDate: "Tomorrow" },
+      { title: "Audit POS System Payment Latency", category: "Engineering", priority: "Medium", agent: "Operations Agent (Nexus-Ops)", dueDate: "Jul 28" },
+      { title: "Analyze Customer Cart Abandonment Rate", category: "Strategy", priority: "High", agent: "Strategy Agent (Evo-Strategy)", dueDate: "Jul 30" },
+    ];
+  } else if (ind.includes("health") || btype.includes("health") || ind.includes("medical")) {
+    return [
+      { title: "HIPAA Compliance System Audit", category: "Legal", priority: "Critical", agent: "Legal & Audit Agent (AuditAI)", dueDate: "Today" },
+      { title: "Patient Appointment Scheduling Bottleneck Analysis", category: "Operations", priority: "High", agent: "Operations Agent (Nexus-Ops)", dueDate: "Tomorrow" },
+      { title: "Telehealth Billing Code Reconciliation", category: "Financial", priority: "High", agent: "Financial Agent (FinanceAI)", dueDate: "Jul 27" },
+      { title: "Medical Supply Chain Vendor Evaluation", category: "Strategy", priority: "Medium", agent: "Strategy Agent (Evo-Strategy)", dueDate: "Jul 29" },
+    ];
+  } else if (ind.includes("food") || ind.includes("restaurant") || btype.includes("restaurant")) {
+    return [
+      { title: "Food Waste Reduction & Cost Audit", category: "Financial", priority: "Critical", agent: "Financial Agent (FinanceAI)", dueDate: "Today" },
+      { title: "Peak-Hours Staffing Shift Optimization", category: "Operations", priority: "High", agent: "Operations Agent (Nexus-Ops)", dueDate: "Tomorrow" },
+      { title: "Delivery App Commission & Profit Margin Audit", category: "Strategy", priority: "High", agent: "Strategy Agent (Evo-Strategy)", dueDate: "Jul 26" },
+      { title: "Local Dining Promo & Social Campaign", category: "Marketing", priority: "Medium", agent: "Marketing Agent (GrowthAI)", dueDate: "Jul 29" },
+    ];
+  } else if (ind.includes("manufactur") || btype.includes("manufactur")) {
+    return [
+      { title: "Factory Floor Predictive Maintenance Review", category: "Operations", priority: "Critical", agent: "Operations Agent (Nexus-Ops)", dueDate: "Today" },
+      { title: "Raw Material Supplier Contract Renegotiation", category: "Financial", priority: "High", agent: "Financial Agent (FinanceAI)", dueDate: "Tomorrow" },
+      { title: "ISO 9001 Quality Control Audit", category: "Legal", priority: "High", agent: "Legal & Audit Agent (AuditAI)", dueDate: "Jul 28" },
+      { title: "Supply Chain Bottleneck Simulation", category: "Strategy", priority: "Medium", agent: "Strategy Agent (Evo-Strategy)", dueDate: "Jul 30" },
+    ];
+  } else {
+    return [
+      { title: "SOC2 Compliance Security Systems Audit", category: "Legal", priority: "Critical", agent: "Legal & Audit Agent (AuditAI)", dueDate: "Today" },
+      { title: "APAC Regional Expansion Market Entry Study", category: "Strategy", priority: "High", agent: "Strategy Agent (Evo-Strategy)", dueDate: "Tomorrow" },
+      { title: "Cloud Infrastructure Cost Capitalization", category: "Financial", priority: "High", agent: "Financial Agent (FinanceAI)", dueDate: "Jul 28" },
+      { title: "Competitor Enterprise Pricing Benchmark Analysis", category: "Marketing", priority: "Medium", agent: "Marketing Agent (GrowthAI)", dueDate: "Jul 30" },
+    ];
+  }
+}
+
 export default function DashboardPage() {
   const {
     modules,
@@ -410,6 +452,8 @@ export default function DashboardPage() {
   const [dynamicTasksList, setDynamicTasksList] = useState<any[]>([]);
   const [ceoRecommendations, setCeoRecommendations] = useState<string[]>([]);
   const [industryTrendsState, setIndustryTrendsState] = useState<{ metrics: any[]; topics: string[] } | null>(null);
+  const [industryState, setIndustryState] = useState<string>("SaaS / Enterprise Software");
+  const [businessTypeState, setBusinessTypeState] = useState<string>("B2B SaaS");
 
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState<
@@ -501,21 +545,26 @@ export default function DashboardPage() {
           );
         }
 
-        if (tasksRes?.success && Array.isArray(tasksRes.tasks) && tasksRes.tasks.length > 0) {
-          setDynamicTasksList(
-            tasksRes.tasks.map((t: any) => ({
-              id: t.id,
-              title: t.title,
-              desc: t.description || "Task generated from AI telemetry",
-              priority: (t.priority || "high").charAt(0).toUpperCase() + (t.priority || "high").slice(1),
-              status: t.status === "in_progress" ? "In Progress" : t.status === "done" ? "Done" : "To Do",
-              assigneeName: t.assignee || "Executive AI",
-              assigneeInitials: (t.assignee || "AI").slice(0, 2).toUpperCase(),
-              aiScore: t.ai_score || 90,
-              dueDate: formatCleanDate(t.due_date),
-              fullDueDate: formatCleanDate(t.due_date),
-            }))
-          );
+        if (tasksRes?.success) {
+          if (tasksRes.industry) setIndustryState(tasksRes.industry);
+          if (tasksRes.businessType) setBusinessTypeState(tasksRes.businessType);
+
+          if (Array.isArray(tasksRes.tasks) && tasksRes.tasks.length > 0) {
+            setDynamicTasksList(
+              tasksRes.tasks.map((t: any) => ({
+                id: t.id,
+                title: t.title,
+                desc: t.description || "Task generated from AI telemetry",
+                priority: (t.priority || "high").charAt(0).toUpperCase() + (t.priority || "high").slice(1),
+                status: t.status === "in_progress" ? "In Progress" : t.status === "done" ? "Done" : "To Do",
+                assigneeName: t.assignee || "Executive AI",
+                assigneeInitials: (t.assignee || "AI").slice(0, 2).toUpperCase(),
+                aiScore: t.ai_score || 90,
+                dueDate: formatCleanDate(t.due_date),
+                fullDueDate: formatCleanDate(t.due_date),
+              }))
+            );
+          }
         }
 
         if (chatHistRes?.success && Array.isArray(chatHistRes.messages) && chatHistRes.messages.length > 0) {
@@ -1940,23 +1989,41 @@ export default function DashboardPage() {
             }));
 
             const getTasksForDay = (dayNum: number) => {
-              const dayStr = String(dayNum).padStart(2, "0");
+              const currentYear = year;
+              const currentMonthIndex = monthIndex;
+
               return allCalendarTasks.filter((t) => {
-                const d = (t.dueDate || "").toLowerCase();
-                return (
-                  d.includes(`/${dayStr}`) ||
-                  d.includes(`-${dayStr}`) ||
-                  d.includes(`${dayNum}th`) ||
-                  d.includes(`${dayNum}st`) ||
-                  d.includes(`${dayNum}nd`) ||
-                  d.includes(`${dayNum}rd`) ||
-                  (dayNum === 15 && d.includes("15")) ||
-                  (dayNum === 12 && d.includes("12")) ||
-                  (dayNum === 10 && d.includes("10")) ||
-                  (dayNum === 1 && d.includes("today")) ||
-                  (dayNum === 20 && d.includes("tomorrow")) ||
-                  (dayNum === 25 && d.includes("next"))
-                );
+                if (!t.dueDate) return false;
+                const dStr = String(t.dueDate).trim();
+
+                // 1. Match YYYY-MM-DD or YYYY/MM/DD
+                const matchYMD = dStr.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+                if (matchYMD) {
+                  const y = parseInt(matchYMD[1], 10);
+                  const m = parseInt(matchYMD[2], 10) - 1;
+                  const d = parseInt(matchYMD[3], 10);
+                  return y === currentYear && m === currentMonthIndex && d === dayNum;
+                }
+
+                // 2. Match month names e.g. "Jul 11", "August 15"
+                const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+                const dLower = dStr.toLowerCase();
+                const curMonthName = monthNames[currentMonthIndex];
+
+                if (dLower.includes(curMonthName)) {
+                  const numMatch = dLower.match(/\b(\d{1,2})(st|nd|rd|th)?\b/);
+                  if (numMatch) {
+                    return parseInt(numMatch[1], 10) === dayNum;
+                  }
+                }
+
+                // 3. Match relative dates e.g. "Today"
+                if (dLower === "today") {
+                  const today = new Date();
+                  return today.getFullYear() === currentYear && today.getMonth() === currentMonthIndex && today.getDate() === dayNum;
+                }
+
+                return false;
               });
             };
 
@@ -2545,6 +2612,36 @@ export default function DashboardPage() {
                 >
                   <X className="w-4 h-4" />
                 </button>
+              </div>
+
+              {/* AI Suggested Tasks for Business Type */}
+              <div className="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 space-y-2">
+                <div className="flex items-center justify-between text-indigo-300 font-semibold text-[11px]">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                    <span>AI Suggested Tasks for {businessTypeState || "Your Business"}</span>
+                  </span>
+                  <span className="text-[10px] text-indigo-400/80 font-normal">Click to auto-fill</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {getAISuggestedTasks(industryState, businessTypeState).map((sug, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setNewTaskForm({
+                        title: sug.title,
+                        category: sug.category,
+                        priority: sug.priority as any,
+                        status: "Pending",
+                        assigneeAgent: sug.agent,
+                        dueDate: sug.dueDate,
+                      })}
+                      className="px-2.5 py-1 rounded-lg bg-slate-950/80 hover:bg-indigo-600/30 border border-indigo-500/20 hover:border-indigo-400/50 text-[10px] text-slate-300 hover:text-white transition-all flex items-center gap-1 text-left cursor-pointer"
+                    >
+                      <span>+ {sug.title}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <form onSubmit={handleCreateTaskSubmit} className="space-y-4 text-xs">
