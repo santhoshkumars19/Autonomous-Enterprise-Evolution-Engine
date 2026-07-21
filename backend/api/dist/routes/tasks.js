@@ -1,22 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const zod_1 = require("zod");
 const db_1 = require("../config/db");
 const auth_1 = require("../middleware/auth");
+const industryEngine_1 = require("../services/industryEngine");
 const router = (0, express_1.Router)();
 router.use(auth_1.authenticate);
-const taskSchema = zod_1.z.object({
-    title: zod_1.z.string().min(1),
-    description: zod_1.z.string().optional(),
-    status: zod_1.z.enum(["todo", "in_progress", "review", "done"]).default("todo"),
-    priority: zod_1.z.enum(["low", "medium", "high", "critical"]).default("medium"),
-    assignee: zod_1.z.string().optional(),
-    due_date: zod_1.z.string().optional(),
-    ai_score: zod_1.z.number().min(0).max(100).optional(),
-    tags: zod_1.z.array(zod_1.z.string()).optional(),
-});
-const industryEngine_1 = require("../services/industryEngine");
+function normalizeStatus(statusRaw) {
+    const s = String(statusRaw || "").toLowerCase();
+    if (s.includes("done") || s.includes("completed"))
+        return "done";
+    if (s.includes("progress"))
+        return "in_progress";
+    if (s.includes("review"))
+        return "review";
+    return "todo";
+}
+function normalizePriority(priorityRaw) {
+    const p = String(priorityRaw || "").toLowerCase();
+    if (p.includes("critical"))
+        return "critical";
+    if (p.includes("high"))
+        return "high";
+    if (p.includes("low"))
+        return "low";
+    return "medium";
+}
 // GET /api/tasks
 router.get("/", async (req, res) => {
     try {
@@ -26,11 +35,11 @@ router.get("/", async (req, res) => {
         const params = [req.user.id];
         if (status) {
             sql += ` AND status = $${params.length + 1}`;
-            params.push(status);
+            params.push(normalizeStatus(status));
         }
         if (priority) {
             sql += ` AND priority = $${params.length + 1}`;
-            params.push(priority);
+            params.push(normalizePriority(priority));
         }
         if (assignee) {
             sql += ` AND assignee ILIKE $${params.length + 1}`;
@@ -38,19 +47,25 @@ router.get("/", async (req, res) => {
         }
         sql += " ORDER BY created_at DESC";
         let tasks = await (0, db_1.query)(sql, params);
+        // If user has zero tasks in DB, seed industry-specific tasks into PostgreSQL
         if (tasks.length === 0 && !status && !priority && !assignee) {
             const defaultTasks = (0, industryEngine_1.getIndustryTasks)(ctx);
-            tasks = defaultTasks.map((t) => ({
-                id: t.id,
-                user_id: req.user.id,
-                title: t.title,
-                description: t.description,
-                status: t.status,
-                priority: t.priority,
-                assignee: t.assignee,
-                due_date: t.due_date,
-                ai_score: t.ai_score,
-            }));
+            for (const t of defaultTasks) {
+                await (0, db_1.query)(`INSERT INTO tasks (user_id, company_id, title, description, status, priority, assignee, due_date, ai_score, tags)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, [
+                    req.user.id,
+                    ctx.companyId ?? null,
+                    t.title,
+                    t.description,
+                    normalizeStatus(t.status),
+                    normalizePriority(t.priority),
+                    t.assignee,
+                    t.due_date,
+                    t.ai_score,
+                    JSON.stringify([t.category || "Strategy"]),
+                ]);
+            }
+            tasks = await (0, db_1.query)(sql, params);
         }
         res.json({ success: true, tasks, industry: ctx.industry, businessType: ctx.businessType });
     }
@@ -62,27 +77,24 @@ router.get("/", async (req, res) => {
 // POST /api/tasks
 router.post("/", async (req, res) => {
     try {
-        const body = taskSchema.parse(req.body);
+        const { title, description, desc, status, priority, assignee, assigneeAgent, due_date, dueDate, ai_score, aiScore, tags, category } = req.body;
+        if (!title || !String(title).trim()) {
+            res.status(400).json({ success: false, message: "Task title is required" });
+            return;
+        }
+        const normStatus = normalizeStatus(status);
+        const normPriority = normalizePriority(priority);
+        const finalAssignee = String(assignee ?? assigneeAgent ?? "Executive AI").trim();
+        const finalDueDate = String(due_date ?? dueDate ?? "Today").trim();
+        const finalScore = Number(ai_score ?? aiScore ?? 92);
+        const finalDesc = String(description ?? desc ?? "Manual AI task dispatch").trim();
+        const finalTags = JSON.stringify(Array.isArray(tags) ? tags : [category || "Strategy"]);
         const [task] = await (0, db_1.query)(`INSERT INTO tasks (user_id, title, description, status, priority, assignee, due_date, ai_score, tags)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`, [
-            req.user.id,
-            body.title,
-            body.description ?? null,
-            body.status,
-            body.priority,
-            body.assignee ?? null,
-            body.due_date ?? null,
-            body.ai_score ?? null,
-            body.tags ? JSON.stringify(body.tags) : null,
-        ]);
+       RETURNING *`, [req.user.id, String(title).trim(), finalDesc, normStatus, normPriority, finalAssignee, finalDueDate, finalScore, finalTags]);
         res.status(201).json({ success: true, task });
     }
     catch (error) {
-        if (error instanceof zod_1.z.ZodError) {
-            res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
-            return;
-        }
         console.error("Create task error:", error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
@@ -90,28 +102,57 @@ router.post("/", async (req, res) => {
 // PUT /api/tasks/:id
 router.put("/:id", async (req, res) => {
     try {
-        const body = taskSchema.partial().parse(req.body);
-        const fields = Object.entries(body)
-            .filter(([, v]) => v !== undefined)
-            .map(([k], i) => `${k} = $${i + 3}`);
-        if (fields.length === 0) {
-            res.status(400).json({ success: false, message: "No fields to update" });
+        const taskId = req.params.id;
+        const { title, description, desc, status, priority, assignee, assigneeAgent, due_date, dueDate, ai_score, aiScore, tags, category } = req.body;
+        const updates = [];
+        if (title !== undefined)
+            updates.push({ col: "title", val: String(title).trim() });
+        if (description !== undefined || desc !== undefined)
+            updates.push({ col: "description", val: String(description ?? desc).trim() });
+        if (status !== undefined) {
+            updates.push({ col: "status", val: normalizeStatus(status) });
+        }
+        if (priority !== undefined) {
+            updates.push({ col: "priority", val: normalizePriority(priority) });
+        }
+        if (assignee !== undefined || assigneeAgent !== undefined) {
+            updates.push({ col: "assignee", val: String(assignee ?? assigneeAgent).trim() });
+        }
+        if (due_date !== undefined || dueDate !== undefined) {
+            updates.push({ col: "due_date", val: String(due_date ?? dueDate).trim() });
+        }
+        if (ai_score !== undefined || aiScore !== undefined) {
+            updates.push({ col: "ai_score", val: Number(ai_score ?? aiScore) });
+        }
+        if (tags !== undefined || category !== undefined) {
+            const tagArr = Array.isArray(tags) ? tags : [category || "Strategy"];
+            updates.push({ col: "tags", val: JSON.stringify(tagArr) });
+        }
+        if (updates.length === 0) {
+            res.status(400).json({ success: false, message: "No fields provided to update" });
             return;
         }
-        const values = Object.values(body).filter((v) => v !== undefined);
-        const [task] = await (0, db_1.query)(`UPDATE tasks SET ${fields.join(", ")}, updated_at = NOW()
-       WHERE id = $1 AND user_id = $2 RETURNING *`, [req.params.id, req.user.id, ...values]);
+        const setClauses = updates.map((u, i) => `${u.col} = $${i + 3}`).join(", ");
+        const vals = updates.map((u) => u.val);
+        let [task] = await (0, db_1.query)(`UPDATE tasks SET ${setClauses}, updated_at = NOW()
+       WHERE id = $1 AND user_id = $2 RETURNING *`, [taskId, req.user.id, ...vals]);
+        // Handle legacy non-UUID IDs (e.g. t-1) by inserting as a fresh task if not found
         if (!task) {
-            res.status(404).json({ success: false, message: "Task not found" });
-            return;
+            const normStatus = status !== undefined ? normalizeStatus(status) : "todo";
+            const normPriority = priority !== undefined ? normalizePriority(priority) : "medium";
+            const finalAssignee = String(assignee ?? assigneeAgent ?? "Executive AI").trim();
+            const finalDueDate = String(due_date ?? dueDate ?? "Today").trim();
+            const finalScore = Number(ai_score ?? aiScore ?? 90);
+            const finalDesc = String(description ?? desc ?? "Task generated from AI telemetry").trim();
+            const finalTags = JSON.stringify(Array.isArray(tags) ? tags : [category || "Strategy"]);
+            const [inserted] = await (0, db_1.query)(`INSERT INTO tasks (user_id, title, description, status, priority, assignee, due_date, ai_score, tags)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING *`, [req.user.id, String(title || "Updated AI Task").trim(), finalDesc, normStatus, normPriority, finalAssignee, finalDueDate, finalScore, finalTags]);
+            task = inserted;
         }
         res.json({ success: true, task });
     }
     catch (error) {
-        if (error instanceof zod_1.z.ZodError) {
-            res.status(400).json({ success: false, errors: error.flatten().fieldErrors });
-            return;
-        }
         console.error("Update task error:", error);
         res.status(500).json({ success: false, message: "Internal server error" });
     }
@@ -119,12 +160,9 @@ router.put("/:id", async (req, res) => {
 // DELETE /api/tasks/:id
 router.delete("/:id", async (req, res) => {
     try {
-        const result = await (0, db_1.query)("DELETE FROM tasks WHERE id = $1 AND user_id = $2 RETURNING id", [req.params.id, req.user.id]);
-        if (result.length === 0) {
-            res.status(404).json({ success: false, message: "Task not found" });
-            return;
-        }
-        res.json({ success: true, message: "Task deleted" });
+        const taskId = req.params.id;
+        await (0, db_1.query)("DELETE FROM tasks WHERE id = $1 AND user_id = $2", [taskId, req.user.id]);
+        res.json({ success: true, message: "Task deleted", id: taskId });
     }
     catch (error) {
         console.error("Delete task error:", error);

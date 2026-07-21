@@ -328,36 +328,106 @@ function getIndustryCEORecommendations(ctx) {
 }
 /**
  * 6. AI Task Planner Initial Tasks Adaptation
+ * Generates industry and business-type specific tasks with distributed dates across the month.
  */
 function getIndustryTasks(ctx) {
     const ind = ctx.industry.toLowerCase();
     const btype = ctx.businessType.toLowerCase();
-    if (ind.includes("retail") || btype.includes("retail") || btype.includes("supermarket")) {
+    const month = new Date().toLocaleString("default", { month: "short" });
+    const d = [
+        `${month} 2`,
+        `${month} 4`,
+        `${month} 6`,
+        `${month} 9`,
+        `${month} 12`,
+        `${month} 15`,
+        `${month} 18`,
+        `${month} 22`,
+        `${month} 26`,
+        `${month} 29`,
+    ];
+    if (ind.includes("retail") || btype.includes("retail") || btype.includes("supermarket") || btype.includes("store")) {
         return [
-            { id: "task-r1", title: "Restock Fast-Moving Inventory", description: "Audit stock levels and place POs for top 20 retail SKUs", priority: "high", status: "in_progress", assignee: "Supply Chain Manager", due_date: "Today", ai_score: 95 },
-            { id: "task-r2", title: "Review Distributor Invoices", description: "Reconcile weekly supplier delivery invoices against PO pricing", priority: "medium", status: "todo", assignee: "Accounts Officer", due_date: "Tomorrow", ai_score: 88 },
-            { id: "task-r3", title: "Setup Weekend Promo POS Discount", description: "Configure checkout scanners for 15% festival discount promo", priority: "high", status: "done", assignee: "Store Manager", due_date: "Yesterday", ai_score: 92 },
+            { title: "Restock Fast-Moving Inventory SKUs", description: "Audit stock levels and place POs for top 20 retail SKUs across all stores", priority: "high", status: "in_progress", assignee: "Supply Chain Manager", due_date: d[0], ai_score: 95, category: "Operations" },
+            { title: "Review Distributor & Vendor Invoices", description: "Reconcile weekly supplier delivery invoices against agreed PO pricing", priority: "medium", status: "todo", assignee: "Accounts Officer", due_date: d[1], ai_score: 88, category: "Finance" },
+            { title: "Setup Weekend Promo POS Discount", description: "Configure checkout scanners for 15% festival discount promotion", priority: "high", status: "done", assignee: "Store Manager", due_date: d[2], ai_score: 92, category: "Marketing" },
+            { title: "Audit Physical Stock & Shrinkage Variance", description: "Perform monthly physical stock audit to detect wastage & shrinkage losses", priority: "critical", status: "todo", assignee: "Inventory Auditor", due_date: d[3], ai_score: 96, category: "Operations" },
+            { title: "Analyze Store Footfall vs Conversion Rate", description: "Synthesize peak store traffic hours and cashier checkout velocity", priority: "medium", status: "in_progress", assignee: "Retail Analyst", due_date: d[4], ai_score: 90, category: "Strategy" },
+            { title: "Negotiate Bulk Supplier Discount Terms", description: "Leverage annual order volume to secure 5% additional supplier rebate", priority: "high", status: "todo", assignee: "Procurement Lead", due_date: d[5], ai_score: 94, category: "Finance" },
+            { title: "Optimize Store Floor & Merchandising Display", description: "Rearrange end-cap displays to highlight high-margin impulse items", priority: "low", status: "todo", assignee: "Visual Merchandiser", due_date: d[6], ai_score: 85, category: "Operations" },
+            { title: "Customer Loyalty Points Campaign Launch", description: "Dispatch SMS & Email promo code for 500 bonus loyalty points", priority: "medium", status: "done", assignee: "CRM Specialist", due_date: d[7], ai_score: 91, category: "Marketing" },
+            { title: "Staff Shift & Overtime Roster Scheduling", description: "Assign retail cashier & floor staff shifts for upcoming weekend surge", priority: "high", status: "in_progress", assignee: "HR Manager", due_date: d[8], ai_score: 89, category: "Operations" },
+            { title: "Quarterly Retail Margin & Stockout Audit", description: "Executive review of stock turnover ratio, gross margin, and dead stock", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 98, category: "Executive" },
         ];
     }
-    if (ind.includes("restaurant") || btype.includes("restaurant") || btype.includes("food")) {
+    if (ind.includes("restaurant") || ind.includes("food") || btype.includes("restaurant") || btype.includes("cafe")) {
         return [
-            { id: "task-f1", title: "Update Weekly Specials Menu", description: "Finalize seasonal specials menu and update digital QR codes", priority: "high", status: "in_progress", assignee: "Head Chef", due_date: "Today", ai_score: 94 },
-            { id: "task-f2", title: "Daily Perishable Inventory Audit", description: "Check cold storage temperatures and inspect meat & produce stock", priority: "critical", status: "todo", assignee: "Kitchen Supervisor", due_date: "Today", ai_score: 96 },
-            { id: "task-f3", title: "Staff Shift Roster Planning", description: "Assign dining hall & kitchen shifts for upcoming weekend surge", priority: "medium", status: "done", assignee: "Floor Manager", due_date: "Yesterday", ai_score: 89 },
+            { title: "Update Weekly Specials & Digital QR Menu", description: "Finalize seasonal chef specials and refresh table QR code menus", priority: "high", status: "in_progress", assignee: "Head Chef", due_date: d[0], ai_score: 94, category: "Marketing" },
+            { title: "Daily Perishable Cold Storage Audit", description: "Inspect walk-in freezer temperatures and check meat & fresh produce freshness", priority: "critical", status: "todo", assignee: "Kitchen Supervisor", due_date: d[1], ai_score: 96, category: "Operations" },
+            { title: "Dining Hall & Kitchen Shift Roster Planning", description: "Assign server & kitchen crew shifts for upcoming weekend dinner surge", priority: "medium", status: "done", assignee: "Floor Manager", due_date: d[2], ai_score: 89, category: "Operations" },
+            { title: "Reconcile Daily POS & Cash Register Settlement", description: "Audit credit card settlements and delivery app daily payouts", priority: "high", status: "in_progress", assignee: "Restaurant Accountant", due_date: d[3], ai_score: 92, category: "Finance" },
+            { title: "Inspect Kitchen Safety & Hygiene Compliance", description: "Ensure food prep areas meet health department standards & sanitation checklists", priority: "critical", status: "todo", assignee: "Hygiene Auditor", due_date: d[4], ai_score: 97, category: "Quality" },
+            { title: "Optimize Delivery Channel Commission Rates", description: "Analyze Swiggy/Zomato/DoorDash margins and adjust online pricing", priority: "medium", status: "todo", assignee: "Growth Manager", due_date: d[5], ai_score: 90, category: "Strategy" },
+            { title: "Negotiate Fresh Meat & Poultry Vendor Pricing", description: "Lock in quarterly supply prices with wholesale meat & produce vendors", priority: "high", status: "done", assignee: "Purchasing Lead", due_date: d[6], ai_score: 91, category: "Procurement" },
+            { title: "Birthday & Special Guest Loyalty Promo", description: "Send automated discount voucher to registered VIP dining club members", priority: "low", status: "todo", assignee: "Marketing Specialist", due_date: d[7], ai_score: 87, category: "Marketing" },
+            { title: "Service Commercial Ovens & Exhaust Hoods", description: "Complete preventative maintenance on kitchen gas lines & ventilation hood", priority: "medium", status: "in_progress", assignee: "Facilities Tech", due_date: d[8], ai_score: 88, category: "Maintenance" },
+            { title: "Monthly Food Cost & Waste Variance Analysis", description: "Synthesize ingredient yield, portion control, and waste reduction report", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 95, category: "Executive" },
         ];
     }
-    if (ind.includes("health") || ind.includes("hospital") || btype.includes("hospital")) {
+    if (ind.includes("health") || ind.includes("hospital") || btype.includes("hospital") || btype.includes("clinic")) {
         return [
-            { id: "task-h1", title: "Schedule Doctor & Nurse Shifts", description: "Coordinate emergency room and ICU shift rotations", priority: "critical", status: "in_progress", assignee: "Clinical Director", due_date: "Today", ai_score: 98 },
-            { id: "task-h2", title: "MRI Equipment Maintenance Inspection", description: "Complete bi-monthly preventative maintenance audit on MRI Suite #2", priority: "high", status: "todo", assignee: "Bio-Med Engineer", due_date: "Tomorrow", ai_score: 91 },
-            { id: "task-h3", title: "Process Outpatient Insurance Claims", description: "Batch submit verified medical insurance claims to clearance portal", priority: "medium", status: "done", assignee: "Billing Desk", due_date: "Yesterday", ai_score: 90 },
+            { title: "Schedule ER & ICU Doctor Shift Rotations", description: "Coordinate emergency room, triage, and ICU specialist coverage shifts", priority: "critical", status: "in_progress", assignee: "Clinical Director", due_date: d[0], ai_score: 98, category: "Operations" },
+            { title: "MRI Suite Bi-Monthly Inspection & Calibration", description: "Complete mandatory preventative maintenance audit on MRI Unit #2", priority: "high", status: "todo", assignee: "Bio-Med Engineer", due_date: d[1], ai_score: 91, category: "Maintenance" },
+            { title: "Batch Process Outpatient Insurance Claims", description: "Batch submit verified medical insurance claims to central clearing portal", priority: "medium", status: "done", assignee: "Billing Desk", due_date: d[2], ai_score: 90, category: "Finance" },
+            { title: "Restock Emergency Surgical Consumables", description: "Order critical surgical gloves, sutures, and IV solution supplies", priority: "critical", status: "in_progress", assignee: "Pharmacy Head", due_date: d[3], ai_score: 96, category: "Supply Chain" },
+            { title: "Audit Electronic Health Records (EHR) Privacy", description: "Verify patient data access logs for HIPAA/compliance regulations", priority: "high", status: "todo", assignee: "Compliance Officer", due_date: d[4], ai_score: 93, category: "Legal" },
+            { title: "Analyze Patient Waiting Time & CSAT Index", description: "Parse outpatient department queue times and patient feedback scores", priority: "medium", status: "todo", assignee: "Operations Lead", due_date: d[5], ai_score: 88, category: "Strategy" },
+            { title: "Conduct Hospital Infection Control Audit", description: "Inspect sterilizing autoclaves and ICU isolation room protocols", priority: "high", status: "done", assignee: "Chief Medical Officer", due_date: d[6], ai_score: 95, category: "Clinical" },
+            { title: "Upgrade Remote Tele-ICU Monitoring Network", description: "Deploy high-definition patient vital telemetry sensors in Bed Ward B", priority: "medium", status: "in_progress", assignee: "IT Administrator", due_date: d[7], ai_score: 92, category: "Engineering" },
+            { title: "Review Specialist Vendor Maintenance Agreements", description: "Audit annual SLA contracts for CT scanners & lab testing analyzers", priority: "low", status: "todo", assignee: "Procurement Manager", due_date: d[8], ai_score: 86, category: "Finance" },
+            { title: "Quarterly Hospital Financial & Bed Capacity Audit", description: "Executive review of occupancy rate, surgical yield, and accounts receivable", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 97, category: "Executive" },
         ];
     }
-    // IT / Software / Default
+    if (ind.includes("manufactur") || btype.includes("factory") || btype.includes("industrial")) {
+        return [
+            { title: "Raw Material & Steel Stock Audit", description: "Reconcile raw sheet metal & alloy inventory against production schedules", priority: "high", status: "in_progress", assignee: "Plant Manager", due_date: d[0], ai_score: 93, category: "Operations" },
+            { title: "Preventative Maintenance on Assembly Line #3", description: "Overhaul hydraulic presses and lube conveyor belts on Line 3", priority: "critical", status: "todo", assignee: "Chief Technician", due_date: d[1], ai_score: 97, category: "Maintenance" },
+            { title: "Inspect Product Quality & Defect Rates", description: "Conduct ISO-9001 compliance check on finished goods batch #880", priority: "high", status: "done", assignee: "QA Inspector", due_date: d[2], ai_score: 91, category: "Quality" },
+            { title: "Audit Factory Energy & Carbon Footprint", description: "Track peak-hour electricity consumption and evaluate solar panel ROI", priority: "medium", status: "in_progress", assignee: "Safety Officer", due_date: d[3], ai_score: 88, category: "Compliance" },
+            { title: "Finalize Logistics Shipping & Freight Routes", description: "Coordinate heavy container trucks for outbound distributor dispatches", priority: "high", status: "todo", assignee: "Dispatch Manager", due_date: d[4], ai_score: 94, category: "Logistics" },
+            { title: "Evaluate Robotic Arm Automation ROI", description: "Calculate payback period for installing 4 robotic welding cells", priority: "medium", status: "todo", assignee: "Industrial Engineer", due_date: d[5], ai_score: 90, category: "Strategy" },
+            { title: "Reconcile Heavy Machinery Equipment Leases", description: "Review monthly lease schedules for CNC milling machines & forklifts", priority: "medium", status: "done", assignee: "Financial Controller", due_date: d[6], ai_score: 89, category: "Finance" },
+            { title: "Conduct Industrial Ergonomics & Safety Drill", description: "Execute safety training for floor workers on emergency shutoff valves", priority: "high", status: "in_progress", assignee: "Safety Director", due_date: d[7], ai_score: 92, category: "HR" },
+            { title: "Recalibrate Automated CNC Machine Tools", description: "Precision calibration of high-speed cutting bits and coolant pumps", priority: "low", status: "todo", assignee: "Tooling Tech", due_date: d[8], ai_score: 86, category: "Engineering" },
+            { title: "Quarterly Factory Productivity & OEE Review", description: "Analyze Overall Equipment Effectiveness (OEE) and scrap percentage", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 98, category: "Executive" },
+        ];
+    }
+    if (ind.includes("e-commerce") || btype.includes("e-commerce")) {
+        return [
+            { title: "Optimize Checkout Funnel & Cart Abandonment", description: "Implement 1-click Apple Pay checkout to reduce cart drop-offs by 14%", priority: "critical", status: "in_progress", assignee: "UX Lead", due_date: d[0], ai_score: 96, category: "Product" },
+            { title: "Audit Warehouse Pick & Pack Velocity", description: "Track average order dispatch turnaround time across fulfillment centers", priority: "high", status: "todo", assignee: "Fulfillment Mgr", due_date: d[1], ai_score: 92, category: "Logistics" },
+            { title: "Launch Q3 Omni-Channel Ad Campaign", description: "Scale Meta & Google Shopping ads for top trending product bundles", priority: "high", status: "done", assignee: "Growth Lead", due_date: d[2], ai_score: 94, category: "Marketing" },
+            { title: "Reconcile Returns & Refunds Ledger", description: "Process customer product return refunds and inspect restockable inventory", priority: "medium", status: "in_progress", assignee: "Ecomm Accountant", due_date: d[3], ai_score: 89, category: "Finance" },
+            { title: "Negotiate Express Courier Shipping Rates", description: "Leverage monthly parcel volume to cut FedEx & DHL shipping costs", priority: "high", status: "todo", assignee: "Logistics Manager", due_date: d[4], ai_score: 91, category: "Operations" },
+            { title: "A/B Test AI Product Recommendation Engine", description: "Deploy cross-sell widgets on product pages to boost average order value", priority: "medium", status: "todo", assignee: "AI Engineer", due_date: d[5], ai_score: 93, category: "Engineering" },
+            { title: "Review Customer Ratings & 5-Star Reviews", description: "Respond to customer support tickets and analyze sentiment breakdown", priority: "low", status: "done", assignee: "Support Lead", due_date: d[6], ai_score: 87, category: "Customer Service" },
+            { title: "Audit Safety Stock Levels Across Regional Hubs", description: "Rebalance stock allocation between East & West coast fulfillment hubs", priority: "high", status: "in_progress", assignee: "Inventory Lead", due_date: d[7], ai_score: 90, category: "Supply Chain" },
+            { title: "Build Cyber Monday Pre-Sale Landing Page", description: "Design high-converting early access VIP discount registration pages", priority: "medium", status: "todo", assignee: "Frontend Developer", due_date: d[8], ai_score: 88, category: "Design" },
+            { title: "Quarterly E-Commerce CAC & LTV ROI Analysis", description: "Executive review of Customer Acquisition Cost, LTV ratio, and net margin", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 97, category: "Executive" },
+        ];
+    }
+    // IT / Software / SaaS / Default Tech Enterprise
     return [
-        { id: "task-t1", title: "Complete Q4 Sprint Planning", description: "Develop comprehensive Q4 product roadmap leveraging customer telemetry", priority: "critical", status: "in_progress", assignee: "Product Manager", due_date: "Today", ai_score: 95 },
-        { id: "task-t2", title: "Conduct Senior Code Review", description: "Review pull requests for core authentication & RBAC microservice", priority: "high", status: "todo", assignee: "Lead Architect", due_date: "Tomorrow", ai_score: 88 },
-        { id: "task-t3", title: "Client Enterprise Demo Meeting", description: "Demonstrate AI telemetry features to prospective Fortune 500 account", priority: "high", status: "done", assignee: "Solutions Engineer", due_date: "Yesterday", ai_score: 94 },
+        { title: "Complete Q4 Product Roadmap & Sprint Planning", description: "Develop comprehensive Q4 product features based on enterprise telemetry", priority: "critical", status: "in_progress", assignee: "Product Manager", due_date: d[0], ai_score: 95, category: "Strategy" },
+        { title: "Senior Code Review for Core Auth Microservice", description: "Review pull requests for OAuth2 & RBAC security authentication engine", priority: "high", status: "todo", assignee: "Lead Architect", due_date: d[1], ai_score: 88, category: "Engineering" },
+        { title: "Client Enterprise Live Demo & POC Presentation", description: "Demonstrate AI telemetry features to prospective Fortune 500 account", priority: "high", status: "done", assignee: "Solutions Engineer", due_date: d[2], ai_score: 94, category: "Sales" },
+        { title: "Slash Monthly Cloud Infra Spending by 22%", description: "Implement auto-scaling & reserved instances to optimize AWS/GCP bills", priority: "high", status: "in_progress", assignee: "DevOps Lead", due_date: d[3], ai_score: 92, category: "Operations" },
+        { title: "Patch Critical CVE Vulnerability on API Gateway", description: "Deploy hotfix for high-priority rate limiting security advisory", priority: "critical", status: "todo", assignee: "Security Specialist", due_date: d[4], ai_score: 97, category: "Engineering" },
+        { title: "Automated Load Testing on Multi-Region DB", description: "Simulate 50,000 concurrent user sessions to baseline database latency", priority: "medium", status: "todo", assignee: "QA Automation Lead", due_date: d[5], ai_score: 89, category: "Engineering" },
+        { title: "Conduct Q3 Customer Churn & Expansion Analysis", description: "Identify accounts eligible for upsell and mitigate expansion risk", priority: "high", status: "done", assignee: "CS Director", due_date: d[6], ai_score: 91, category: "Customer Success" },
+        { title: "Prepare SOC2 Type II Compliance Audit Artifacts", description: "Collect access logs and encryption verification reports for external auditor", priority: "medium", status: "in_progress", assignee: "Compliance Manager", due_date: d[7], ai_score: 90, category: "Legal" },
+        { title: "Deploy AI Assistant v4.2 Production Release", description: "Staged canary deployment of new generative model endpoints", priority: "high", status: "todo", assignee: "Release Engineer", due_date: d[8], ai_score: 96, category: "Engineering" },
+        { title: "Quarterly SaaS ARR & Net Revenue Retention Audit", description: "Synthesize Annual Recurring Revenue, gross margin, and burn rate ratio", priority: "critical", status: "todo", assignee: "CEO Agent (Aura-1)", due_date: d[9], ai_score: 99, category: "Executive" },
     ];
 }
 /**

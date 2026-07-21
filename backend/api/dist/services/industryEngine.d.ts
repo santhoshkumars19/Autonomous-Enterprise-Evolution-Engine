@@ -93,9 +93,9 @@ export declare function getIndustryFinancialKPIs(ctx: CompanyContext): {
 export declare function getIndustryCEORecommendations(ctx: CompanyContext): string[];
 /**
  * 6. AI Task Planner Initial Tasks Adaptation
+ * Generates industry and business-type specific tasks with distributed dates across the month.
  */
 export declare function getIndustryTasks(ctx: CompanyContext): {
-    id: string;
     title: string;
     description: string;
     priority: string;
@@ -103,6 +103,7 @@ export declare function getIndustryTasks(ctx: CompanyContext): {
     assignee: string;
     due_date: string;
     ai_score: number;
+    category: string;
 }[];
 /**
  * 7. Reports Center List Adaptation

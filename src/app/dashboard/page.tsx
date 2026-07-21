@@ -58,6 +58,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit,
+  Trash2,
   Calendar as CalendarIcon,
 } from "lucide-react";
 import { useDashboard, ModuleData } from "@/context/dashboard-context";
@@ -570,27 +571,47 @@ export default function DashboardPage() {
     if (!newTaskForm.title.trim()) return;
     setIsSubmittingTask(true);
 
-    const taskData = {
+    const payload = {
       title: newTaskForm.title.trim(),
       category: newTaskForm.category,
       priority: newTaskForm.priority,
       status: newTaskForm.status,
-      assigneeAgent: newTaskForm.assigneeAgent,
-      dueDate: newTaskForm.dueDate || "Today",
+      assignee: newTaskForm.assigneeAgent,
+      due_date: newTaskForm.dueDate || "Today",
     };
 
-    addNewTask(taskData);
-
+    let createdTaskObj: any = null;
     if (token) {
       try {
         const { tasksApi } = await import("@/lib/api");
-        await tasksApi.create(token, taskData);
+        const res = await tasksApi.create(token, payload);
+        if (res?.success && res.task) {
+          createdTaskObj = res.task;
+        }
       } catch (err) {
         console.warn("Failed to sync new task to backend API:", err);
       }
     }
 
-    setPdfToast({ type: "success", message: `Task "${taskData.title}" created successfully!` });
+    const newFormatted = {
+      id: String(createdTaskObj?.id || `task-${Date.now()}`),
+      title: createdTaskObj?.title || payload.title,
+      desc: createdTaskObj?.description || "Manual AI task dispatch",
+      category: newTaskForm.category,
+      priority: newTaskForm.priority,
+      status: newTaskForm.status,
+      assigneeAgent: createdTaskObj?.assignee || newTaskForm.assigneeAgent || "Strategy Agent (Evo-Strategy)",
+      assigneeName: createdTaskObj?.assignee || newTaskForm.assigneeAgent,
+      assigneeInitials: (createdTaskObj?.assignee || newTaskForm.assigneeAgent || "AI").slice(0, 2).toUpperCase(),
+      aiScore: Number(createdTaskObj?.ai_score || 92),
+      dueDate: createdTaskObj?.due_date || newTaskForm.dueDate || "Today",
+      fullDueDate: createdTaskObj?.due_date || newTaskForm.dueDate || "Today",
+    };
+
+    setDynamicTasksList((prev) => [newFormatted, ...prev]);
+    addNewTask(newFormatted);
+
+    setPdfToast({ type: "success", message: `Task "${newFormatted.title}" created successfully!` });
     setIsSubmittingTask(false);
     setIsAddTaskOpen(false);
     setNewTaskForm({
@@ -606,6 +627,7 @@ export default function DashboardPage() {
   // ── View / Update Task Modal State ───────────────────────────────────────
   const [editingTask, setEditingTask] = useState<any | null>(null);
   const [isUpdatingTask, setIsUpdatingTask] = useState(false);
+  const [isDeletingTask, setIsDeletingTask] = useState(false);
   const [calendarDate, setCalendarDate] = useState<Date>(new Date()); // Current month & year
 
   const handleUpdateTaskSubmit = async (e: React.FormEvent) => {
@@ -613,27 +635,69 @@ export default function DashboardPage() {
     if (!editingTask) return;
     setIsUpdatingTask(true);
 
-    updateTask(editingTask.id, {
+    const taskId = editingTask.id;
+    const payload = {
       title: editingTask.title,
       category: editingTask.category,
       priority: editingTask.priority,
       status: editingTask.status,
-      assigneeAgent: editingTask.assigneeAgent,
-      dueDate: editingTask.dueDate,
-    });
+      assignee: editingTask.assigneeAgent || editingTask.assigneeName,
+      due_date: editingTask.dueDate,
+    };
 
+    let updatedTaskObj: any = null;
     if (token) {
       try {
         const { tasksApi } = await import("@/lib/api");
-        await tasksApi.update(token, editingTask.id, editingTask);
+        const res = await tasksApi.update(token, taskId, payload);
+        if (res?.success && res.task) {
+          updatedTaskObj = res.task;
+        }
       } catch (err) {
         console.warn("Failed to sync updated task to backend API:", err);
       }
     }
 
+    const updatedFormatted = {
+      id: String(updatedTaskObj?.id || taskId),
+      title: editingTask.title,
+      desc: editingTask.desc || editingTask.description || "Task updated from AI telemetry",
+      category: editingTask.category || "Strategy",
+      priority: editingTask.priority || "High",
+      status: editingTask.status || "Pending",
+      assigneeName: editingTask.assigneeAgent || editingTask.assigneeName || "Executive AI",
+      assigneeInitials: (editingTask.assigneeAgent || editingTask.assigneeName || "AI").slice(0, 2).toUpperCase(),
+      aiScore: editingTask.aiScore || 90,
+      dueDate: editingTask.dueDate || "Today",
+      fullDueDate: editingTask.dueDate || "Today",
+    };
+
+    setDynamicTasksList((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, ...updatedFormatted } : t))
+    );
+    updateTask(taskId, updatedFormatted);
+
     setPdfToast({ type: "success", message: `Task "${editingTask.title}" updated successfully!` });
     setIsUpdatingTask(false);
     setEditingTask(null);
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (!taskId) return;
+    setIsDeletingTask(true);
+    if (token) {
+      try {
+        const { tasksApi } = await import("@/lib/api");
+        await tasksApi.delete(token, taskId);
+      } catch (err) {
+        console.warn("Failed to delete task from backend API:", err);
+      }
+    }
+
+    setDynamicTasksList((prev) => prev.filter((t) => t.id !== taskId));
+    setEditingTask(null);
+    setIsDeletingTask(false);
+    setPdfToast({ type: "success", message: "Task deleted successfully!" });
   };
 
   return (
@@ -1672,9 +1736,13 @@ export default function DashboardPage() {
                   {dynamicTasksList
                     .filter((t) => t.status === "To Do" || t.status === "Pending")
                     .map((task) => (
-                      <Card key={task.id} className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                      <Card
+                        key={task.id}
+                        onClick={() => setEditingTask({ ...task })}
+                        className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group"
+                      >
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug">{task.title}</h4>
+                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug group-hover:text-indigo-400 transition-colors">{task.title}</h4>
                           <Badge variant="medium" className="shrink-0 text-[10px]">{task.priority}</Badge>
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{task.desc}</p>
@@ -1711,9 +1779,13 @@ export default function DashboardPage() {
                   {dynamicTasksList
                     .filter((t) => t.status === "In Progress")
                     .map((task) => (
-                      <Card key={task.id} className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all">
+                      <Card
+                        key={task.id}
+                        onClick={() => setEditingTask({ ...task })}
+                        className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group"
+                      >
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug">{task.title}</h4>
+                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug group-hover:text-indigo-400 transition-colors">{task.title}</h4>
                           <Badge variant={task.priority === "Critical" ? "high" : "medium"} className="shrink-0 text-[10px]">
                             {task.priority}
                           </Badge>
@@ -1752,9 +1824,13 @@ export default function DashboardPage() {
                   {dynamicTasksList
                     .filter((t) => t.status === "Done" || t.status === "Completed")
                     .map((task) => (
-                      <Card key={task.id} className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all opacity-90">
+                      <Card
+                        key={task.id}
+                        onClick={() => setEditingTask({ ...task })}
+                        className="p-4 space-y-3 border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 transition-all opacity-90 cursor-pointer group"
+                      >
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug line-through text-slate-400">{task.title}</h4>
+                          <h4 className="font-bold text-xs text-slate-900 dark:text-white leading-snug line-through text-slate-400 group-hover:text-indigo-400 transition-colors">{task.title}</h4>
                           <Badge variant="medium" className="shrink-0 text-[10px]">{task.priority}</Badge>
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{task.desc}</p>
@@ -1782,11 +1858,11 @@ export default function DashboardPage() {
             <Card className="p-5">
               <div className="space-y-3">
                 {dynamicTasksList.map((task) => (
-                  <div key={task.id} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-between text-xs gap-4">
-                    <div className="flex items-center gap-3">
-                      <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                  <div key={task.id} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-between text-xs gap-4 hover:border-indigo-500/50 transition-all">
+                    <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => setEditingTask({ ...task })}>
+                      <span className="h-2 w-2 rounded-full bg-indigo-500 shrink-0" />
                       <div>
-                        <h4 className="font-bold text-slate-900 dark:text-slate-100">{task.title}</h4>
+                        <h4 className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-400 transition-colors">{task.title}</h4>
                         <span className="text-[11px] text-slate-500 dark:text-slate-400">{task.assigneeName} · Due {task.fullDueDate}</span>
                       </div>
                     </div>
@@ -1799,6 +1875,20 @@ export default function DashboardPage() {
                         {task.status}
                       </Badge>
                       <span className="text-cyan-400 font-bold text-xs">⚡ {task.aiScore}</span>
+                      <button
+                        onClick={() => setEditingTask({ ...task })}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                        title="Edit Task"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(task.id)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        title="Delete Task"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -2682,33 +2772,45 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                <div className="flex items-center justify-between pt-3 border-t border-slate-800">
                   <button
                     type="button"
-                    onClick={() => setEditingTask(null)}
-                    className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all font-semibold"
+                    disabled={isDeletingTask}
+                    onClick={() => handleDeleteTask(editingTask.id)}
+                    className="px-3.5 py-2 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all font-semibold flex items-center gap-1.5 text-xs border border-rose-500/20 cursor-pointer disabled:opacity-50"
                   >
-                    Cancel
+                    {isDeletingTask ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    <span>Delete Task</span>
                   </button>
-                  <Button
-                    type="submit"
-                    variant="gradient"
-                    size="sm"
-                    disabled={isUpdatingTask || !editingTask.title.trim()}
-                    className="px-5 py-2 flex items-center gap-2"
-                  >
-                    {isUpdatingTask ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>Updating Task...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Save Changes & Update Date</span>
-                      </>
-                    )}
-                  </Button>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setEditingTask(null)}
+                      className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all font-semibold"
+                    >
+                      Cancel
+                    </button>
+                    <Button
+                      type="submit"
+                      variant="gradient"
+                      size="sm"
+                      disabled={isUpdatingTask || !editingTask.title.trim()}
+                      className="px-5 py-2 flex items-center gap-2"
+                    >
+                      {isUpdatingTask ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Updating Task...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Save Changes & Update Date</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </form>
             </motion.div>
