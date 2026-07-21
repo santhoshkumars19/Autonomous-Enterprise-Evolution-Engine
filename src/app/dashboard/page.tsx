@@ -688,7 +688,7 @@ export default function DashboardPage() {
         <div className="space-y-8">
           {/* KPI METRICS & BUSINESS HEALTH SCORE BAR */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <Card className="lg:col-span-1 border-indigo-500/30 bg-white dark:bg-gradient-to-br dark:from-indigo-950/20 dark:via-slate-900/60 dark:to-purple-950/20 shadow-md flex flex-col justify-between">
+            <Card className="lg:col-span-1 border-indigo-500/30 bg-white dark:bg-slate-900 dark:bg-gradient-to-br dark:from-indigo-950 dark:via-slate-900 dark:to-purple-950 shadow-md flex flex-col justify-between">
               <div className="p-5">
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   Business Health Score
@@ -732,7 +732,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              <div className="bg-indigo-50/80 dark:bg-indigo-500/10 px-4 py-2 border-t border-indigo-100 dark:border-indigo-500/20 text-[11px] text-indigo-600 dark:text-indigo-400 text-center font-medium">
+              <div className="bg-indigo-50/80 dark:bg-indigo-950/80 px-4 py-2 border-t border-indigo-100 dark:border-indigo-500/30 text-[11px] text-indigo-600 dark:text-indigo-300 text-center font-medium">
                 Live AI Health Score
               </div>
             </Card>
@@ -884,14 +884,14 @@ export default function DashboardPage() {
 
           {/* CEO STRATEGIC RECOMMENDATIONS PANEL */}
           {ceoRecommendations.length > 0 && (
-            <Card className="p-5 border-purple-500/30 bg-purple-50/80 dark:bg-gradient-to-r dark:from-purple-950/40 dark:via-slate-900 dark:to-indigo-950/30 shadow-lg space-y-3">
+            <Card className="p-5 border-purple-500/30 bg-purple-50/80 dark:bg-slate-900 dark:bg-gradient-to-r dark:from-purple-950 dark:via-slate-900 dark:to-indigo-950 dark:border-purple-500/40 shadow-lg space-y-3">
               <div className="flex items-center gap-2">
                 <BrainCircuit className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 <h4 className="font-bold text-sm text-slate-900 dark:text-white">AI CEO Industry Recommendations for {liveData.companyName}</h4>
               </div>
               <div className="space-y-2 text-xs">
                 {ceoRecommendations.map((rec, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white/90 dark:bg-slate-900/60 border border-purple-100 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm">
+                  <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white/90 dark:bg-slate-900/90 border border-purple-100 dark:border-slate-800 text-slate-800 dark:text-slate-100 shadow-sm">
                     <span className="text-purple-600 dark:text-purple-400 font-bold shrink-0">#{i + 1}</span>
                     <p className="leading-relaxed">{rec}</p>
                   </div>
@@ -952,7 +952,7 @@ export default function DashboardPage() {
                 key={i}
                 className={`p-4 space-y-2 flex flex-col justify-between transition-all ${
                   item.isUser
-                    ? "border-purple-500/80 bg-purple-50/70 dark:bg-gradient-to-b dark:from-purple-950/40 dark:to-slate-900/90 shadow-xl shadow-purple-500/10 ring-1 ring-purple-500/50"
+                    ? "border-purple-500/80 bg-purple-50/70 dark:bg-slate-900 dark:bg-gradient-to-b dark:from-purple-950 dark:to-slate-900 shadow-xl shadow-purple-500/20 ring-1 ring-purple-500/50"
                     : "border-slate-200 dark:border-slate-800"
                 }`}
               >
@@ -960,7 +960,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-900 dark:text-white">{item.name}</span>
                     {item.isUser && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-700 dark:text-purple-300 font-mono">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 dark:bg-purple-500/30 text-purple-700 dark:text-purple-300 font-mono">
                         YOU
                       </span>
                     )}
