@@ -352,6 +352,7 @@ export default function DashboardPage() {
     toggleTaskStatus,
     addNewTask,
     updateTask,
+    deleteTask,
     triggerAgentAction,
     generatedStrategy,
     generateNewStrategy,
@@ -394,7 +395,7 @@ export default function DashboardPage() {
 
   const [dynamicCompetitors, setDynamicCompetitors] = useState<any[]>(competitorData);
   const [dynamicFeed, setDynamicFeed] = useState<any[]>(competitorActivitiesList);
-  const [dynamicTasksList, setDynamicTasksList] = useState<any[]>(taskPlannerDataset);
+  const [dynamicTasksList, setDynamicTasksList] = useState<any[]>([]);
   const [ceoRecommendations, setCeoRecommendations] = useState<string[]>([]);
   const [industryTrendsState, setIndustryTrendsState] = useState<{ metrics: any[]; topics: string[] } | null>(null);
 
@@ -695,6 +696,7 @@ export default function DashboardPage() {
     }
 
     setDynamicTasksList((prev) => prev.filter((t) => t.id !== taskId));
+    deleteTask(taskId);
     setEditingTask(null);
     setIsDeletingTask(false);
     setPdfToast({ type: "success", message: "Task deleted successfully!" });
@@ -1903,18 +1905,15 @@ export default function DashboardPage() {
             const monthName = calendarDate.toLocaleString("default", { month: "long" });
             const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
-            const allCalendarTasks = [
-              ...tasks,
-              ...dynamicTasksList.map(t => ({
-                id: t.id,
-                title: t.title,
-                category: "Strategy",
-                priority: (t.priority === "Critical" ? "Critical" : t.priority === "High" ? "High" : "Medium") as any,
-                status: (t.status === "Done" || t.status === "Completed" ? "Completed" : t.status === "In Progress" ? "In Progress" : "Pending") as any,
-                assigneeAgent: t.assigneeName,
-                dueDate: t.dueDate,
-              })),
-            ];
+            const allCalendarTasks = dynamicTasksList.map((t) => ({
+              id: t.id,
+              title: t.title,
+              category: t.category || "Strategy",
+              priority: (t.priority === "Critical" ? "Critical" : t.priority === "High" ? "High" : "Medium") as any,
+              status: (t.status === "Done" || t.status === "Completed" ? "Completed" : t.status === "In Progress" ? "In Progress" : "Pending") as any,
+              assigneeAgent: t.assigneeName,
+              dueDate: t.dueDate,
+            }));
 
             const getTasksForDay = (dayNum: number) => {
               const dayStr = String(dayNum).padStart(2, "0");

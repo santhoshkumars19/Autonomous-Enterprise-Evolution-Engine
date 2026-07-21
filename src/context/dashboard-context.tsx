@@ -53,8 +53,9 @@ interface DashboardContextType {
   activeTab: string;
   setActiveTab: (tabId: string) => void;
   toggleTaskStatus: (taskId: string) => void;
-  addNewTask: (task: Omit<TaskItem, "id">) => void;
+  addNewTask: (task: TaskItem | Omit<TaskItem, "id">) => void;
   updateTask: (taskId: string, updates: Partial<TaskItem>) => void;
+  deleteTask: (taskId: string) => void;
   triggerAgentAction: (agentId: string) => void;
   generatedStrategy: string | null;
   generateNewStrategy: (focusArea: string) => void;
@@ -358,7 +359,7 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const [modules] = useState<ModuleData[]>(initialModules);
   const [agents, setAgents] = useState<AIAgent[]>(initialAgents);
-  const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [competitors] = useState<Competitor[]>(initialCompetitors);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [generatedStrategy, setGeneratedStrategy] = useState<string | null>(null);
@@ -381,12 +382,22 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const addNewTask = (newTask: Omit<TaskItem, "id">) => {
+  const addNewTask = (newTask: TaskItem | Omit<TaskItem, "id">) => {
     const item: TaskItem = {
       ...newTask,
-      id: `t-${Date.now()}`,
+      id: (newTask as any).id || `t-${Date.now()}`,
     };
     setTasks((prev) => [item, ...prev]);
+  };
+
+  const updateTask = (taskId: string, updates: Partial<TaskItem>) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
+    );
+  };
+
+  const deleteTask = (taskId: string) => {
+    setTasks((prev) => prev.filter((t) => t.id !== taskId));
   };
 
   const triggerAgentAction = (agentId: string) => {
@@ -421,7 +432,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       // Offline or database disconnected fallback
     }
 
-      setTimeout(() => {
+    setTimeout(() => {
       setGeneratedStrategy(
         `[STRATEGIC INITIATIVE ALPHA - ${focusArea.toUpperCase()}]\n\n` +
           `1. Dynamic Revenue Expansion: Implement algorithmic pricing tiers targeting high-growth enterprise seats to increase ARPU by 28% within 90 days.\n` +
@@ -431,12 +442,6 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       );
       setIsGeneratingStrategy(false);
     }, 1000);
-  };
-
-  const updateTask = (taskId: string, updates: Partial<TaskItem>) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
-    );
   };
 
   return (
@@ -451,6 +456,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         toggleTaskStatus,
         addNewTask,
         updateTask,
+        deleteTask,
         triggerAgentAction,
         generatedStrategy,
         generateNewStrategy,
