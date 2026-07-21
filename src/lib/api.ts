@@ -301,3 +301,39 @@ export const chatApi = {
   history: (token: string, limit = 50) =>
     apiFetch<{ success: boolean; messages: unknown[] }>(`/api/chat/history?limit=${limit}`, { token }),
 };
+
+// ─── Feedback & Bug Report ───────────────────────────────────────────────────
+export interface FeedbackItem {
+  id: string;
+  userId?: string;
+  userName: string;
+  userEmail: string;
+  companyName: string;
+  category: "bug" | "feature" | "ui" | "performance" | "other";
+  priority: "low" | "medium" | "high" | "critical";
+  subject: string;
+  description: string;
+  status: "pending" | "under_review" | "resolved" | "closed";
+  createdAt: string;
+  adminReply?: string;
+  repliedAt?: string;
+}
+
+export const feedbackApi = {
+  submit: (token: string, data: Partial<FeedbackItem>) =>
+    apiFetch<{ success: boolean; feedback: FeedbackItem }>("/api/feedback", {
+      method: "POST",
+      token,
+      body: JSON.stringify(data),
+    }),
+
+  list: (token: string) =>
+    apiFetch<{ success: boolean; feedbackList: FeedbackItem[] }>("/api/feedback", { token }),
+
+  adminReply: (token: string, feedbackId: string, data: { reply: string; status?: string }) =>
+    apiFetch<{ success: boolean; feedback: FeedbackItem }>(`/api/feedback/${feedbackId}/reply`, {
+      method: "POST",
+      token,
+      body: JSON.stringify(data),
+    }),
+};

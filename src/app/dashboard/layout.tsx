@@ -30,6 +30,7 @@ import {
   ChevronRight,
   Building2,
   Layers,
+  MessageSquarePlus,
 } from "lucide-react";
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import { AuthProvider, useAuth } from "@/components/auth-provider";
@@ -133,6 +134,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const systemNavItems = [
     { name: "Business Setup", href: "/business-setup", icon: Building2 },
     { name: "Daily Business Data Entry", href: "/dashboard/business-operations", icon: Layers },
+    { name: "Feedback & Bug Report", href: "/feedback", icon: MessageSquarePlus },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
     { name: "User Profile", href: "/dashboard/profile", icon: User },
   ];

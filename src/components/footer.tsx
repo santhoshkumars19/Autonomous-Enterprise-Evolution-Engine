@@ -1,11 +1,11 @@
-﻿import React from "react";
+import React from "react";
 import Link from "next/link";
 
 export function Footer() {
   return (
     <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/80 text-slate-600 dark:text-slate-400 py-8 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
-        {/* Centered Navigation Links: About Us, Terms & Conditions, Privacy Policy */}
+        {/* Centered Navigation Links: About Us, Terms & Conditions, Privacy Policy, Feedback & Bug Report */}
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-medium">
           <Link href="/about" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-colors">
             About Us
@@ -15,6 +15,10 @@ export function Footer() {
           </Link>
           <Link href="/privacy" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-colors">
             Privacy Policy
+          </Link>
+          <Link href="/feedback" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-colors flex items-center gap-1">
+            <span>Feedback & Bug Report</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">Support</span>
           </Link>
         </div>
 

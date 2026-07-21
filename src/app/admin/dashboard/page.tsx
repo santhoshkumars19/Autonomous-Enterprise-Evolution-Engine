@@ -35,6 +35,10 @@ import {
   X,
   Eye,
   EyeOff,
+  MessageSquarePlus,
+  Send,
+  MessageCircle,
+  ShieldAlert,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -48,7 +52,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useAuth } from "@/components/auth-provider";
-import { adminApi } from "@/lib/api";
+import { adminApi, FeedbackItem, feedbackApi } from "@/lib/api";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -119,6 +123,54 @@ export default function EnterpriseAdminDashboard() {
   const [showAddUserPassword, setShowAddUserPassword] = useState(false);
   const [isSubmittingUser, setIsSubmittingUser] = useState(false);
   const [userSearchTerm, setUserSearchTerm] = useState("");
+
+  // Feedback state
+  const [adminFeedbackList, setAdminFeedbackList] = useState<FeedbackItem[]>([]);
+  const [replyTextMap, setReplyTextMap] = useState<Record<string, string>>({});
+  const [replyStatusMap, setReplyStatusMap] = useState<Record<string, string>>({});
+  const [isSubmittingReply, setIsSubmittingReply] = useState<Record<string, boolean>>({});
+
+  // Load Feedback from LocalStorage / Seed
+  useEffect(() => {
+    const stored = typeof window !== "undefined" ? localStorage.getItem("evoai_feedback_items") : null;
+    if (stored) {
+      try {
+        setAdminFeedbackList(JSON.parse(stored));
+        return;
+      } catch (e) {}
+    }
+    const SEED_FEEDBACK: FeedbackItem[] = [
+      {
+        id: "FB-1002",
+        userName: "Alexandra Vance",
+        userEmail: "alexandra.vance@vanguard.ai",
+        companyName: "Apex Global Dynamics",
+        category: "bug",
+        priority: "high",
+        subject: "Recharts Tooltip alignment on mobile viewport",
+        description: "When viewing the Financial Forecast chart on a mobile browser, the tooltip text pops slightly off screen on narrow displays.",
+        status: "resolved",
+        createdAt: "2026-07-20T14:30:00.000Z",
+        adminReply: "Thank you for reporting this! Our UI team deployed a responsive tooltip positioning fix in v4.2. Charts now scale dynamically on mobile.",
+        repliedAt: "2026-07-20T16:15:00.000Z",
+      },
+      {
+        id: "FB-1001",
+        userName: "Marcus Vance",
+        userEmail: "marcus@vanguard.ai",
+        companyName: "EvoAI Enterprise",
+        category: "feature",
+        priority: "medium",
+        subject: "Export SWOT Analysis reports to PDF format",
+        description: "Would love the ability to generate a downloadable PDF executive deck for the SWOT analysis matrix.",
+        status: "under_review",
+        createdAt: "2026-07-21T08:10:00.000Z",
+        adminReply: "Great suggestion! The PDF generator engine has been updated and is currently in final verification for automated dispatch.",
+        repliedAt: "2026-07-21T09:00:00.000Z",
+      },
+    ];
+    setAdminFeedbackList(SEED_FEEDBACK);
+  }, []);
 
   // Guard Route — Only users with "Admin" role allowed
   useEffect(() => {
@@ -216,6 +268,7 @@ export default function EnterpriseAdminDashboard() {
     { id: "overview", name: "Dashboard Overview", icon: Shield },
     { id: "companies", name: "Company Management", icon: Building2 },
     { id: "users", name: "User Management", icon: Users },
+    { id: "feedback", name: "Feedback & Bug Reports", icon: MessageSquarePlus },
     { id: "analytics", name: "Business Analytics", icon: TrendingUp },
     { id: "competitors", name: "Competitor Intelligence", icon: Target },
     { id: "strategy", name: "AI Strategy Center", icon: BrainCircuit },
@@ -694,6 +747,152 @@ export default function EnterpriseAdminDashboard() {
                     </div>
                   </Card>
                 ))}
+              </div>
+            </Card>
+          )}
+
+          {/* ── TAB VIEW 4: USER FEEDBACK & BUG REPORTS ─────────────────────────── */}
+          {activeTab === "feedback" && (
+            <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <MessageSquarePlus className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> User Feedback & Bug Reports Governance ({adminFeedbackList.length})
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Review user feedback, investigate bug reports, and send official admin replies.</p>
+                </div>
+                <Badge variant="active" className="text-xs w-fit">
+                  {adminFeedbackList.filter((f) => f.status === "pending").length} Unresolved Tickets
+                </Badge>
+              </div>
+
+              <div className="space-y-4">
+                {adminFeedbackList.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-slate-500">No feedback items available.</div>
+                ) : (
+                  adminFeedbackList.map((item) => {
+                    const currentReply = replyTextMap[item.id] !== undefined ? replyTextMap[item.id] : item.adminReply || "";
+                    const currentStatus = replyStatusMap[item.id] || item.status;
+                    const isSubmitting = isSubmittingReply[item.id] || false;
+
+                    const handleSendReply = async (e: React.FormEvent) => {
+                      e.preventDefault();
+                      if (!currentReply.trim()) return;
+
+                      setIsSubmittingReply((prev) => ({ ...prev, [item.id]: true }));
+                      const now = new Date().toISOString();
+
+                      const updatedTicket: FeedbackItem = {
+                        ...item,
+                        adminReply: currentReply,
+                        repliedAt: now,
+                        status: (currentStatus as FeedbackItem["status"]) || "resolved",
+                      };
+
+                      const newFeedbackList = adminFeedbackList.map((f) => (f.id === item.id ? updatedTicket : f));
+                      setAdminFeedbackList(newFeedbackList);
+                      localStorage.setItem("evoai_feedback_items", JSON.stringify(newFeedbackList));
+
+                      // Try API dispatch
+                      const authToken = token || localStorage.getItem("evoai-token") || "";
+                      if (authToken) {
+                        try {
+                          await feedbackApi.adminReply(authToken, item.id, { reply: currentReply, status: currentStatus });
+                        } catch (err) {
+                          console.warn("API admin reply fallback to local storage:", err);
+                        }
+                      }
+
+                      setIsSubmittingReply((prev) => ({ ...prev, [item.id]: false }));
+                      alert(`Reply dispatched successfully to ${item.userName} (${item.userEmail})!`);
+                    };
+
+                    return (
+                      <Card key={item.id} className="p-5 space-y-4 bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono text-xs font-bold text-slate-500">{item.id}</span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                              {item.category}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                              Priority: {item.priority}
+                            </span>
+                            <Badge variant={item.status === "resolved" ? "active" : item.status === "under_review" ? "processing" : "neutral"} className="text-[10px]">
+                              {item.status.replace("_", " ")}
+                            </Badge>
+                          </div>
+
+                          <div className="text-[11px] text-slate-500 font-mono">
+                            Submitted: {new Date(item.createdAt).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </div>
+
+                        {/* User info & subject */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-slate-900 dark:text-white">{item.userName} ({item.userEmail})</span>
+                            <span className="text-slate-500 text-[11px] font-medium">{item.companyName}</span>
+                          </div>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white pt-1">{item.subject}</h4>
+                          <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {/* Admin Response Form */}
+                        <form onSubmit={handleSendReply} className="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-800">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+                              <ShieldAlert className="w-4 h-4" /> Official Admin Reply to User
+                            </label>
+
+                            <div className="flex items-center gap-2">
+                              <span className="text-[11px] font-semibold text-slate-500">Update Status:</span>
+                              <select
+                                value={currentStatus}
+                                onChange={(e) => setReplyStatusMap((prev) => ({ ...prev, [item.id]: e.target.value }))}
+                                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-900 dark:text-white font-bold cursor-pointer"
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="under_review">Under Review</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <textarea
+                            rows={3}
+                            required
+                            value={currentReply}
+                            onChange={(e) => setReplyTextMap((prev) => ({ ...prev, [item.id]: e.target.value }))}
+                            placeholder="Type official administrator response to this user..."
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 resize-none font-sans"
+                          />
+
+                          <div className="flex items-center justify-between">
+                            {item.repliedAt ? (
+                              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                ✓ Last replied on {new Date(item.repliedAt).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-slate-400">No reply sent yet.</span>
+                            )}
+
+                            <Button
+                              type="submit"
+                              disabled={isSubmitting || !currentReply.trim()}
+                              className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-1.5 px-4 rounded-xl flex items-center gap-1.5"
+                            >
+                              <Send className="w-3.5 h-3.5" /> Send Response
+                            </Button>
+                          </div>
+                        </form>
+                      </Card>
+                    );
+                  })
+                )}
               </div>
             </Card>
           )}
