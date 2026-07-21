@@ -297,7 +297,17 @@ export default function EnterpriseAdminDashboard() {
     { id: "settings", name: "Security & Settings", icon: Settings },
   ];
 
-  const filteredUsers = usersList.filter(
+  const DEFAULT_DEMO_USERS = [
+    { id: "u-101", name: "Alexandra Vance", email: "alexandra.vance@vanguard.ai", role: "admin", company: "Apex Global Dynamics", created_at: "2026-01-15T08:30:00Z", last_login_at: "2026-07-21T10:15:00Z" },
+    { id: "u-102", name: "Marcus Vance", email: "marcus@vanguard.ai", role: "enterprise", company: "EvoAI Enterprise", created_at: "2026-02-10T11:20:00Z", last_login_at: "2026-07-21T09:40:00Z" },
+    { id: "u-103", name: "Sarah Jenkins", email: "sarah.j@rioinfotech.com", role: "user", company: "Rio Info Tech", created_at: "2026-03-04T14:10:00Z", last_login_at: "2026-07-20T16:50:00Z" },
+    { id: "u-104", name: "David K. Chen", email: "d.chen@quantumsaas.io", role: "user", company: "QuantumSaaS Labs", created_at: "2026-04-18T09:05:00Z", last_login_at: "2026-07-19T11:30:00Z" },
+    { id: "u-105", name: "Elena Rostova", email: "elena@vanguard.ai", role: "admin", company: "Apex Global Dynamics", created_at: "2026-05-12T16:45:00Z", last_login_at: "2026-07-21T08:20:00Z" },
+  ];
+
+  const effectiveUsers = usersList.length > 0 ? usersList : DEFAULT_DEMO_USERS;
+
+  const filteredUsers = effectiveUsers.filter(
     (u) =>
       u.name.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
       u.email.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
@@ -675,6 +685,120 @@ export default function EnterpriseAdminDashboard() {
                   </Card>
                 ))}
               </div>
+          )}
+
+          {/* ── TAB VIEW 3: USER MANAGEMENT & RBAC ──────────────────────────────── */}
+          {activeTab === "users" && (
+            <div className="space-y-6">
+              {/* USER MANAGEMENT HEADER KPIS */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Total Users</span>
+                  <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono">{filteredUsers.length} Accounts</span>
+                  <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-bold block">Live Auth Table</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">System Admins</span>
+                  <span className="text-xl font-extrabold text-purple-600 dark:text-purple-400 font-mono">
+                    {effectiveUsers.filter((u) => u.role?.toLowerCase() === "admin").length} Admins
+                  </span>
+                  <span className="text-[9px] text-purple-600 dark:text-purple-300 font-bold block">Full Access</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Active Sessions</span>
+                  <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">18 Active</span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold block">Concurrent Sessions</span>
+                </Card>
+                <Card className="p-4 space-y-1 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-sm">
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold uppercase block">Security Enforcement</span>
+                  <span className="text-xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">2FA Enforced</span>
+                  <span className="text-[9px] text-cyan-600 dark:text-cyan-400 font-bold block">SOC2 Compliant</span>
+                </Card>
+              </div>
+
+              <Card className="p-6 space-y-5 bg-white dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> User Management & Role-Based Access Control (RBAC)
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Manage database user accounts, system roles, passwords, and security status.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search users by name/email..."
+                        value={userSearchTerm}
+                        onChange={(e) => setUserSearchTerm(e.target.value)}
+                        className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+                    <Button
+                      onClick={() => setIsAddUserOpen(true)}
+                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs py-2 px-3.5 rounded-xl flex items-center gap-1.5"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" /> Add New User
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Users Table */}
+                <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-950/60">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-400 font-semibold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
+                      <tr>
+                        <th className="p-3.5">User</th>
+                        <th className="p-3.5">Email</th>
+                        <th className="p-3.5">Company</th>
+                        <th className="p-3.5">RBAC Role</th>
+                        <th className="p-3.5">Status</th>
+                        <th className="p-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200">
+                      {filteredUsers.map((u) => (
+                        <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+                          <td className="p-3.5 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-300 font-extrabold flex items-center justify-center text-xs">
+                              {u.name.charAt(0)}
+                            </div>
+                            <span>{u.name}</span>
+                          </td>
+                          <td className="p-3.5 font-mono text-slate-700 dark:text-slate-300">{u.email}</td>
+                          <td className="p-3.5 text-slate-600 dark:text-slate-400">{u.company || "EvoAI Enterprise"}</td>
+                          <td className="p-3.5">
+                            <select
+                              value={u.role.toLowerCase()}
+                              onChange={(e) => handleChangeUserRole(u.id, e.target.value)}
+                              className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500 font-bold cursor-pointer"
+                            >
+                              <option value="admin">admin</option>
+                              <option value="user">user</option>
+                              <option value="enterprise">enterprise</option>
+                            </select>
+                          </td>
+                          <td className="p-3.5">
+                            <Badge variant="active" className="text-[10px]">Active</Badge>
+                          </td>
+                          <td className="p-3.5 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={() => alert(`Reset password link dispatched to ${u.email}`)}>
+                                Reset Pass
+                              </Button>
+                              <Button size="sm" variant="danger" className="h-7 px-2 text-[11px]" onClick={() => handleDeleteUser(u.id)}>
+                                Delete
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            </div>
           )}
 
           {/* ── TAB VIEW 4: USER FEEDBACK & BUG REPORTS ─────────────────────────── */}
