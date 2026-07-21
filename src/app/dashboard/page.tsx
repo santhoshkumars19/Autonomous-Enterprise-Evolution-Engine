@@ -2241,7 +2241,7 @@ export default function DashboardPage() {
                     { id: `ai-${Date.now()}`, sender: "ai" as const, text: replyText, time: now },
                   ]);
                 }}
-                className="py-1.5 px-3.5 rounded-full border border-slate-700 hover:border-indigo-500 bg-slate-900/60 hover:bg-slate-900 text-xs font-medium text-slate-300 hover:text-white transition-all text-left"
+                className="py-1.5 px-3.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-indigo-500 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-all text-left shadow-sm"
               >
                 {promptText}
               </button>
@@ -2249,18 +2249,18 @@ export default function DashboardPage() {
           </div>
 
           {/* CHAT CONTAINER CARD */}
-          <Card className="p-0 border-slate-800 bg-slate-950 overflow-hidden shadow-2xl flex flex-col h-[520px]">
+          <Card className="p-0 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden shadow-2xl flex flex-col h-[520px]">
             {/* TOP BAR */}
-            <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+            <div className="p-4 bg-slate-50/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg">
-                  <div className="h-full w-full rounded-[10px] bg-slate-950 flex items-center justify-center">
-                    <BrainCircuit className="w-5 h-5 text-indigo-400" />
+                  <div className="h-full w-full rounded-[10px] bg-white dark:bg-slate-950 flex items-center justify-center">
+                    <BrainCircuit className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-white">A3E AI Advisor</h3>
-                  <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">A3E AI Advisor</h3>
+                  <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span>Online • Powered by GPT-4 + Business Intelligence</span>
                   </div>
@@ -2280,7 +2280,7 @@ export default function DashboardPage() {
                       },
                     ])
                   }
-                  className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                  className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                   title="Reset Conversation"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -2295,19 +2295,19 @@ export default function DashboardPage() {
                   <div
                     className={`max-w-2xl p-4 rounded-2xl space-y-2 ${
                       msg.sender === "user"
-                        ? "bg-indigo-600 text-white rounded-br-none"
-                        : "bg-slate-900 border border-slate-800 text-slate-200 rounded-bl-none"
+                        ? "bg-indigo-600 text-white rounded-br-none shadow-sm"
+                        : "bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm"
                     }`}
                   >
                     <div className="whitespace-pre-wrap">{msg.text}</div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-1">
                       <span>{msg.time}</span>
                       {msg.sender === "ai" && (
                         <div className="flex items-center gap-2">
-                          <button onClick={() => navigator.clipboard.writeText(msg.text)} className="hover:text-white" title="Copy Text">
+                          <button onClick={() => navigator.clipboard.writeText(msg.text)} className="hover:text-slate-900 dark:hover:text-white" title="Copy Text">
                             📋
                           </button>
-                          <button className="hover:text-white" title="Good Response">
+                          <button className="hover:text-slate-900 dark:hover:text-white" title="Good Response">
                             👍
                           </button>
                         </div>
@@ -2319,7 +2319,7 @@ export default function DashboardPage() {
             </div>
 
             {/* CHAT INPUT BAR CONTAINER */}
-            <div className="p-4 bg-slate-900/90 border-t border-slate-800 space-y-2">
+            <div className="p-4 bg-slate-50/90 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800 space-y-2">
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
@@ -2359,13 +2359,13 @@ export default function DashboardPage() {
                 className="flex items-center gap-3"
               >
                 <div className="relative flex-1">
-                  <Zap className="w-4 h-4 text-cyan-400 absolute left-3.5 top-3.5" />
+                  <Zap className="w-4 h-4 text-cyan-600 dark:text-cyan-400 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Ask your AI CEO anything about your business..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <button
@@ -2376,7 +2376,7 @@ export default function DashboardPage() {
                 </button>
               </form>
 
-              <div className="text-[10px] text-slate-500 text-center">
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 text-center">
                 AI responses are based on your business data • Always verify critical decisions
               </div>
             </div>
