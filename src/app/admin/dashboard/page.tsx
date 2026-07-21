@@ -33,6 +33,8 @@ import {
   BarChart3,
   Menu,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -114,6 +116,7 @@ export default function EnterpriseAdminDashboard() {
   // User Management Modal state
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [newUserForm, setNewUserForm] = useState({ name: "", email: "", password: "", company: "", role: "user" });
+  const [showAddUserPassword, setShowAddUserPassword] = useState(false);
   const [isSubmittingUser, setIsSubmittingUser] = useState(false);
   const [userSearchTerm, setUserSearchTerm] = useState("");
 
@@ -770,14 +773,29 @@ export default function EnterpriseAdminDashboard() {
 
               <div className="space-y-1">
                 <label className="font-semibold text-slate-700 dark:text-slate-300">Initial Password *</label>
-                <input
-                  type="password"
-                  required
-                  value={newUserForm.password}
-                  onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
-                  placeholder="••••••••"
-                  className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
-                />
+                <div className="relative w-full">
+                  <input
+                    type={showAddUserPassword ? "text" : "password"}
+                    required
+                    value={newUserForm.password}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                    placeholder="••••••••"
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl pl-3 pr-10 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowAddUserPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none focus:text-purple-500 transition-colors p-0.5"
+                    aria-label={showAddUserPassword ? "Hide password" : "Show password"}
+                    title={showAddUserPassword ? "Hide password" : "Show password"}
+                  >
+                    {showAddUserPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-1">
