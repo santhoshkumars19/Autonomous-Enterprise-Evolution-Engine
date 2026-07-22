@@ -323,6 +323,12 @@ export const chatApi = {
 
   history: (token: string, limit = 50) =>
     apiFetch<{ success: boolean; messages: unknown[] }>(`/api/chat/history?limit=${limit}`, { token }),
+
+  suggestedQuestions: (token: string) =>
+    apiFetch<{ success: boolean; industry: string; businessType: string; companyName: string; questions: string[] }>(
+      "/api/chat/suggested-questions",
+      { token }
+    ),
 };
 
 // ─── Feedback & Bug Report ───────────────────────────────────────────────────

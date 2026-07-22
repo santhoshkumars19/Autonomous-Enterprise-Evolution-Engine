@@ -395,6 +395,71 @@ function getAISuggestedTasks(industry: string, businessType: string) {
   }
 }
 
+function getIndustrySuggestedChatQuestions(industry: string, businessType: string): string[] {
+  const ind = (industry || "").toLowerCase();
+  const btype = (businessType || "").toLowerCase();
+
+  if (ind.includes("retail") || btype.includes("retail") || btype.includes("supermarket") || btype.includes("store")) {
+    return [
+      "How can I increase my monthly sales?",
+      "Which products should I restock?",
+      "How can I reduce inventory costs?",
+      "Who are my biggest competitors?",
+      "Which marketing campaign should I run this month?",
+      "How can I improve customer retention?",
+    ];
+  }
+  if (ind.includes("restaurant") || ind.includes("food") || btype.includes("restaurant") || btype.includes("cafe")) {
+    return [
+      "How can I increase weekend sales?",
+      "Which menu items are most profitable?",
+      "How can I reduce food waste?",
+      "What promotions should I run this week?",
+      "How can I lower delivery app commission costs?",
+      "How can I improve dining table turnover?",
+    ];
+  }
+  if (ind.includes("health") || ind.includes("hospital") || btype.includes("hospital") || btype.includes("clinic")) {
+    return [
+      "How can I improve patient satisfaction?",
+      "How can I reduce waiting time?",
+      "Which departments need improvement?",
+      "How can I optimize staff scheduling?",
+      "How can I accelerate insurance claim payouts?",
+      "What digital health investments should I prioritize?",
+    ];
+  }
+  if (ind.includes("manufactur") || btype.includes("factory") || btype.includes("industrial")) {
+    return [
+      "How can I improve overall equipment effectiveness (OEE)?",
+      "How can I reduce raw material scrap waste?",
+      "Which suppliers offer better volume discounts?",
+      "How can I optimize factory floor shift scheduling?",
+      "What automation upgrades will give the highest ROI?",
+      "How can I reduce energy consumption?",
+    ];
+  }
+  if (ind.includes("e-commerce") || btype.includes("e-commerce")) {
+    return [
+      "How can I lower checkout cart abandonment?",
+      "Which ad campaigns yield the highest ROAS?",
+      "How can I optimize warehouse fulfillment speed?",
+      "How can I increase customer lifetime value (LTV)?",
+      "What product bundles should I feature for peak sales?",
+      "How can I lower customer return rates?",
+    ];
+  }
+
+  return [
+    "How can I improve project delivery?",
+    "How can I reduce cloud infrastructure costs?",
+    "How can I increase client retention?",
+    "Which services should I promote?",
+    "How can I improve employee productivity?",
+    "What are the latest AI trends in IT?",
+  ];
+}
+
 export default function DashboardPage() {
   const {
     modules,
@@ -456,6 +521,8 @@ export default function DashboardPage() {
   const [businessTypeState, setBusinessTypeState] = useState<string>("B2B SaaS");
 
   const [chatInput, setChatInput] = useState("");
+  const [suggestedQuestionsList, setSuggestedQuestionsList] = useState<string[]>([]);
+  const [isSendingChat, setIsSendingChat] = useState(false);
   const [chatMessages, setChatMessages] = useState<
     Array<{ id: string; sender: "user" | "ai"; text: string; time: string }>
   >([
@@ -473,7 +540,7 @@ export default function DashboardPage() {
       if (!authToken) return;
       try {
         const { reportsApi, financialApi, competitorApi, tasksApi, chatApi } = await import("@/lib/api");
-        const [healthRes, swotRes, finRes, compRes, actRes, tasksRes, chatHistRes] = await Promise.all([
+        const [healthRes, swotRes, finRes, compRes, actRes, tasksRes, chatHistRes, sqRes] = await Promise.all([
           reportsApi.health(authToken).catch(() => null),
           reportsApi.swot(authToken).catch(() => null),
           financialApi.overview(authToken).catch(() => null),
@@ -481,7 +548,14 @@ export default function DashboardPage() {
           competitorApi.activity(authToken).catch(() => null),
           tasksApi.list(authToken).catch(() => null),
           chatApi.history(authToken).catch(() => null),
+          chatApi.suggestedQuestions(authToken).catch(() => null),
         ]);
+
+        if (sqRes?.success && Array.isArray(sqRes.questions) && sqRes.questions.length > 0) {
+          setSuggestedQuestionsList(sqRes.questions);
+          if (sqRes.industry) setIndustryState(sqRes.industry);
+          if (sqRes.businessType) setBusinessTypeState(sqRes.businessType);
+        }
 
         const analysis = (finRes as any)?.analysis || (healthRes as any)?.analysis;
         const companyName = (swotRes as any)?.companyName || user?.company || "Enterprise Company";
@@ -584,6 +658,43 @@ export default function DashboardPage() {
 
     fetchDashboardData();
   }, [token, user]);
+
+  const handleSendChatMessage = async (userText: string) => {
+    if (!userText.trim() || isSendingChat) return;
+    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const userMsg = { id: `u-${Date.now()}`, sender: "user" as const, text: userText, time: now };
+
+    setChatMessages((prev) => [...prev, userMsg]);
+    setIsSendingChat(true);
+
+    const authToken = token || (typeof window !== "undefined" ? localStorage.getItem("evoai-token") : null);
+    if (authToken) {
+      try {
+        const { chatApi } = await import("@/lib/api");
+        const res = await chatApi.send(authToken, { message: userText });
+        if (res?.success && res.response) {
+          setChatMessages((prev) => [
+            ...prev,
+            { id: `ai-${Date.now()}`, sender: "ai" as const, text: res.response, time: now },
+          ]);
+          setIsSendingChat(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("AI Chat API error, falling back to dynamic context:", err);
+      }
+    }
+
+    // Fallback response with live context telemetry
+    const fallbackAiMsg = {
+      id: `ai-${Date.now()}`,
+      sender: "ai" as const,
+      text: `📊 **Business Context & Data Analysis**\nBased on operational telemetry for **${liveData.companyName}** (${industryState} - ${businessTypeState}):\n- Recorded Revenue: **${liveData.kpis.revenue?.formatted || "$1.2M"}**\n- Business Health Score: **${liveData.healthScore}/100**\n\n🎯 **Actionable Recommendations**\n- **Short-Term Action**: Focus team capacity on high-margin product/service lines.\n- **Long-Term Strategy**: Deploy automated workflows to widen operating profit margins.\n\n⚠️ **Risks & Opportunities**\n- **Risk**: Price competition from regional peers.\n- **Opportunity**: Expanding customer retention by 15%.\n\n💡 **Follow-Up Questions You Might Want To Ask:**\n- How can we increase sales revenue for ${liveData.companyName}?\n- What operational spend can we reduce this month?\n- How does our pricing compare to top competitors?`,
+      time: now,
+    };
+    setChatMessages((prev) => [...prev, fallbackAiMsg]);
+    setIsSendingChat(false);
+  };
 
   // ── PDF generation state ────────────────────────────────────────────────────
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
@@ -2388,40 +2499,15 @@ export default function DashboardPage() {
 
           {/* QUICK PROMPT SUGGESTION PILLS */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {[
-              "Analyze our Q4 revenue forecast",
-              "What are the top business risks this month?",
-              "Compare our pricing vs competitors",
-              "Generate a board presentation summary",
-              "Identify top 5 growth opportunities",
-              "What should our marketing focus be?",
-            ].map((promptText, idx) => (
+            {(suggestedQuestionsList.length > 0
+              ? suggestedQuestionsList
+              : getIndustrySuggestedChatQuestions(industryState, businessTypeState)
+            ).map((promptText, idx) => (
               <button
                 key={idx}
-                onClick={() => {
-                  const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                  const userMsg = { id: `u-${Date.now()}`, sender: "user" as const, text: promptText, time: now };
-                  let replyText = "";
-
-                  if (promptText.includes("Q4 revenue forecast")) {
-                    replyText = "📊 **Q4 Revenue Forecast Analysis**:\n- Projected ARR: **$24.8M** (+38% YoY)\n- Highest Growth Driver: Enterprise Autonomous Tier (+52% yield expansion)\n- Churn Risk Buffer: Net Retention Rate at **118%**.";
-                  } else if (promptText.includes("business risks")) {
-                    replyText = "⚠️ **Top 5 Business Risk Telemetry**:\n1. Nexus AI APAC expansion push\n2. EU AI Act regulatory reporting deadlines\n3. Sales hiring bottleneck in EMEA\n4. Cloud infrastructure spend spikes\n5. Hyperscaler API pricing shifts.";
-                  } else if (promptText.includes("pricing vs competitors")) {
-                    replyText = "💰 **Pricing & Value Benchmarking**:\n- **A3E**: Entry $149/mo | Enterprise $360/mo\n- **TechNova**: Entry $199/mo | Enterprise $290/mo\n- **Nexus AI**: Entry $99/mo | Enterprise $240/mo (Aggressive pricing push)\n🎯 **Insight**: Our high retention rate proves $360/mo enterprise value metric is sustained.";
-                  } else if (promptText.includes("board presentation")) {
-                    replyText = "📄 **Q3 Board Executive Summary Deck**:\n- Revenue: **$4.82M** (+18.3% vs Q3 '23)\n- Net Profit: **$1.94M** (40.2% record margin)\n- Runway: **28 months** ($2.88M/mo burn rate)\n- Strategic Focus: Accelerate APAC Entry in Q4.";
-                  } else {
-                    replyText = `⚡ **Strategic Telemetry Response for "${promptText}"**:\n\n- Analyzing multi-channel metrics and agent logs...\n- Operational Score: **92/100**\n🎯 **Action Item:** Align C-suite automated task dispatches to capital allocation objectives.`;
-                  }
-
-                  setChatMessages((prev) => [
-                    ...prev,
-                    userMsg,
-                    { id: `ai-${Date.now()}`, sender: "ai" as const, text: replyText, time: now },
-                  ]);
-                }}
-                className="py-1.5 px-3.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-indigo-500 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-all text-left shadow-sm"
+                disabled={isSendingChat}
+                onClick={() => handleSendChatMessage(promptText)}
+                className="py-1.5 px-3.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-indigo-500 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-all text-left shadow-sm disabled:opacity-50 cursor-pointer"
               >
                 {promptText}
               </button>
@@ -2439,28 +2525,28 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">A3E AI Advisor</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">{liveData.companyName} AI Assistant</h3>
                   <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Online • Powered by GPT-4 + Business Intelligence</span>
+                    <span>Online • {industryState} Intelligence</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="gradient" className="text-[10px]">Context loaded</Badge>
+                <Badge variant="gradient" className="text-[10px]">Context Loaded ({industryState})</Badge>
                 <button
                   onClick={() =>
                     setChatMessages([
                       {
                         id: `m-${Date.now()}`,
                         sender: "ai",
-                        text: `- Faster VC funding traction (vs $120M Series C recovery)\n- Growing APAC presence\n\n🎯 **Recommendation:** Accelerate APAC entry before Nexus AI consolidates that market. Their new pricing suggests they're burning cash — your profitability is a strategic advantage.`,
+                        text: `👋 Hello! I am your C-Suite AI Business Intelligence Assistant for **${liveData.companyName}** (${industryState}). Ask me anything about revenue growth, cost optimization, market risks, or strategic recommendations!`,
                         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                       },
                     ])
                   }
-                  className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
                   title="Reset Conversation"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -2484,11 +2570,8 @@ export default function DashboardPage() {
                       <span>{msg.time}</span>
                       {msg.sender === "ai" && (
                         <div className="flex items-center gap-2">
-                          <button onClick={() => navigator.clipboard.writeText(msg.text)} className="hover:text-slate-900 dark:hover:text-white" title="Copy Text">
+                          <button onClick={() => navigator.clipboard.writeText(msg.text)} className="hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Copy Text">
                             📋
-                          </button>
-                          <button className="hover:text-slate-900 dark:hover:text-white" title="Good Response">
-                            👍
                           </button>
                         </div>
                       )}
@@ -2496,45 +2579,25 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ))}
+              {isSendingChat && (
+                <div className="flex justify-start">
+                  <div className="max-w-2xl p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 rounded-bl-none shadow-sm flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-spin" />
+                    <span>Analyzing business context & generating response...</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* CHAT INPUT BAR CONTAINER */}
             <div className="p-4 bg-slate-50/90 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800 space-y-2">
               <form
-                onSubmit={async (e) => {
+                onSubmit={(e) => {
                   e.preventDefault();
-                  if (!chatInput.trim()) return;
-                  const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                  const userText = chatInput;
+                  if (!chatInput.trim() || isSendingChat) return;
+                  const txt = chatInput;
                   setChatInput("");
-
-                  const userMsg = { id: `u-${Date.now()}`, sender: "user" as const, text: userText, time: now };
-                  setChatMessages((prev) => [...prev, userMsg]);
-
-                  const authToken = token || (typeof window !== "undefined" ? localStorage.getItem("evoai-token") : null);
-                  if (authToken) {
-                    try {
-                      const { chatApi } = await import("@/lib/api");
-                      const res = await chatApi.send(authToken, { message: userText });
-                      if (res?.success && res.response) {
-                        setChatMessages((prev) => [
-                          ...prev,
-                          { id: `ai-${Date.now()}`, sender: "ai" as const, text: res.response, time: now },
-                        ]);
-                        return;
-                      }
-                    } catch (err) {
-                      console.warn("AI Chat API error, falling back to dynamic context:", err);
-                    }
-                  }
-
-                  const fallbackAiMsg = {
-                    id: `ai-${Date.now()}`,
-                    sender: "ai" as const,
-                    text: `⚡ **Strategic Analysis for ${liveData.companyName}:** "${userText}"\n\n- Business Health Index: **${liveData.healthScore}/100**\n- Revenue Growth Trend: **${liveData.kpis.revenue?.formatted || "$2.84M"}**\n🎯 **Recommendation:** Executive AI Agents have synthesized your request into the **AI Task Planner**.`,
-                    time: now,
-                  };
-                  setChatMessages((prev) => [...prev, fallbackAiMsg]);
+                  handleSendChatMessage(txt);
                 }}
                 className="flex items-center gap-3"
               >
@@ -2544,20 +2607,22 @@ export default function DashboardPage() {
                     type="text"
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Ask your AI CEO anything about your business..."
-                    className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                    placeholder={`Ask AI CEO about ${liveData.companyName}...`}
+                    disabled={isSendingChat}
+                    className="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 disabled:opacity-50"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white flex items-center justify-center shadow-lg transition-all"
+                  disabled={isSendingChat}
+                  className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white flex items-center justify-center shadow-lg transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                 </button>
               </form>
 
               <div className="text-[10px] text-slate-500 dark:text-slate-400 text-center">
-                AI responses are based on your business data • Always verify critical decisions
+                AI responses are based on your business data ({industryState} - {businessTypeState})
               </div>
             </div>
           </Card>

@@ -119,4 +119,8 @@ export declare function getIndustryReports(ctx: CompanyContext): {
  * 8. AI System Prompt Adaptation
  */
 export declare function getIndustrySystemPrompt(ctx: CompanyContext): string;
+/**
+ * 9. Industry-Aware Suggested Questions
+ */
+export declare function getIndustrySuggestedQuestions(ctx: CompanyContext): string[];
 //# sourceMappingURL=industryEngine.d.ts.map

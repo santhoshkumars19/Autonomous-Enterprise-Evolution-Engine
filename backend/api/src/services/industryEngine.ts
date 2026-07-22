@@ -522,3 +522,72 @@ You MUST provide answers specifically tailored to the ${ctx.industry} industry a
 Use exact operational terminology appropriate for ${ctx.industry} (e.g. SKUs/footfall/inventory for Retail, food cost/table turnover for Restaurants, billable utilization/sprints/cloud cost for IT, bed occupancy/triage/claims for Hospitals).
 Always provide actionable, data-driven executive recommendations.`;
 }
+
+/**
+ * 9. Industry-Aware Suggested Questions
+ */
+export function getIndustrySuggestedQuestions(ctx: CompanyContext): string[] {
+  const ind = ctx.industry.toLowerCase();
+  const btype = ctx.businessType.toLowerCase();
+
+  if (ind.includes("retail") || btype.includes("retail") || btype.includes("supermarket") || btype.includes("store")) {
+    return [
+      "How can I increase my monthly sales?",
+      "Which products should I restock?",
+      "How can I reduce inventory costs?",
+      "Who are my biggest competitors?",
+      "Which marketing campaign should I run this month?",
+      "How can I improve customer retention?",
+    ];
+  }
+  if (ind.includes("restaurant") || ind.includes("food") || btype.includes("restaurant") || btype.includes("cafe")) {
+    return [
+      "How can I increase weekend sales?",
+      "Which menu items are most profitable?",
+      "How can I reduce food waste?",
+      "What promotions should I run this week?",
+      "How can I lower delivery app commission costs?",
+      "How can I improve dining table turnover?",
+    ];
+  }
+  if (ind.includes("health") || ind.includes("hospital") || btype.includes("hospital") || btype.includes("clinic")) {
+    return [
+      "How can I improve patient satisfaction?",
+      "How can I reduce waiting time?",
+      "Which departments need improvement?",
+      "How can I optimize staff scheduling?",
+      "How can I accelerate insurance claim payouts?",
+      "What digital health investments should I prioritize?",
+    ];
+  }
+  if (ind.includes("manufactur") || btype.includes("factory") || btype.includes("industrial")) {
+    return [
+      "How can I improve overall equipment effectiveness (OEE)?",
+      "How can I reduce raw material scrap waste?",
+      "Which suppliers offer better volume discounts?",
+      "How can I optimize factory floor shift scheduling?",
+      "What automation upgrades will give the highest ROI?",
+      "How can I reduce energy consumption?",
+    ];
+  }
+  if (ind.includes("e-commerce") || btype.includes("e-commerce")) {
+    return [
+      "How can I lower checkout cart abandonment?",
+      "Which ad campaigns yield the highest ROAS?",
+      "How can I optimize warehouse fulfillment speed?",
+      "How can I increase customer lifetime value (LTV)?",
+      "What product bundles should I feature for peak sales?",
+      "How can I lower customer return rates?",
+    ];
+  }
+
+  // IT / Software / Default B2B Tech
+  return [
+    "How can I improve project delivery?",
+    "How can I reduce cloud infrastructure costs?",
+    "How can I increase client retention?",
+    "Which services should I promote?",
+    "How can I improve employee productivity?",
+    "What are the latest AI trends in IT?",
+  ];
+}
