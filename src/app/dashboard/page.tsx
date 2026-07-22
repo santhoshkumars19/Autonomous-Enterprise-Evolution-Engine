@@ -2588,40 +2588,40 @@ export default function DashboardPage() {
       {/* ── ADD NEW AI TASK MODAL ────────────────────────────────────────────── */}
       <AnimatePresence>
         {isAddTaskOpen && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-5"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-5"
             >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+                  <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                     <Plus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">Create New AI Task</h3>
-                    <p className="text-xs text-slate-400">Dispatch an autonomous task to AI Executive Agents</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Create New AI Task</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Dispatch an autonomous task to AI Executive Agents</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsAddTaskOpen(false)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* AI Suggested Tasks for Business Type */}
-              <div className="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 space-y-2">
-                <div className="flex items-center justify-between text-indigo-300 font-semibold text-[11px]">
+              <div className="p-3.5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 space-y-2">
+                <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-semibold text-[11px]">
                   <span className="flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-cyan-400 animate-pulse" />
                     <span>AI Suggested Tasks for {businessTypeState || "Your Business"}</span>
                   </span>
-                  <span className="text-[10px] text-indigo-400/80 font-normal">Click to auto-fill</span>
+                  <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">Click to auto-fill</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {getAISuggestedTasks(industryState, businessTypeState).map((sug, idx) => (
@@ -2636,7 +2636,7 @@ export default function DashboardPage() {
                         assigneeAgent: sug.agent,
                         dueDate: sug.dueDate,
                       })}
-                      className="px-2.5 py-1 rounded-lg bg-slate-950/80 hover:bg-indigo-600/30 border border-indigo-500/20 hover:border-indigo-400/50 text-[10px] text-slate-300 hover:text-white transition-all flex items-center gap-1 text-left cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-950 hover:bg-indigo-100 dark:hover:bg-indigo-600/30 border border-indigo-200 dark:border-indigo-500/30 text-slate-700 dark:text-slate-200 hover:text-indigo-700 dark:hover:text-white transition-all flex items-center gap-1 text-left cursor-pointer font-medium shadow-sm"
                     >
                       <span>+ {sug.title}</span>
                     </button>
@@ -2647,46 +2647,46 @@ export default function DashboardPage() {
               <form onSubmit={handleCreateTaskSubmit} className="space-y-4 text-xs">
                 {/* Title */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-slate-300">Task Title *</label>
+                  <label className="font-semibold text-slate-700 dark:text-slate-200">Task Title *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Automate Cloud Cost Allocation Rules"
                     value={newTaskForm.title}
                     onChange={(e) => setNewTaskForm({ ...newTaskForm, title: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                   />
                 </div>
 
                 {/* Grid 2x2: Category & Priority */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Category</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Category</label>
                     <select
                       value={newTaskForm.category}
                       onChange={(e) => setNewTaskForm({ ...newTaskForm, category: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Strategy">Strategy</option>
-                      <option value="Finance">Finance</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Operations">Operations</option>
-                      <option value="Legal">Legal</option>
-                      <option value="Engineering">Engineering</option>
+                      <option value="Strategy" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Strategy</option>
+                      <option value="Finance" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Finance</option>
+                      <option value="Marketing" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Marketing</option>
+                      <option value="Operations" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Operations</option>
+                      <option value="Legal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Legal</option>
+                      <option value="Engineering" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Engineering</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Priority Level</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Priority Level</label>
                     <select
                       value={newTaskForm.priority}
                       onChange={(e) => setNewTaskForm({ ...newTaskForm, priority: e.target.value as any })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Critical">Critical</option>
-                      <option value="High">High</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Low">Low</option>
+                      <option value="Critical" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Critical</option>
+                      <option value="High" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">High</option>
+                      <option value="Medium" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Medium</option>
+                      <option value="Low" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Low</option>
                     </select>
                   </div>
                 </div>
@@ -2694,52 +2694,52 @@ export default function DashboardPage() {
                 {/* Grid 2x2: Status & Due Date */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Status</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Status</label>
                     <select
                       value={newTaskForm.status}
                       onChange={(e) => setNewTaskForm({ ...newTaskForm, status: e.target.value as any })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
+                      <option value="Pending" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Pending</option>
+                      <option value="In Progress" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">In Progress</option>
+                      <option value="Completed" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Completed</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Due Date</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Due Date</label>
                     <input
                       type="text"
                       placeholder="e.g. Today / Next Week"
                       value={newTaskForm.dueDate}
                       onChange={(e) => setNewTaskForm({ ...newTaskForm, dueDate: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     />
                   </div>
                 </div>
 
                 {/* Assignee Agent */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-slate-300">Assignee AI Agent</label>
+                  <label className="font-semibold text-slate-700 dark:text-slate-200">Assignee AI Agent</label>
                   <select
                     value={newTaskForm.assigneeAgent}
                     onChange={(e) => setNewTaskForm({ ...newTaskForm, assigneeAgent: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                   >
-                    <option value="Strategy Agent (Evo-Strategy)">Strategy Agent (Evo-Strategy)</option>
-                    <option value="Financial Agent (FinanceAI)">Financial Agent (FinanceAI)</option>
-                    <option value="Marketing Agent (GrowthAI)">Marketing Agent (GrowthAI)</option>
-                    <option value="Operations Agent (Nexus-Ops)">Operations Agent (Nexus-Ops)</option>
-                    <option value="Legal & Audit Agent (AuditAI)">Legal & Audit Agent (AuditAI)</option>
+                    <option value="Strategy Agent (Evo-Strategy)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Strategy Agent (Evo-Strategy)</option>
+                    <option value="Financial Agent (FinanceAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Financial Agent (FinanceAI)</option>
+                    <option value="Marketing Agent (GrowthAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Marketing Agent (GrowthAI)</option>
+                    <option value="Operations Agent (Nexus-Ops)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Operations Agent (Nexus-Ops)</option>
+                    <option value="Legal & Audit Agent (AuditAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Legal & Audit Agent (AuditAI)</option>
                   </select>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                   <button
                     type="button"
                     onClick={() => setIsAddTaskOpen(false)}
-                    className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all font-semibold"
+                    className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
                   >
                     Cancel
                   </button>
@@ -2772,27 +2772,27 @@ export default function DashboardPage() {
       {/* ── VIEW & UPDATE TASK MODAL ────────────────────────────────────────── */}
       <AnimatePresence>
         {editingTask && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-5"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-5"
             >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+                  <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                     <Edit className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white">View & Update AI Task</h3>
-                    <p className="text-xs text-slate-400">Modify task details, priority, status and deadline date</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">View & Update AI Task</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Modify task details, priority, status and deadline date</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setEditingTask(null)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -2801,46 +2801,46 @@ export default function DashboardPage() {
               <form onSubmit={handleUpdateTaskSubmit} className="space-y-4 text-xs">
                 {/* Title */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-slate-300">Task Title *</label>
+                  <label className="font-semibold text-slate-700 dark:text-slate-200">Task Title *</label>
                   <input
                     type="text"
                     required
                     value={editingTask.title}
                     onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                   />
                 </div>
 
                 {/* Grid 2x2: Category & Priority */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Category</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Category</label>
                     <select
                       value={editingTask.category || "Strategy"}
                       onChange={(e) => setEditingTask({ ...editingTask, category: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Strategy">Strategy</option>
-                      <option value="Finance">Finance</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Operations">Operations</option>
-                      <option value="Legal">Legal</option>
-                      <option value="Engineering">Engineering</option>
-                      <option value="Competitor Intel">Competitor Intel</option>
+                      <option value="Strategy" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Strategy</option>
+                      <option value="Finance" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Finance</option>
+                      <option value="Marketing" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Marketing</option>
+                      <option value="Operations" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Operations</option>
+                      <option value="Legal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Legal</option>
+                      <option value="Engineering" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Engineering</option>
+                      <option value="Competitor Intel" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Competitor Intel</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Priority Level</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Priority Level</label>
                     <select
                       value={editingTask.priority || "High"}
                       onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Critical">Critical</option>
-                      <option value="High">High</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Low">Low</option>
+                      <option value="Critical" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Critical</option>
+                      <option value="High" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">High</option>
+                      <option value="Medium" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Medium</option>
+                      <option value="Low" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Low</option>
                     </select>
                   </div>
                 </div>
@@ -2848,20 +2848,20 @@ export default function DashboardPage() {
                 {/* Grid 2x2: Status & Due Date */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-300">Status</label>
+                    <label className="font-semibold text-slate-700 dark:text-slate-200">Status</label>
                     <select
                       value={editingTask.status || "Pending"}
                       onChange={(e) => setEditingTask({ ...editingTask, status: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                     >
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
+                      <option value="Pending" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Pending</option>
+                      <option value="In Progress" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">In Progress</option>
+                      <option value="Completed" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Completed</option>
                     </select>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-indigo-400 flex items-center gap-1">
+                    <label className="font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                       <CalendarIcon className="w-3.5 h-3.5" /> Task Due Date *
                     </label>
                     <input
@@ -2870,34 +2870,34 @@ export default function DashboardPage() {
                       placeholder="e.g. 2026-07-20 / Aug 15 / Today"
                       value={editingTask.dueDate || ""}
                       onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
-                      className="w-full bg-slate-950 border border-indigo-500/60 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all text-xs font-bold"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-indigo-300 dark:border-indigo-500/60 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-bold"
                     />
                   </div>
                 </div>
 
                 {/* Assignee Agent */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-slate-300">Assignee AI Agent</label>
+                  <label className="font-semibold text-slate-700 dark:text-slate-200">Assignee AI Agent</label>
                   <select
                     value={editingTask.assigneeAgent || "Strategy Agent (Evo-Strategy)"}
                     onChange={(e) => setEditingTask({ ...editingTask, assigneeAgent: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-indigo-500 transition-all text-xs"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-xs font-medium"
                   >
-                    <option value="Strategy Agent (Evo-Strategy)">Strategy Agent (Evo-Strategy)</option>
-                    <option value="Financial Agent (FinanceAI)">Financial Agent (FinanceAI)</option>
-                    <option value="Marketing Agent (GrowthAI)">Marketing Agent (GrowthAI)</option>
-                    <option value="Operations Agent (Nexus-Ops)">Operations Agent (Nexus-Ops)</option>
-                    <option value="Legal & Audit Agent (AuditAI)">Legal & Audit Agent (AuditAI)</option>
+                    <option value="Strategy Agent (Evo-Strategy)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Strategy Agent (Evo-Strategy)</option>
+                    <option value="Financial Agent (FinanceAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Financial Agent (FinanceAI)</option>
+                    <option value="Marketing Agent (GrowthAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Marketing Agent (GrowthAI)</option>
+                    <option value="Operations Agent (Nexus-Ops)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Operations Agent (Nexus-Ops)</option>
+                    <option value="Legal & Audit Agent (AuditAI)" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Legal & Audit Agent (AuditAI)</option>
                   </select>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+                <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-slate-800">
                   <button
                     type="button"
                     disabled={isDeletingTask}
                     onClick={() => handleDeleteTask(editingTask.id)}
-                    className="px-3.5 py-2 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all font-semibold flex items-center gap-1.5 text-xs border border-rose-500/20 cursor-pointer disabled:opacity-50"
+                    className="px-3.5 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all font-semibold flex items-center gap-1.5 text-xs border border-rose-200 dark:border-rose-500/20 cursor-pointer disabled:opacity-50"
                   >
                     {isDeletingTask ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                     <span>Delete Task</span>
@@ -2907,7 +2907,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setEditingTask(null)}
-                      className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all font-semibold"
+                      className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all font-semibold"
                     >
                       Cancel
                     </button>
