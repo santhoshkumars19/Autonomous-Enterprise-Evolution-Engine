@@ -219,88 +219,6 @@ const departmentRoiData = [
   { dept: "Operations", invested: "$290K invested", roi: "134% ROI", widthPercent: 42 },
 ];
 
-const taskPlannerDataset = [
-  {
-    id: "tp-1",
-    title: "Complete Q4 Strategic Plan",
-    desc: "Develop comprehensive Q4 strategy leveraging AI insights",
-    priority: "Critical",
-    status: "In Progress",
-    assigneeName: "Sarah Chen",
-    assigneeInitials: "SC",
-    aiScore: 95,
-    dueDate: "08/15",
-    fullDueDate: "2024-08-15",
-  },
-  {
-    id: "tp-2",
-    title: "Review Competitor Intelligence Report",
-    desc: "Analyze latest competitor movements and update threat matrix",
-    priority: "High",
-    status: "To Do",
-    assigneeName: "Marcus Rodriguez",
-    assigneeInitials: "MR",
-    aiScore: 88,
-    dueDate: "08/12",
-    fullDueDate: "2024-08-12",
-  },
-  {
-    id: "tp-3",
-    title: "Launch APAC Expansion Study",
-    desc: "Conduct feasibility study for Southeast Asia market entry",
-    priority: "High",
-    status: "To Do",
-    assigneeName: "Aiko Tanaka",
-    assigneeInitials: "AT",
-    aiScore: 91,
-    dueDate: "08/20",
-    fullDueDate: "2024-08-20",
-  },
-  {
-    id: "tp-4",
-    title: "Optimize Pricing Model",
-    desc: "Revise pricing tiers based on market research",
-    priority: "Medium",
-    status: "In Progress",
-    assigneeName: "David Kim",
-    assigneeInitials: "DK",
-    aiScore: 79,
-    dueDate: "08/25",
-    fullDueDate: "2024-08-25",
-  },
-  {
-    id: "tp-5",
-    title: "Reduce Customer Churn",
-    desc: "Deploy proactive intervention model for tier-2 accounts",
-    priority: "Critical",
-    status: "In Progress",
-    assigneeName: "Sarah Chen",
-    assigneeInitials: "SC",
-    aiScore: 94,
-    dueDate: "08/10",
-    fullDueDate: "2024-08-10",
-  },
-  {
-    id: "tp-6",
-    title: "Board Presentation Q3 Results",
-    desc: "Prepare comprehensive Q3 performance deck for board",
-    priority: "High",
-    status: "Done",
-    assigneeName: "Marcus Rodriguez",
-    assigneeInitials: "MR",
-    aiScore: 92,
-    dueDate: "08/01",
-    fullDueDate: "2024-08-01",
-  },
-];
-
-const teamProgressMembers = [
-  { initials: "SC", name: "Sarah Chen", role: "CEO", completed: 12, active: 4, percent: 75 },
-  { initials: "MR", name: "Marcus Rodriguez", role: "CFO", completed: 9, active: 3, percent: 75 },
-  { initials: "AT", name: "Aiko Tanaka", role: "CTO", completed: 15, active: 6, percent: 71 },
-  { initials: "DK", name: "David Kim", role: "CMO", completed: 11, active: 5, percent: 68 },
-];
-
 const swotMatrixData = {
   strengths: [
     "Industry-leading AI accuracy (94%)",
@@ -2262,41 +2180,6 @@ export default function DashboardPage() {
               </Card>
             );
           })()}
-
-          {/* ROW 3: TEAM PROGRESS */}
-          <Card className="p-6 space-y-4 border-slate-200 dark:border-slate-800">
-            <div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white">Team Progress</h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {teamProgressMembers.map((m, idx) => (
-                <div key={idx} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 space-y-3 text-center">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-indigo-500 via-cyan-500 to-purple-600 text-white font-extrabold text-sm flex items-center justify-center mx-auto shadow-md">
-                    {m.initials}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100">{m.name}</h4>
-                    <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{m.role}</span>
-                  </div>
-
-                  <div className="space-y-1.5 text-xs text-left pt-2 border-t border-slate-200 dark:border-slate-800/80">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Completed</span>
-                      <span className="font-bold text-emerald-500">{m.completed}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Active</span>
-                      <span className="font-bold text-indigo-400">{m.active}</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${m.percent}%` }} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
         </div>
       )}
 
