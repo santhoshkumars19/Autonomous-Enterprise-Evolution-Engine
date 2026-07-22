@@ -70,6 +70,7 @@ import {
 import { useAuth } from "@/components/auth-provider";
 import { adminApi, FeedbackItem, feedbackApi } from "@/lib/api";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { generateSpecificExecutiveReport } from "@/lib/pdf-generator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -80,6 +81,18 @@ export default function EnterpriseAdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [downloadingPdfName, setDownloadingPdfName] = useState<string | null>(null);
+
+  const handleDownloadAdminReportPdf = async (report: { name: string; comp: string; by: string; date: string }) => {
+    try {
+      setDownloadingPdfName(report.name);
+      await generateSpecificExecutiveReport(report);
+    } catch (err) {
+      console.error("Failed to generate admin report PDF:", err);
+    } finally {
+      setDownloadingPdfName(null);
+    }
+  };
 
   // Real DB Data states
   const [stats, setStats] = useState({
@@ -1317,8 +1330,19 @@ export default function EnterpriseAdminDashboard() {
                           <td className="p-3 font-mono text-slate-500">{r.date}</td>
                           <td className="p-3 font-mono text-emerald-600 dark:text-emerald-400 font-bold">{r.dl}</td>
                           <td className="p-3 text-right">
-                            <Button size="sm" variant="outline" className="text-xs py-1 px-2.5">
-                              <Download className="w-3.5 h-3.5 mr-1" /> PDF
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={downloadingPdfName === r.name}
+                              onClick={() => handleDownloadAdminReportPdf(r)}
+                              className="text-xs py-1 px-2.5 cursor-pointer hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all"
+                            >
+                              {downloadingPdfName === r.name ? (
+                                <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin text-purple-500" />
+                              ) : (
+                                <Download className="w-3.5 h-3.5 mr-1" />
+                              )}
+                              {downloadingPdfName === r.name ? "Generating..." : "PDF"}
                             </Button>
                           </td>
                         </tr>
