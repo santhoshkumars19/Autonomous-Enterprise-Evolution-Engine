@@ -2041,40 +2041,54 @@ export default function DashboardPage() {
 
           {/* LIST VIEW */}
           {taskViewMode === "list" && (
-            <Card className="p-5">
+            <Card className="p-3.5 sm:p-5">
               <div className="space-y-3">
                 {dynamicTasksList.map((task) => (
-                  <div key={task.id} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex items-center justify-between text-xs gap-4 hover:border-indigo-500/50 transition-all">
-                    <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => openEditTaskModal(task)}>
+                  <div
+                    key={task.id}
+                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-3 sm:gap-4 hover:border-indigo-500/50 transition-all overflow-hidden"
+                  >
+                    <div
+                      className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
+                      onClick={() => openEditTaskModal(task)}
+                    >
                       <span className="h-2 w-2 rounded-full bg-indigo-500 shrink-0" />
-                      <div>
-                        <h4 className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-400 transition-colors">{task.title}</h4>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400">{task.assigneeName} · Due {task.fullDueDate}</span>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-400 transition-colors truncate">
+                          {task.title}
+                        </h4>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block sm:inline truncate">
+                          {task.assigneeName} · Due {task.fullDueDate}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 font-mono">
-                      <Badge variant={task.priority === "Critical" ? "high" : "medium"} className="text-[10px]">
-                        {task.priority}
-                      </Badge>
-                      <Badge variant={task.status === "Done" || task.status === "Completed" ? "active" : "processing"} className="text-[10px]">
-                        {task.status}
-                      </Badge>
-                      <span className="text-cyan-400 font-bold text-xs">⚡ {task.aiScore}</span>
-                      <button
-                        onClick={() => openEditTaskModal(task)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                        title="Edit Task"
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                        title="Delete Task"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 font-mono shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800/60">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Badge variant={task.priority === "Critical" ? "high" : "medium"} className="text-[10px]">
+                          {task.priority}
+                        </Badge>
+                        <Badge variant={task.status === "Done" || task.status === "Completed" ? "active" : "processing"} className="text-[10px]">
+                          {task.status}
+                        </Badge>
+                        <span className="text-cyan-400 font-bold text-xs">⚡ {task.aiScore}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => openEditTaskModal(task)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                          title="Edit Task"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                          title="Delete Task"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
