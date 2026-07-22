@@ -2089,6 +2089,11 @@ export default function DashboardPage() {
             const monthName = calendarDate.toLocaleString("default", { month: "long" });
             const totalDaysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
+            // Calculate starting weekday offset for Monday-start calendar (Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6)
+            const firstDayObj = new Date(year, monthIndex, 1);
+            const firstDayOfWeek = firstDayObj.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+            const startingOffset = (firstDayOfWeek + 6) % 7;
+
             const allCalendarTasks = dynamicTasksList.map((t) => ({
               id: t.id,
               title: t.title,
@@ -2116,9 +2121,22 @@ export default function DashboardPage() {
                   return y === currentYear && m === currentMonthIndex && d === dayNum;
                 }
 
-                // 2. Match month names e.g. "Jul 11", "August 15"
-                const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
                 const dLower = dStr.toLowerCase();
+
+                // 2. Match relative dates e.g. "Today" or "Tomorrow"
+                if (dLower === "today") {
+                  const today = new Date();
+                  return today.getFullYear() === currentYear && today.getMonth() === currentMonthIndex && today.getDate() === dayNum;
+                }
+
+                if (dLower === "tomorrow") {
+                  const tmrw = new Date();
+                  tmrw.setDate(tmrw.getDate() + 1);
+                  return tmrw.getFullYear() === currentYear && tmrw.getMonth() === currentMonthIndex && tmrw.getDate() === dayNum;
+                }
+
+                // 3. Match month names e.g. "Jul 11", "August 15"
+                const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
                 const curMonthName = monthNames[currentMonthIndex];
 
                 if (dLower.includes(curMonthName)) {
@@ -2126,12 +2144,6 @@ export default function DashboardPage() {
                   if (numMatch) {
                     return parseInt(numMatch[1], 10) === dayNum;
                   }
-                }
-
-                // 3. Match relative dates e.g. "Today"
-                if (dLower === "today") {
-                  const today = new Date();
-                  return today.getFullYear() === currentYear && today.getMonth() === currentMonthIndex && today.getDate() === dayNum;
                 }
 
                 return false;
@@ -2181,6 +2193,11 @@ export default function DashboardPage() {
 
                     {/* Days Grid */}
                     <div className="grid grid-cols-7 gap-2 text-xs min-h-[300px]">
+                      {/* Empty padding cells for starting weekday offset */}
+                      {Array.from({ length: startingOffset }).map((_, padIdx) => (
+                        <div key={`pad-${padIdx}`} className="p-2 rounded-xl border border-transparent bg-transparent opacity-0 pointer-events-none min-h-[70px]" />
+                      ))}
+
                       {Array.from({ length: totalDaysInMonth }).map((_, i) => {
                         const dayNum = i + 1;
                         const dayTasks = getTasksForDay(dayNum);
